@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matching Game</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #3b3f8c;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat {
+      background: white;
+      border-radius: 12px;
+      padding: 10px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #3b3f8c;
+    }
+
+    button#reset {
+      background: #3b3f8c;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 24px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button#reset:hover { background: #2d3170; }
+
+    .topic-select {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .topic-btn {
+      background: white;
+      border: 2px solid #d0d4f5;
+      border-radius: 20px;
+      padding: 6px 18px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #3b3f8c;
+      transition: all 0.2s;
+    }
+
+    .topic-btn.active, .topic-btn:hover {
+      background: #3b3f8c;
+      color: white;
+      border-color: #3b3f8c;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 140px);
+      gap: 14px;
+      justify-content: center;
+    }
+
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: repeat(2, 1fr); width: 100%; }
+    }
+
+    .card {
+      width: 140px;
+      height: 90px;
+      perspective: 600px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      .card { width: 100%; }
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease;
+      border-radius: 12px;
+    }
+
+    .card.flipped .card-inner,
+    .card.matched .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .card-front {
+      background: #3b3f8c;
+      color: white;
+      font-size: 1.8rem;
+    }
+
+    .card-back {
+      background: white;
+      color: #2d2d2d;
+      transform: rotateY(180deg);
+      border: 2px solid #e0e4ff;
+    }
+
+    .card.matched .card-back {
+      background: #edfbf3;
+      border-color: #4caf7d;
+      color: #1a6b3c;
+    }
+
+    .win-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .win-overlay.show { display: flex; }
+
+    .win-box {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 48px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .win-box h2 { font-size: 2.2rem; color: #3b3f8c; margin-bottom: 8px; }
+    .win-box p  { font-size: 1.1rem; color: #555; margin-bottom: 24px; }
+
+    .win-box button {
+      background: #3b3f8c;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 32px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .win-box button:hover { background: #2d3170; }
+  </style>
+</head>
+<body>
+
+  <h1>Matching Game</h1>
+  <p class="subtitle">Find all matching pairs!</p>
+
+  <div class="topic-select" id="topicSelect"></div>
+
+  <div class="controls">
+    <div class="stat">
+      <div class="stat-label">Moves</div>
+      <div class="stat-value" id="moves">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Matches</div>
+      <div class="stat-value" id="matches">0</div>
+    </div>
+    <button id="reset">New Game</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="win-overlay" id="winOverlay">
+    <div class="win-box">
+      <h2>You won!</h2>
+      <p id="winMsg"></p>
+      <button onclick="startGame()">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const TOPICS = {
+      "Vocabulary": [
+        ["Benevolent", "Kind and generous"],
+        ["Eloquent",   "Fluent and persuasive"],
+        ["Tenacious",  "Very determined"],
+        ["Ambiguous",  "Open to more than one meaning"],
+        ["Pragmatic",  "Dealing with things practically"],
+        ["Diligent",   "Hardworking and careful"],
+        ["Candid",     "Truthful and straightforward"],
+        ["Resilient",  "Able to recover quickly"],
+      ],
+      "Math": [
+        ["8 × 7",  "56"],
+        ["12²",    "144"],
+        ["√81",    "9"],
+        ["15 × 4", "60"],
+        ["100 ÷ 4","25"],
+        ["3³",     "27"],
+        ["7 + 8",  "15"],
+        ["9 × 9",  "81"],
+      ],
+      "Science": [
+        ["Photosynthesis", "Plants make food from sunlight"],
+        ["Evaporation",    "Liquid turns to gas"],
+        ["Gravity",        "Force pulling objects together"],
+        ["Cell membrane",  "Controls what enters a cell"],
+        ["Ecosystem",      "Community of living organisms"],
+        ["Condensation",   "Gas turns to liquid"],
+        ["Nucleus",        "Control center of a cell"],
+        ["Erosion",        "Wearing away of rock by water/wind"],
+      ],
+      "Geography": [
+        ["Amazon River",  "Longest river in South America"],
+        ["Sahara",        "Largest hot desert on Earth"],
+        ["Mount Everest", "Tallest mountain in the world"],
+        ["Pacific Ocean", "Largest ocean on Earth"],
+        ["Nile River",    "Longest river in Africa"],
+        ["Antarctica",    "Coldest continent"],
+        ["Dead Sea",      "Saltiest body of water"],
+        ["Great Barrier Reef", "World's largest coral reef"],
+      ],
+    };
+
+    let currentTopic = "Vocabulary";
+    let flipped = [], matched = 0, moves = 0, locked = false;
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function buildTopicButtons() {
+      const container = document.getElementById("topicSelect");
+      container.innerHTML = "";
+      Object.keys(TOPICS).forEach(topic => {
+        const btn = document.createElement("button");
+        btn.className = "topic-btn" + (topic === currentTopic ? " active" : "");
+        btn.textContent = topic;
+        btn.onclick = () => { currentTopic = topic; buildTopicButtons(); startGame(); };
+        container.appendChild(btn);
+      });
+    }
+
+    function startGame() {
+      flipped = []; matched = 0; moves = 0; locked = false;
+      document.getElementById("moves").textContent = "0";
+      document.getElementById("matches").textContent = "0";
+      document.getElementById("winOverlay").classList.remove("show");
+
+      const pairs = TOPICS[currentTopic];
+      const cards = shuffle([
+        ...pairs.map(([term]) => ({ id: term, text: term })),
+        ...pairs.map(([term, def]) => ({ id: term, text: def })),
+      ]);
+
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      cards.forEach(card => {
+        const el = document.createElement("div");
+        el.className = "card";
+        el.dataset.id = card.id;
+        el.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">?</div>
+            <div class="card-back">${card.text}</div>
+          </div>`;
+        el.addEventListener("click", () => flipCard(el));
+        grid.appendChild(el);
+      });
+    }
+
+    function flipCard(card) {
+      if (locked || card.classList.contains("flipped") || card.classList.contains("matched")) return;
+
+      card.classList.add("flipped");
+      flipped.push(card);
+
+      if (flipped.length === 2) {
+        locked = true;
+        moves++;
+        document.getElementById("moves").textContent = moves;
+
+        const [a, b] = flipped;
+        if (a.dataset.id === b.dataset.id && a !== b) {
+          a.classList.add("matched");
+          b.classList.add("matched");
+          matched++;
+          document.getElementById("matches").textContent = matched;
+          flipped = [];
+          locked = false;
+          if (matched === TOPICS[currentTopic].length) showWin();
+        } else {
+          setTimeout(() => {
+            a.classList.remove("flipped");
+            b.classList.remove("flipped");
+            flipped = [];
+            locked = false;
+          }, 900);
+        }
+      }
+    }
+
+    function showWin() {
+      document.getElementById("winMsg").textContent =
+        `You found all ${matched} pairs in ${moves} moves!`;
+      document.getElementById("winOverlay").classList.add("show");
+    }
+
+    buildTopicButtons();
+    startGame();
+  </script>
+</body>
+</html>
