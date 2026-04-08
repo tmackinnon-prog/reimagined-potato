@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simile & Metaphor Matching Game</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 6px;
+      color: #e2b96f;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .scoreboard {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    .scoreboard span {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
+
+    .scoreboard .label { color: #aaa; font-size: 0.8rem; display: block; text-align: center; }
+    .scoreboard .value { color: #e2b96f; font-weight: bold; font-size: 1.2rem; display: block; text-align: center; }
+
+    .instructions {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+      color: #ccc;
+      max-width: 700px;
+      text-align: center;
+    }
+
+    .columns {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      max-width: 820px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .column-title {
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 4px;
+    }
+
+    .card {
+      background: #16213e;
+      border: 2px solid #0f3460;
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      transition: border-color 0.2s, transform 0.1s, background 0.2s;
+      user-select: none;
+      position: relative;
+    }
+
+    .card:hover:not(.matched):not(.selected) {
+      border-color: #e2b96f;
+      transform: translateY(-2px);
+    }
+
+    .card.selected {
+      border-color: #5c7cfa;
+      background: #1c2f5e;
+      transform: translateY(-2px);
+    }
+
+    .card.matched {
+      border-color: #40c057;
+      background: #0f2e1a;
+      cursor: default;
+      opacity: 0.85;
+    }
+
+    .card.wrong {
+      border-color: #fa5252;
+      background: #2e0f0f;
+      animation: shake 0.35s ease;
+    }
+
+    .card .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: bold;
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge.simile  { background: #1971c2; color: #fff; }
+    .badge.metaphor { background: #862e9c; color: #fff; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .feedback {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      min-height: 1.5em;
+      font-weight: bold;
+      color: #e2b96f;
+      text-align: center;
+    }
+
+    .btn {
+      margin-top: 24px;
+      padding: 12px 32px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #e2b96f;
+      color: #1a1a2e;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover { background: #f0ca8a; transform: translateY(-1px); }
+
+    .win-banner {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .win-banner.visible { display: flex; }
+
+    .win-banner h2 {
+      font-size: 1.8rem;
+      color: #40c057;
+      margin-bottom: 8px;
+    }
+
+    .win-banner p { color: #aaa; margin-bottom: 16px; }
+
+    @media (max-width: 580px) {
+      .columns { flex-direction: column; }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Simile &amp; Metaphor Match</h1>
+<p class="subtitle">Match each figure of speech to its meaning</p>
+
+<div class="scoreboard">
+  <span><span class="label">Matches</span><span class="value" id="score">0 / 8</span></span>
+  <span><span class="label">Attempts</span><span class="value" id="attempts">0</span></span>
+</div>
+
+<div class="instructions">
+  Click a phrase on the left, then click its meaning on the right.<br>
+  <strong>Green = simile</strong> (uses <em>like</em> or <em>as</em>) &nbsp;|&nbsp; <strong>Purple = metaphor</strong> (direct comparison)
+</div>
+
+<div class="columns">
+  <div class="column">
+    <div class="column-title">Phrases</div>
+    <div id="phrases-col"></div>
+  </div>
+  <div class="column">
+    <div class="column-title">Meanings</div>
+    <div id="meanings-col"></div>
+  </div>
+</div>
+
+<div class="feedback" id="feedback"></div>
+
+<div class="win-banner" id="win-banner">
+  <h2>Well done!</h2>
+  <p id="win-msg"></p>
+  <button class="btn" onclick="startGame()">Play Again</button>
+</div>
+
+<button class="btn" id="new-game-btn" onclick="startGame()" style="display:none;">New Game</button>
+
+<script>
+  const ALL_PAIRS = [
+    // Similes
+    { type: 'simile',   phrase: 'She is as brave as a lion.',             meaning: 'She is extremely courageous.' },
+    { type: 'simile',   phrase: 'He runs like the wind.',                  meaning: 'He runs very fast.' },
+    { type: 'simile',   phrase: 'The snow is like a white blanket.',       meaning: 'The snow covers everything thickly.' },
+    { type: 'simile',   phrase: 'Her voice is as sweet as honey.',         meaning: 'Her voice is very pleasant.' },
+    { type: 'simile',   phrase: 'He fought like a tiger.',                 meaning: 'He fought with great ferocity.' },
+    { type: 'simile',   phrase: 'The stars are like diamonds in the sky.', meaning: 'The stars shine brilliantly.' },
+    // Metaphors
+    { type: 'metaphor', phrase: 'Life is a rollercoaster.',                meaning: 'Life has many ups and downs.' },
+    { type: 'metaphor', phrase: 'Time is money.',                          meaning: 'Time is a valuable resource.' },
+    { type: 'metaphor', phrase: 'The world is a stage.',                   meaning: 'People play roles in life as actors do.' },
+    { type: 'metaphor', phrase: 'Her heart is a cold stone.',              meaning: 'She feels no emotion or compassion.' },
+    { type: 'metaphor', phrase: 'He is a night owl.',                      meaning: 'He prefers to stay up late.' },
+    { type: 'metaphor', phrase: 'The classroom was a zoo.',                meaning: 'The classroom was very loud and chaotic.' },
+  ];
+
+  const ROUND_SIZE = 8; // pairs per round
+
+  let selected = null;   // { side: 'phrase'|'meaning', id: number, el: Element }
+  let matched  = new Set();
+  let attempts = 0;
+  let pairs    = [];
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function startGame() {
+    selected  = null;
+    matched   = new Set();
+    attempts  = 0;
+    pairs     = shuffle([...ALL_PAIRS]).slice(0, ROUND_SIZE);
+
+    document.getElementById('win-banner').classList.remove('visible');
+    document.getElementById('new-game-btn').style.display = 'none';
+    document.getElementById('feedback').textContent = '';
+    updateScore();
+    renderColumns();
+  }
+
+  function updateScore() {
+    document.getElementById('score').textContent    = `${matched.size} / ${pairs.length}`;
+    document.getElementById('attempts').textContent = attempts;
+  }
+
+  function renderColumns() {
+    const phrasesCol = document.getElementById('phrases-col');
+    const meaningsCol = document.getElementById('meanings-col');
+    phrasesCol.innerHTML = '';
+    meaningsCol.innerHTML = '';
+
+    const phraseOrder  = shuffle(pairs.map((_, i) => i));
+    const meaningOrder = shuffle(pairs.map((_, i) => i));
+
+    phraseOrder.forEach(id => {
+      phrasesCol.appendChild(makeCard(id, 'phrase', pairs[id]));
+    });
+    meaningOrder.forEach(id => {
+      meaningsCol.appendChild(makeCard(id, 'meaning', pairs[id]));
+    });
+  }
+
+  function makeCard(id, side, pair) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.id   = id;
+    card.dataset.side = side;
+
+    if (side === 'phrase') {
+      const badge = document.createElement('span');
+      badge.className = `badge ${pair.type}`;
+      badge.textContent = pair.type;
+      card.appendChild(badge);
+      card.appendChild(document.createElement('br'));
+    }
+
+    card.appendChild(document.createTextNode(side === 'phrase' ? pair.phrase : pair.meaning));
+    card.addEventListener('click', () => onCardClick(card));
+    return card;
+  }
+
+  function allCards() {
+    return document.querySelectorAll('.card');
+  }
+
+  function cardById(id, side) {
+    return document.querySelector(`.card[data-id="${id}"][data-side="${side}"]`);
+  }
+
+  function onCardClick(card) {
+    const id   = parseInt(card.dataset.id);
+    const side = card.dataset.side;
+
+    if (matched.has(id)) return;
+    if (card.classList.contains('wrong')) return;
+
+    if (!selected) {
+      // First selection
+      card.classList.add('selected');
+      selected = { id, side, el: card };
+      setFeedback('');
+      return;
+    }
+
+    if (selected.el === card) {
+      // Deselect
+      card.classList.remove('selected');
+      selected = null;
+      return;
+    }
+
+    if (selected.side === side) {
+      // Same column: move selection
+      selected.el.classList.remove('selected');
+      card.classList.add('selected');
+      selected = { id, side, el: card };
+      return;
+    }
+
+    // Different columns — evaluate the pair
+    attempts++;
+
+    const phraseId  = side === 'phrase'  ? id         : selected.id;
+    const meaningId = side === 'meaning' ? id         : selected.id;
+    const phraseEl  = side === 'phrase'  ? card       : selected.el;
+    const meaningEl = side === 'meaning' ? card       : selected.el;
+
+    selected.el.classList.remove('selected');
+    selected = null;
+
+    if (phraseId === meaningId) {
+      // Correct
+      phraseEl.classList.add('matched');
+      meaningEl.classList.add('matched');
+      matched.add(phraseId);
+      setFeedback('Correct! +1');
+      updateScore();
+
+      if (matched.size === pairs.length) {
+        setTimeout(showWin, 400);
+      }
+    } else {
+      // Wrong
+      phraseEl.classList.add('wrong');
+      meaningEl.classList.add('wrong');
+      setFeedback('Not quite — try again!');
+      updateScore();
+
+      setTimeout(() => {
+        phraseEl.classList.remove('wrong');
+        meaningEl.classList.remove('wrong');
+      }, 800);
+    }
+  }
+
+  function setFeedback(msg) {
+    document.getElementById('feedback').textContent = msg;
+  }
+
+  function showWin() {
+    const accuracy = Math.round((pairs.length / attempts) * 100);
+    document.getElementById('win-msg').textContent =
+      `You matched all ${pairs.length} pairs in ${attempts} attempt${attempts !== 1 ? 's' : ''} (${accuracy}% accuracy).`;
+    document.getElementById('win-banner').classList.add('visible');
+  }
+
+  startGame();
+</script>
+</body>
+</html>
