@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to Wikipedia</title>
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #2d3748;
+      background: #f7f8fa;
+    }
+
+    /* ── Layout ───────────────────────────────────────────────────────── */
+    .page-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* ── Hero banner ──────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      margin-bottom: 2.5rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .hero-logo {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+
+    .hero-text h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-text p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    /* ── Section cards ────────────────────────────────────────────────── */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      border-left: 5px solid #2b6cb0;
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1a365d;
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h2 .icon { font-size: 1.3rem; }
+
+    .card p { margin-bottom: 0.75rem; }
+    .card p:last-child { margin-bottom: 0; }
+
+    /* ── Two-column grid ──────────────────────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    @media (max-width: 600px) {
+      .two-col { grid-template-columns: 1fr; }
+      .hero { flex-direction: column; text-align: center; }
+    }
+
+    /* ── Pros / Cons cards ────────────────────────────────────────────── */
+    .card-green { border-left-color: #38a169; }
+    .card-green h2 { color: #276749; }
+
+    .card-orange { border-left-color: #dd6b20; }
+    .card-orange h2 { color: #9c4221; }
+
+    /* ── Ordered / unordered lists ────────────────────────────────────── */
+    .card ul, .card ol {
+      padding-left: 1.4rem;
+      margin-top: 0.4rem;
+    }
+    .card li { margin-bottom: 0.45rem; }
+
+    /* ── Anatomy diagram ──────────────────────────────────────────────── */
+    .anatomy {
+      border: 2px solid #bee3f8;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.9rem;
+    }
+
+    .anatomy-header {
+      background: #bee3f8;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      color: #1a365d;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .anatomy-row {
+      display: flex;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .anatomy-row:last-child { border-bottom: none; }
+
+    .anatomy-label {
+      width: 38%;
+      background: #ebf8ff;
+      padding: 0.6rem 0.9rem;
+      font-weight: 600;
+      color: #2b6cb0;
+      border-right: 1px solid #bee3f8;
+    }
+
+    .anatomy-desc {
+      width: 62%;
+      padding: 0.6rem 0.9rem;
+      color: #4a5568;
+    }
+
+    /* ── Step list ────────────────────────────────────────────────────── */
+    .steps { counter-reset: steps; list-style: none; padding: 0; }
+
+    .steps li {
+      counter-increment: steps;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.9rem;
+      align-items: flex-start;
+    }
+
+    .steps li::before {
+      content: counter(steps);
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: #2b6cb0;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Callout box ──────────────────────────────────────────────────── */
+    .callout {
+      background: #fffbeb;
+      border: 1px solid #f6e05e;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #744210;
+    }
+
+    .callout strong { color: #92400e; }
+
+    /* ── Citation example ─────────────────────────────────────────────── */
+    .cite-box {
+      background: #f0fff4;
+      border: 1px solid #9ae6b4;
+      border-radius: 6px;
+      padding: 0.85rem 1.1rem;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.88rem;
+      color: #276749;
+      margin-top: 0.75rem;
+      word-break: break-word;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      font-size: 0.82rem;
+      color: #a0aec0;
+      margin-top: 2.5rem;
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ── Hero ─────────────────────────────────────────────────────────── -->
+  <div class="hero">
+    <div class="hero-logo" aria-hidden="true">🌐</div>
+    <div class="hero-text">
+      <h1>Introduction to Wikipedia</h1>
+      <p>What it is, how it works, and how to use it effectively as a starting point for research.</p>
+    </div>
+  </div>
+
+  <!-- ── What is Wikipedia ─────────────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="icon">📖</span> What Is Wikipedia?</h2>
+    <p>
+      <strong>Wikipedia</strong> is a free, multilingual online encyclopedia that anyone can edit.
+      Launched in January 2001 by Jimmy Wales and Larry Sanger, it has grown into one of the largest
+      reference works ever created, with more than <strong>60 million articles</strong> across
+      hundreds of languages.
+    </p>
+    <p>
+      The English edition alone contains over <strong>6.7 million articles</strong>. It is operated
+      by the non-profit <strong>Wikimedia Foundation</strong> and is supported entirely by donations
+      and volunteer contributors.
+    </p>
+    <p>
+      Wikipedia's core philosophy is that knowledge should be <em>free, neutral, verifiable,</em>
+      and <em>collaboratively maintained</em>. Every claim should ideally be supported by a
+      cited, reliable source.
+    </p>
+  </div>
+
+  <!-- ── Anatomy of an article ─────────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="icon">🗺️</span> Anatomy of a Wikipedia Article</h2>
+    <p>Understanding the layout of a Wikipedia article helps you navigate it efficiently.</p>
+    <div class="anatomy" style="margin-top:1rem;">
+      <div class="anatomy-header">Page Section → What It Contains</div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Lead / Intro</div>
+        <div class="anatomy-desc">A concise summary of the most important facts. Great for a quick overview.</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Table of Contents</div>
+        <div class="anatomy-desc">Clickable links to each section. Use it to jump to the part you need.</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Body Sections</div>
+        <div class="anatomy-desc">In-depth information organized into headed sections and subsections.</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Inline Citations [1]</div>
+        <div class="anatomy-desc">Superscript numbers linking to a source. <em>These are the sources worth following.</em></div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">References / Notes</div>
+        <div class="anatomy-desc">Full bibliographic details for every inline citation. Your research starting point.</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Further Reading</div>
+        <div class="anatomy-desc">Suggested books and articles for deeper study.</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">External Links</div>
+        <div class="anatomy-desc">Official websites, databases, or related resources outside Wikipedia.</div>
+      </div>
+      <div class="anatomy-row">
+        <div class="anatomy-label">Talk Page</div>
+        <div class="anatomy-desc">Editor discussions about the article's accuracy and neutrality.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Pros / Cons ───────────────────────────────────────────────────── -->
+  <div class="two-col">
+    <div class="card card-green">
+      <h2><span class="icon">✅</span> Strengths</h2>
+      <ul>
+        <li>Excellent starting point for <strong>background knowledge</strong></li>
+        <li>Inline citations link to <strong>primary and secondary sources</strong></li>
+        <li>Covers <strong>niche topics</strong> not found in traditional encyclopedias</li>
+        <li>Articles are <strong>regularly updated</strong> as events unfold</li>
+        <li>Completely <strong>free</strong> — no paywall or account required</li>
+        <li>Available in <strong>300+ languages</strong></li>
+      </ul>
+    </div>
+    <div class="card card-orange">
+      <h2><span class="icon">⚠️</span> Limitations</h2>
+      <ul>
+        <li><strong>Anyone can edit</strong> — errors can appear before they are corrected</li>
+        <li>Coverage can be <strong>uneven</strong> (popular topics are more accurate)</li>
+        <li><strong>Bias</strong> can exist in contested or political topics</li>
+        <li>Not usually accepted as a <strong>citable source</strong> in academic work</li>
+        <li>Rapidly changing topics may have <strong>outdated information</strong></li>
+        <li>Some articles lack sufficient <strong>citations</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── How to use for research ───────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="icon">🔍</span> How to Use Wikipedia for Research</h2>
+    <p>Wikipedia is best used as a <em>launchpad</em>, not a final destination.</p>
+    <ol class="steps" style="margin-top:0.9rem;">
+      <li>
+        <span>
+          <strong>Get the big picture.</strong> Read the lead paragraph and skim section headers
+          to build a mental map of the topic.
+        </span>
+      </li>
+      <li>
+        <span>
+          <strong>Identify key terms.</strong> Note vocabulary, names, and concepts you can use
+          as search terms in library databases.
+        </span>
+      </li>
+      <li>
+        <span>
+          <strong>Follow the citations.</strong> Scroll to the References section and look for
+          books, journal articles, or reputable news sources — <em>those</em> are what you cite.
+        </span>
+      </li>
+      <li>
+        <span>
+          <strong>Check the Talk page.</strong> If an article is marked as disputed or biased,
+          the Talk page will explain why and help you evaluate reliability.
+        </span>
+      </li>
+      <li>
+        <span>
+          <strong>Compare across languages.</strong> For international topics, the same article
+          in another language can offer a different perspective and additional sources.
+        </span>
+      </li>
+    </ol>
+    <div class="callout">
+      <strong>Instructor note:</strong> Many courses prohibit citing Wikipedia directly in papers.
+      Always check your assignment guidelines — but using Wikipedia to <em>find</em> citable sources
+      is almost always fine.
+    </div>
+  </div>
+
+  <!-- ── Evaluating quality ─────────────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="icon">🏅</span> Evaluating Article Quality</h2>
+    <p>
+      Wikipedia grades its own articles. Look for the quality label in the top-right corner or on
+      the Talk page:
+    </p>
+    <ul style="margin-top:0.5rem;">
+      <li><strong>Featured Article (FA) ★</strong> — Wikipedia's highest standard; thoroughly
+          sourced and reviewed by the community.</li>
+      <li><strong>Good Article (GA)</strong> — Well-written and reliably sourced, but not yet
+          featured.</li>
+      <li><strong>Start / Stub</strong> — Incomplete; treat with extra caution and always verify
+          claims.</li>
+    </ul>
+    <p style="margin-top:0.75rem;">
+      You can also check <strong>when the article was last edited</strong> (bottom of the page)
+      and review its <strong>edit history</strong> to see how stable or contested it is.
+    </p>
+  </div>
+
+  <!-- ── Citation example ──────────────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="icon">📝</span> Citing Wikipedia (When Permitted)</h2>
+    <p>
+      If your instructor allows citing Wikipedia, use the
+      <strong>"Cite this page"</strong> tool in the left sidebar of any article to generate
+      a correctly formatted citation. A typical MLA 9 citation looks like:
+    </p>
+    <div class="cite-box">
+      "Photosynthesis." <em>Wikipedia, The Free Encyclopedia</em>, Wikimedia Foundation,
+      12 Apr. 2025, en.wikipedia.org/wiki/Photosynthesis. Accessed 14 Apr. 2026.
+    </div>
+    <p style="margin-top:0.75rem;">
+      Because Wikipedia content can change, always record the <strong>access date</strong> and,
+      if available, the <strong>permanent link</strong> (found under "Cite this page") for the
+      exact version you read.
+    </p>
+  </div>
+
+  <!-- ── Quick tips ─────────────────────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="icon">💡</span> Quick Tips &amp; Keyboard Shortcuts</h2>
+    <ul>
+      <li>Press <kbd style="background:#edf2f7;padding:0.1em 0.4em;border-radius:4px;font-family:monospace;font-size:0.9em;">Alt + ←</kbd> / <kbd style="background:#edf2f7;padding:0.1em 0.4em;border-radius:4px;font-family:monospace;font-size:0.9em;">→</kbd> in your browser to move through article history.</li>
+      <li>Add <code style="background:#edf2f7;padding:0.1em 0.4em;border-radius:4px;">/simple</code> before <code style="background:#edf2f7;padding:0.1em 0.4em;border-radius:4px;">.wikipedia.org</code> to access Simple English Wikipedia — great for complex topics.</li>
+      <li>Use the <strong>Search bar</strong> at the top and check "Did you mean…" suggestions to find the canonical article.</li>
+      <li>Hover over a blue link to get a preview without leaving the page.</li>
+      <li>Wikipedia's <strong>sister projects</strong> (Wikidata, Wikibooks, Wikisource) are linked at the bottom and can be useful for raw data or primary texts.</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    Page created for use in Canvas LMS &nbsp;|&nbsp; Content may be freely adapted under
+    <a href="https://creativecommons.org/licenses/by/4.0/" style="color:#a0aec0;">CC BY 4.0</a>
+  </div>
+
+</div>
+</body>
+</html>
