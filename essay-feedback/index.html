@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Essay Feedback Builder — Alberta ELA &amp; Social Studies</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --brand: #1e4d8c;
+    --brand-light: #eaf1fb;
+    --accent: #b3541e;
+    --ok: #1a7f4e;
+    --card: #ffffff;
+    --bg: #f3f6fb;
+    --border: #d7dfeb;
+    --radius: 12px;
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px 16px 64px;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 18px; }
+  header h1 { font-size: 1.7rem; color: var(--brand); }
+  header .tagline { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
+
+  /* progress stepper */
+  .stepper {
+    display: flex; justify-content: center; gap: 6px;
+    flex-wrap: wrap; margin: 18px 0 10px;
+  }
+  .step-dot {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.78rem; color: var(--muted);
+    background: #e8edf5; border-radius: 999px; padding: 5px 12px;
+  }
+  .step-dot.active { background: var(--brand); color: #fff; font-weight: 600; }
+  .step-dot.done { background: #d6e6d9; color: var(--ok); }
+
+  /* selection breadcrumb */
+  .crumbs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; min-height: 28px; }
+  .crumb {
+    background: var(--brand-light); color: var(--brand);
+    border: 1px solid var(--border); border-radius: 999px;
+    font-size: 0.82rem; padding: 4px 12px; font-weight: 600;
+  }
+
+  .panel {
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: 0 2px 10px rgba(20, 40, 80, 0.08);
+    padding: 26px; margin-bottom: 16px;
+  }
+  .panel h2 { font-size: 1.2rem; color: var(--brand); margin-bottom: 4px; }
+  .panel .hint { color: var(--muted); font-size: 0.9rem; margin-bottom: 18px; }
+
+  .choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .choice-btn {
+    background: var(--brand-light); border: 2px solid var(--border);
+    border-radius: var(--radius); padding: 20px 16px; cursor: pointer;
+    text-align: left; font-family: inherit; transition: border-color .15s, transform .1s;
+  }
+  .choice-btn:hover { border-color: var(--brand); transform: translateY(-2px); }
+  .choice-btn .big { font-size: 1.08rem; font-weight: 700; color: var(--brand); display: block; }
+  .choice-btn .sub { font-size: 0.84rem; color: var(--muted); margin-top: 6px; display: block; line-height: 1.4; }
+
+  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .course-grid .choice-btn { text-align: center; }
+
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 6px; }
+  input[type=text], select, textarea {
+    width: 100%; padding: 10px 12px; font-family: inherit; font-size: 0.95rem;
+    border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--ink);
+  }
+  select:focus, input:focus, textarea:focus { outline: 2px solid var(--brand); border-color: var(--brand); }
+
+  .crit-block {
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    padding: 16px 18px; margin-bottom: 14px; background: #fcfdff;
+  }
+  .crit-block h3 { font-size: 1rem; color: var(--ink); }
+  .crit-block .crit-desc { font-size: 0.84rem; color: var(--muted); margin: 4px 0 10px; line-height: 1.45; }
+
+  .level-badge {
+    display: inline-block; font-size: 0.78rem; font-weight: 700;
+    border-radius: 999px; padding: 3px 11px; margin-left: 8px; vertical-align: middle;
+  }
+  .lv-E   { background: #d9f0e2; color: #146c43; }
+  .lv-PF  { background: #d9e8f7; color: #1e4d8c; }
+  .lv-S   { background: #f4ecd2; color: #7a5d00; }
+  .lv-L   { background: #fbe3d4; color: #a14a12; }
+  .lv-P   { background: #f8d7da; color: #9b1c2c; }
+  .lv-INS { background: #e5e7eb; color: #4b5563; }
+
+  .picked-comments { list-style: none; margin: 10px 0 4px; }
+  .picked-comments li {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--brand-light); border-radius: 8px;
+    padding: 8px 12px; margin-bottom: 6px; font-size: 0.9rem; line-height: 1.45;
+  }
+  .picked-comments li button {
+    margin-left: auto; flex-shrink: 0; border: none; background: none;
+    color: var(--accent); font-weight: 700; cursor: pointer; font-size: 1rem; line-height: 1;
+  }
+  .add-custom { margin-top: 8px; }
+  .add-custom textarea { min-height: 56px; resize: vertical; }
+  .mini-btn {
+    margin-top: 6px; background: var(--brand); color: #fff; border: none;
+    border-radius: 8px; padding: 7px 16px; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .mini-btn:hover { filter: brightness(1.1); }
+
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+  .btn {
+    border: none; border-radius: 10px; padding: 12px 26px;
+    font-size: 0.98rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { filter: brightness(1.12); }
+  .btn-primary:disabled { background: #aab8cc; cursor: not-allowed; }
+  .btn-ghost { background: #e8edf5; color: var(--ink); }
+  .btn-ghost:hover { background: #dde4ef; }
+  .btn-accent { background: var(--accent); color: #fff; }
+
+  /* summary */
+  .summary-head { border-bottom: 2px solid var(--brand); padding-bottom: 12px; margin-bottom: 16px; }
+  .summary-head h2 { color: var(--brand); }
+  .summary-meta { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+  table.score-table { width: 100%; border-collapse: collapse; margin: 14px 0 20px; font-size: 0.92rem; }
+  table.score-table th, table.score-table td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; }
+  table.score-table th { background: var(--brand-light); color: var(--brand); }
+  table.score-table tfoot td { font-weight: 700; background: #fbf7ee; }
+  .summary-cat { margin-bottom: 16px; }
+  .summary-cat h3 { font-size: 0.98rem; }
+  .summary-cat ul { margin: 6px 0 0 22px; font-size: 0.92rem; line-height: 1.55; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.78rem; margin-top: 26px; line-height: 1.6; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #fff; padding: 10px 22px; border-radius: 999px;
+    font-size: 0.9rem; opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .toast.show { opacity: 1; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    header, .stepper, .crumbs, .actions, .nav-row, footer, .toast { display: none !important; }
+    .panel { box-shadow: none; padding: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Essay Feedback Builder</h1>
+    <div class="tagline">Alberta ELA &amp; Social Studies · Grades 10 / 20 / 30 · -1 and -2 streams</div>
+  </header>
+
+  <div class="stepper" id="stepper"></div>
+  <div class="crumbs" id="crumbs"></div>
+
+  <div id="app"></div>
+
+  <footer>
+    Rubric categories and descriptors are adapted from Alberta Education diploma examination scoring guides
+    (ELA 30-1 / 30-2, Social Studies 30-1 / 30-2) and applied across the 10 / 20 / 30 levels.<br/>
+    Adjust expectations for grade level. Comment banks are editable in the page source (COMMENT_DATA).
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   DATA — edit this section to customize descriptors and comment banks.
+   Levels: E = Excellent, PF = Proficient, S = Satisfactory,
+           L = Limited, P = Poor, INS = Insufficient
+   ===================================================================== */
+
+const LEVELS = [
+  { key: 'E',   name: 'Excellent',    score: 5 },
+  { key: 'PF',  name: 'Proficient',   score: 4 },
+  { key: 'S',   name: 'Satisfactory', score: 3 },
+  { key: 'L',   name: 'Limited',      score: 2 },
+  { key: 'P',   name: 'Poor',         score: 1 },
+  { key: 'INS', name: 'Insufficient', score: 0 },
+];
+const LEVEL_BY_KEY = Object.fromEntries(LEVELS.map(l => [l.key, l]));
+
+const INS_COMMENTS = [
+  "The response is too brief to assess in this category; a complete attempt is needed before feedback can be given.",
+  "There is no discernible attempt to address the assignment in this category; please see me to discuss a plan for completion.",
+  "This category could not be scored; let's meet to review the assignment requirements and set a timeline to complete it.",
+];
+
+const CATEGORIES = {
+
+  /* ---------------- ELA ---------------- */
+
+  ideasImpressions: {
+    name: "Ideas and Impressions",
+    blurb: "Quality of the exploration of the topic and of the ideas and reflections developed in response to the text(s).",
+    desc: {
+      E:  "Perceptions and ideas are insightful and carefully considered; support is precise and aptly reinforces the ideas.",
+      PF: "Perceptions and ideas are thoughtful and considered; support is specific and strengthens the ideas.",
+      S:  "Perceptions and ideas are appropriate but general; support is adequate but not always well developed.",
+      L:  "Perceptions and ideas are superficial or ambiguous; support is imprecise or scant.",
+      P:  "Perceptions and ideas are unclear or undeveloped; support is irrelevant or lacking.",
+    },
+    comments: {
+      E: [
+        "Your response explores the topic with insight, offering ideas that are thoughtful, original, and carefully considered.",
+        "The connections you draw between the text and your own experience are perceptive and add real depth to your response.",
+        "Your reflections move well beyond the obvious, showing confident and mature engagement with the ideas in the text.",
+      ],
+      PF: [
+        "Your ideas are thoughtful and clearly connected to the topic, showing genuine engagement with the text.",
+        "You support your impressions with specific details that strengthen your response.",
+        "Your response shows considered reflection; pushing one or two ideas further would lift it to the next level.",
+      ],
+      S: [
+        "Your ideas are appropriate to the topic but tend to stay general; develop them with more specific reflection.",
+        "Your response shows understanding, but the connections to the text could be more clearly developed.",
+        "You have a solid starting point here; deepen your exploration by asking 'why' and 'so what' of your own observations.",
+      ],
+      L: [
+        "Your ideas are difficult to follow at times and need clearer connection to the topic and the text.",
+        "Your response relies on retelling rather than reflecting; focus on your own impressions and what they mean.",
+        "Support for your ideas is scant; include specific moments from the text that shaped your thinking.",
+      ],
+      P: [
+        "Your response does not yet develop ideas in response to the topic; start by stating one clear impression and explaining it.",
+        "The connection between your writing and the text(s) is unclear; revisit the assignment and anchor your ideas in the text.",
+        "Your ideas need significant development; please see me to talk about strategies for generating and expanding a response.",
+      ],
+    },
+  },
+
+  presentation: {
+    name: "Presentation",
+    blurb: "Voice, stylistic choices, and the unifying or aesthetic effect created in relation to the chosen prose form.",
+    desc: {
+      E:  "Voice is engaging; stylistic choices are precise; the unifying effect is skillfully sustained.",
+      PF: "Voice is distinct; stylistic choices are specific; the unifying effect is capably sustained.",
+      S:  "Voice is apparent; stylistic choices are adequate; the unifying effect is generally sustained.",
+      L:  "Voice is indistinct; stylistic choices are imprecise; the unifying effect is inconsistently sustained.",
+      P:  "Voice is obscured; stylistic choices are ineffective; a unifying effect is absent.",
+    },
+    comments: {
+      E: [
+        "Your voice is engaging and distinctly your own, sustained confidently throughout the response.",
+        "Your stylistic choices — diction, imagery, sentence variety — are precise and create a strong unifying effect.",
+        "The form you chose suits your purpose perfectly and is handled with skill.",
+      ],
+      PF: [
+        "Your voice is clear and distinct, and your stylistic choices effectively serve your purpose.",
+        "The response is unified and purposeful, with style that capably supports your ideas.",
+        "Your chosen form works well; a few more deliberate stylistic touches would make the voice even stronger.",
+      ],
+      S: [
+        "Your voice is apparent but not consistently sustained; aim for more deliberate word choice and sentence variety.",
+        "Your stylistic choices are adequate but conventional; take a few more risks with language.",
+        "The response is generally unified, though some sections feel mechanical rather than purposeful.",
+      ],
+      L: [
+        "Your voice is indistinct and the writing reads as generic; work on letting your own perspective come through.",
+        "Stylistic choices are imprecise and at times work against your purpose.",
+        "The response lacks a unifying effect; reread your draft and cut or connect sections that drift.",
+      ],
+      P: [
+        "Voice and style are not yet evident; focus first on expressing your ideas clearly in complete sentences.",
+        "The form of your response does not suit the assignment; review the prose forms we discussed in class.",
+        "There is little sense of a controlling purpose; let's work together on planning before drafting.",
+      ],
+    },
+  },
+
+  thoughtUnderstanding: {
+    name: "Thought and Understanding",
+    blurb: "Quality of the exploration of the topic and of the ideas and interpretation developed about the literary text(s).",
+    desc: {
+      E:  "Exploration of the topic is insightful; interpretation of the text is perceptive and meaningful.",
+      PF: "Exploration of the topic is purposeful; interpretation is revealing and sensible.",
+      S:  "Exploration of the topic is generalized; interpretation is matter-of-fact and conventional.",
+      L:  "Exploration of the topic is vague; interpretation is incomplete or oversimplified.",
+      P:  "Exploration of the topic is minimal; interpretation is tangential or misreads the text.",
+    },
+    comments: {
+      E: [
+        "Your exploration of the topic is insightful, and your interpretation of the text is perceptive and convincing.",
+        "You demonstrate a sophisticated understanding of the text's ideas and how they illuminate the topic.",
+        "Your thesis is compelling and carefully considered, anchoring a genuinely insightful discussion.",
+      ],
+      PF: [
+        "Your exploration of the topic is purposeful, and your interpretation of the text is sensible and revealing.",
+        "Your thesis is clear and defensible, and your discussion shows sound understanding of the text.",
+        "You handle the ideas of the text competently; pressing further into their implications would add insight.",
+      ],
+      S: [
+        "Your exploration of the topic is generalized; your interpretation is reasonable but stays conventional.",
+        "Your thesis is evident but matter-of-fact; sharpen it into a more precise, debatable claim.",
+        "You show understanding of the surface of the text; dig into what the author is suggesting beneath the events.",
+      ],
+      L: [
+        "Your exploration of the topic is vague, and your interpretation of the text is incomplete or oversimplified.",
+        "The response drifts from the topic; keep your central idea in view in every paragraph.",
+        "Your discussion retells plot rather than interpreting it; every example needs an explanation of its significance.",
+      ],
+      P: [
+        "Your response shows minimal engagement with the topic, and the interpretation misreads the text in important ways.",
+        "A controlling idea is not evident; begin with a one-sentence answer to the prompt and build from there.",
+        "Let's meet to talk through the text together — the central ideas haven't yet come into focus in this response.",
+      ],
+    },
+  },
+
+  supportingEvidence: {
+    name: "Supporting Evidence",
+    blurb: "Selection and quality of evidence from the text(s) and how well it is developed to support the ideas.",
+    desc: {
+      E:  "Evidence is precise, deliberately chosen, and expertly developed to reinforce the student's ideas.",
+      PF: "Evidence is specific, well chosen, and capably developed.",
+      S:  "Evidence is general and relevant but occasionally lacks persuasiveness or development.",
+      L:  "Evidence is imprecise and inconsistently related to the ideas presented.",
+      P:  "Evidence is irrelevant, mistaken, or largely absent.",
+    },
+    comments: {
+      E: [
+        "Your evidence is precise, deliberately chosen, and developed in ways that powerfully reinforce your thesis.",
+        "Quotations and details are seamlessly integrated and always serve your argument.",
+        "You select exactly the right moments from the text and draw everything they offer from them.",
+      ],
+      PF: [
+        "Your evidence is specific and well chosen, and it clearly supports your ideas.",
+        "Quotations are relevant and generally well integrated; tightening the link back to your thesis would strengthen them further.",
+        "Your support is thoughtfully developed; one more layer of analysis after each example would elevate it.",
+      ],
+      S: [
+        "Your evidence is relevant but general; choose more specific moments and quotations from the text.",
+        "Examples are present but not always developed — explain how each one proves your point.",
+        "Some evidence feels chosen for convenience rather than persuasiveness; be more selective.",
+      ],
+      L: [
+        "Evidence is scant or imprecise, leaving your ideas unsupported; aim for at least two developed examples per body paragraph.",
+        "The connection between your evidence and your thesis is inconsistent; check that every example actually supports your claim.",
+        "Quotations appear without context or explanation; introduce them and then unpack them.",
+      ],
+      P: [
+        "Evidence is largely absent or unrelated to the ideas presented; review how to select and embed textual support.",
+        "Details referenced are inaccurate to the text; reread the relevant sections before revising.",
+        "Your response asserts opinions without support; every claim needs evidence from the text.",
+      ],
+    },
+  },
+
+  formStructure: {
+    name: "Form and Structure",
+    blurb: "Arrangement, coherence, and unifying effect of the response — how its shape contributes to the controlling idea.",
+    desc: {
+      E:  "Arrangement is judicious; a fluent, unifying effect is created and skillfully sustained.",
+      PF: "Arrangement is purposeful and clear; the unifying effect is capably sustained.",
+      S:  "Arrangement is generally clear and functional, though at times mechanical.",
+      L:  "Arrangement is discernible but ineffectively sustained; digressions weaken the response.",
+      P:  "Arrangement is haphazard; the development of the response is obscure.",
+    },
+    comments: {
+      E: [
+        "Your organization is judicious and coherent, guiding the reader effortlessly from introduction to conclusion.",
+        "Paragraphs are arranged purposefully, and transitions create a fluent, unified whole.",
+        "The structure of your essay itself strengthens your argument — each section builds on the last.",
+      ],
+      PF: [
+        "Your organization is purposeful and clear, with effective paragraphing and transitions.",
+        "The essay moves logically from point to point; a stronger concluding synthesis would complete the arc.",
+        "Your structure capably serves your argument, with a clear beginning, development, and end.",
+      ],
+      S: [
+        "Your organization is generally clear but mechanical; vary your transitions and paragraph openings.",
+        "The essay's shape is functional, though some paragraphs blur together — aim for one controlling idea per paragraph.",
+        "Your introduction and conclusion are serviceable but formulaic; make them do more work for your argument.",
+      ],
+      L: [
+        "The structure is difficult to follow; use a brief outline before drafting to keep your development focused.",
+        "Paragraphs shift between ideas without clear connections; add transitions that show relationships.",
+        "Digressions interrupt your development; cut material that doesn't advance your thesis.",
+      ],
+      P: [
+        "The response lacks discernible organization; let's review essay structure — thesis, body paragraphs, conclusion — together.",
+        "Ideas appear in an order that obscures your meaning; reorganize around your strongest points.",
+        "Paragraphing is absent or arbitrary, which makes the response hard to follow.",
+      ],
+    },
+  },
+
+  mattersOfChoice: {
+    name: "Matters of Choice",
+    blurb: "Diction, syntax, and stylistic choices, and the effectiveness and sophistication of the voice created.",
+    desc: {
+      E:  "Diction is precise; syntax is effective and polished; an accomplished voice is created.",
+      PF: "Diction is specific; syntax is generally effective; a capable voice is created.",
+      S:  "Diction is adequate but general; syntax is straightforward; a functional voice is created.",
+      L:  "Diction is imprecise; syntax is frequently awkward; the voice is ineffective.",
+      P:  "Diction is inaccurate; syntax is uncontrolled; no effective voice is created.",
+    },
+    comments: {
+      E: [
+        "Your diction is precise and your syntax polished — the writing has a confident, accomplished voice.",
+        "Stylistic choices consistently enhance meaning, and sentence variety keeps the analysis engaging.",
+        "You choose words with evident care, and the effect is sophisticated and effective.",
+      ],
+      PF: [
+        "Your word choice is specific and your sentences controlled, creating a capable, clear style.",
+        "Stylistic choices generally serve your purpose well; aim for even more precision in key analytical moments.",
+        "Your writing voice is effective; varying sentence openings would add further polish.",
+      ],
+      S: [
+        "Word choice is adequate but general; replace vague terms ('good,' 'interesting,' 'things') with precise alternatives.",
+        "Sentences are clear but repetitive in structure; combine and vary them for better flow.",
+        "Your style is functional; building a stronger analytical vocabulary will sharpen it.",
+      ],
+      L: [
+        "Imprecise word choice frequently blurs your meaning; slow down and choose words that say exactly what you intend.",
+        "Awkward sentence constructions interfere with your ideas; read your work aloud when revising.",
+        "The level of language is at times too informal for an analytical essay.",
+      ],
+      P: [
+        "Word choice and sentence construction obscure meaning throughout; let's work on sentence-level revision strategies.",
+        "The language used does not yet suit academic writing; we'll build strategies for formal expression together.",
+        "Meaning is frequently lost at the sentence level; revise with a focus on one clear idea per sentence.",
+      ],
+    },
+  },
+
+  mattersOfCorrectness: {
+    name: "Matters of Correctness",
+    blurb: "Control of sentence construction, grammar, and mechanics, considering the complexity attempted.",
+    desc: {
+      E:  "Control is confident; errors, if present, are inconsequential.",
+      PF: "Control is competent; occasional minor errors do not impede meaning.",
+      S:  "Basic control is demonstrated; errors occasionally impede meaning.",
+      L:  "Control falters; frequent errors hamper communication.",
+      P:  "Control is lacking; errors severely impede communication.",
+    },
+    comments: {
+      E: [
+        "Your control of grammar, mechanics, and sentence construction is confident; any errors are inconsequential.",
+        "The writing is technically polished, allowing your ideas to come through without distraction.",
+        "Sentence construction is consistently correct, even in complex constructions.",
+      ],
+      PF: [
+        "Your control of correctness is competent; minor errors do not impede meaning.",
+        "Grammar and mechanics are generally strong; a final proofread would catch the few slips that remain.",
+        "Complex sentences are handled well, with only occasional minor errors.",
+      ],
+      S: [
+        "Basic control of grammar and mechanics is evident, but errors occasionally distract from your ideas.",
+        "Watch your recurring errors — targeted proofreading against a personal checklist will address them.",
+        "Errors increase when your sentences grow complex; check each long sentence for completeness.",
+      ],
+      L: [
+        "Frequent errors in grammar and mechanics hamper communication; build and use a personal editing checklist.",
+        "Sentence errors — fragments and run-ons — appear regularly; review sentence boundaries.",
+        "Proofreading was not evident in this draft; build revision time into your writing process.",
+      ],
+      P: [
+        "Errors are so frequent that meaning is often lost; let's set up a regular editing routine together.",
+        "Fundamental issues with sentence construction need attention before style; we'll start with sentence-combining practice.",
+        "The response needs systematic editing support; please see me to plan next steps.",
+      ],
+    },
+  },
+
+  thoughtSupport: {
+    name: "Thought and Support",
+    blurb: "Quality of the ideas developed in response to the task and the selection and development of supporting details.",
+    desc: {
+      E:  "Ideas are perceptive and carefully considered; supporting details are apt, specific, and convincing.",
+      PF: "Ideas are thoughtful; supporting details are specific and relevant.",
+      S:  "Ideas are appropriate but general; supporting details are relevant but unevenly developed.",
+      L:  "Ideas are vague or underdeveloped; supporting details are scant or only loosely related.",
+      P:  "Ideas are minimal or unrelated to the task; supporting details are absent or irrelevant.",
+    },
+    comments: {
+      E: [
+        "Your ideas are perceptive and well considered, and your supporting details are specific and convincing.",
+        "You establish a clear, thoughtful focus and sustain it with apt, well-developed support.",
+        "The connection between your ideas and the text is precise and insightful throughout.",
+      ],
+      PF: [
+        "Your ideas are thoughtful and your supporting details specific and relevant.",
+        "Your focus is clear and your support sound; developing key examples further would add depth.",
+        "You demonstrate a solid understanding, with details that effectively reinforce your ideas.",
+      ],
+      S: [
+        "Your ideas are appropriate but general; support them with more specific details from the text.",
+        "Your focus is evident but support is uneven — some points are developed while others are only mentioned.",
+        "You show understanding of the text; now push your ideas beyond summary into explanation.",
+      ],
+      L: [
+        "Your ideas are vague or underdeveloped, and support is scant or only loosely related.",
+        "The response leans on retelling; select details because they prove your point, not just because they happened.",
+        "Your central idea gets lost; restate it in each paragraph's opening sentence as you revise.",
+      ],
+      P: [
+        "Ideas and support are minimal or unrelated to the assignment; let's rebuild this response from one clear central idea.",
+        "The response shows little engagement with the text; a re-read with guided questions will help before revising.",
+        "Support is absent; every idea you state needs at least one specific detail behind it.",
+      ],
+    },
+  },
+
+  writingSkills: {
+    name: "Writing Skills",
+    blurb: "Structure and format for the audience and purpose, and control of sentence construction, grammar, and mechanics.",
+    desc: {
+      E:  "Writing is fluent and effectively structured for the task; control is confident; errors are inconsequential.",
+      PF: "Writing is clearly organized and controlled; minor errors do not impede meaning.",
+      S:  "Writing is adequately organized; errors occasionally distract the reader.",
+      L:  "Organization is uneven and errors hamper the message.",
+      P:  "Organization and correctness severely impede the message.",
+    },
+    comments: {
+      E: [
+        "Your writing is fluent and effectively structured for the audience and purpose of the task.",
+        "Control of sentence construction, grammar, and mechanics is confident; errors, if any, are inconsequential.",
+        "Your tone is exactly right for the context, and the writing reads smoothly throughout.",
+      ],
+      PF: [
+        "Your writing is clearly organized and controlled, with a tone appropriate to the task.",
+        "Minor errors appear but never interfere with your message.",
+        "The structure suits the format well; a final polish would make it shine.",
+      ],
+      S: [
+        "Your writing is adequately organized, though errors occasionally distract the reader.",
+        "The tone is generally appropriate but slips in places; keep your audience in mind throughout.",
+        "Paragraphing and format are functional; tightening organization would improve clarity.",
+      ],
+      L: [
+        "Errors and uneven organization hamper your message; revise with your reader's needs in mind.",
+        "The format of the task is only partially followed; review the expected structure.",
+        "Frequent sentence-level errors interrupt the reader; build in proofreading time.",
+      ],
+      P: [
+        "Organization and correctness need significant work before the writing communicates clearly; let's plan a revision together.",
+        "The response does not yet follow the required format; we'll review models of this form in class.",
+        "Errors severely impede the message; we'll target one or two error patterns at a time.",
+      ],
+    },
+  },
+
+  /* ---------------- Social Studies ---------------- */
+
+  interpretationOfSources: {
+    name: "Interpretation of Sources",
+    blurb: "Accuracy and depth of the interpretation of each source's perspective and its links to course concepts and ideologies.",
+    desc: {
+      E:  "Interpretation is sophisticated, insightful, and precise, with perceptive links to course concepts.",
+      PF: "Interpretation is logical, specific, and adept, with sound links to course concepts.",
+      S:  "Interpretation is generally accurate but straightforward; links to course concepts are general.",
+      L:  "Interpretation is incomplete or confuses the perspective(s); links to course concepts are vague.",
+      P:  "Interpretation misreads the source(s); links to course concepts are missing.",
+    },
+    comments: {
+      E: [
+        "Your interpretation of the source(s) is insightful and precise, showing a perceptive understanding of the perspective(s) presented.",
+        "You accurately identify the ideological perspective of each source and explain it with sophistication.",
+        "The links you draw between the source(s) and course concepts are perceptive and well developed.",
+      ],
+      PF: [
+        "Your interpretation of the source(s) is logical and specific, showing a sound understanding of the perspective(s).",
+        "You correctly identify the perspectives and connect them clearly to course concepts.",
+        "Your analysis is adept; extending the implications of each perspective would add further insight.",
+      ],
+      S: [
+        "Your interpretation is generally accurate but stays on the surface; explain not just what the source says, but the ideology behind it.",
+        "You identify the main idea of the source(s), but the links to course concepts are general; name specific ideas, thinkers, or examples.",
+        "Your understanding is acceptable but straightforward; consider the source author's assumptions and intent.",
+      ],
+      L: [
+        "Your interpretation is incomplete or confuses the perspective(s) presented; revisit the source(s) and identify the position of each.",
+        "Links to course concepts are vague or missing; anchor your interpretation in specific ideological principles.",
+        "The response describes the source(s) without interpreting them; move from description to analysis.",
+      ],
+      P: [
+        "The interpretation misreads the source(s) in fundamental ways; let's review strategies for decoding sources together.",
+        "The response shows minimal understanding of the perspective(s); we'll practise with similar sources in class.",
+        "Course concepts are absent from the interpretation; review the key ideologies before revising.",
+      ],
+    },
+  },
+
+  commSocial: {
+    name: "Communication",
+    blurb: "Organization of the writing, vocabulary (including social studies terminology), and control of mechanics and grammar.",
+    desc: {
+      E:  "Writing is fluent and skillfully organized; vocabulary is precise; control of mechanics is sophisticated.",
+      PF: "Writing is clear and purposefully organized; vocabulary is appropriate; minor errors do not impede meaning.",
+      S:  "Writing is generally clear but conventionally organized; vocabulary is adequate; errors occasionally distract.",
+      L:  "Organization is unclear; vocabulary is imprecise; frequent errors hamper communication.",
+      P:  "Organization is lacking; errors severely impede communication.",
+    },
+    comments: {
+      E: [
+        "Your writing is fluent and skillfully organized, with precise vocabulary and confident control of grammar and mechanics.",
+        "Social studies terminology is used accurately and deliberately throughout.",
+        "Errors, if present, are rare and never interfere with your meaning.",
+      ],
+      PF: [
+        "Your writing is clear and purposefully organized, with appropriate vocabulary and capable control of mechanics.",
+        "Minor errors do not impede communication; a final proofread would polish the response.",
+        "You use course vocabulary appropriately; pushing for even more precise terminology would strengthen the response.",
+      ],
+      S: [
+        "Your writing is generally clear but conventionally organized; errors occasionally distract from your ideas.",
+        "Vocabulary is adequate but general; incorporate more specific social studies terminology.",
+        "Organization is functional but mechanical; use transitions to show how your ideas connect.",
+      ],
+      L: [
+        "Unclear organization and frequent errors hamper your message; outline before writing and proofread after.",
+        "Vocabulary is imprecise for academic writing; build course terms into your revision.",
+        "Sentence errors regularly interrupt meaning; review sentence boundaries and agreement.",
+      ],
+      P: [
+        "Communication breaks down frequently; let's work on organization and sentence control step by step.",
+        "The response is very difficult to follow; we'll practise paragraph structure together.",
+        "Errors severely impede meaning; targeted editing practice is the next step.",
+      ],
+    },
+  },
+
+  analysisOfSource: {
+    name: "Analysis of Source",
+    blurb: "Understanding of the source's perspective and how effectively it is addressed in developing the position. Note: on the diploma rubric, a Limited or Poor score here caps the other categories at Satisfactory.",
+    desc: {
+      E:  "Analysis of the source's perspective is perceptive and convincingly tied to the position taken.",
+      PF: "Analysis of the source's perspective is sound and clearly connected to the position.",
+      S:  "The source's general perspective is identified but its assumptions and implications are not explored.",
+      L:  "The source's perspective is only partially or inaccurately identified.",
+      P:  "The source's perspective is misidentified or ignored.",
+    },
+    comments: {
+      E: [
+        "Your analysis of the source is perceptive — you accurately identify its perspective and engage with it convincingly in developing your position.",
+        "You address the source's ideological assumptions with sophistication and use them to frame your own argument.",
+        "The relationship between the source and your position is explored with insight and precision.",
+      ],
+      PF: [
+        "Your analysis of the source is sound — the perspective is correctly identified and clearly connected to your position.",
+        "You engage with the source's perspective purposefully; probing its assumptions further would deepen the analysis.",
+        "The source is well integrated into your argument rather than treated as an afterthought.",
+      ],
+      S: [
+        "Your analysis identifies the source's general perspective but doesn't explore its assumptions or implications.",
+        "The source is addressed early but then set aside; keep it in conversation with your argument throughout.",
+        "Your reading of the source is acceptable but conventional; consider what the author values and rejects.",
+      ],
+      L: [
+        "The source's perspective is only partially or inaccurately identified, which weakens the foundation of your paper.",
+        "The response mentions the source without analyzing it; explain its position before responding to it.",
+        "On the diploma rubric, a Limited source analysis caps the other categories — this is the highest-leverage area to improve.",
+      ],
+      P: [
+        "The source's perspective is misidentified or ignored; let's review how to unpack a source before your next draft.",
+        "There is no discernible engagement with the source; this assignment requires your position to respond to it.",
+        "We'll practise source-decoding strategies together — this is the foundation the rest of the paper builds on.",
+      ],
+    },
+  },
+
+  argumentation: {
+    name: "Argumentation",
+    blurb: "Clarity of the position taken and the logic, consistency, and persuasiveness of the arguments developed to defend it.",
+    desc: {
+      E:  "The position is clearly established and defended through compelling, logically developed arguments.",
+      PF: "The position is clear; arguments are logical and capably developed.",
+      S:  "The position is evident but arguments are general and unevenly developed.",
+      L:  "The position is unclear or inconsistently maintained; arguments are asserted rather than developed.",
+      P:  "A position is not discernible; reasoning is absent or contradictory.",
+    },
+    comments: {
+      E: [
+        "Your position is clearly established and defended through compelling, logically developed arguments.",
+        "Your reasoning is consistent and persuasive, and you address complexities and counter-perspectives with confidence.",
+        "The argument builds purposefully — each paragraph advances your position.",
+      ],
+      PF: [
+        "Your position is clear and your arguments are logical and capably developed.",
+        "Your reasoning is sound; acknowledging and rebutting an opposing view would add persuasive power.",
+        "Arguments are purposeful and well organized; sharpening the link between each argument and your thesis would strengthen them.",
+      ],
+      S: [
+        "Your position is evident but your arguments are general and unevenly developed.",
+        "Reasoning is straightforward but sometimes circular — make sure each argument adds something new.",
+        "The position wavers in places; take a side and defend it consistently.",
+      ],
+      L: [
+        "Your position is unclear or inconsistently maintained; state it explicitly in your introduction and return to it.",
+        "Arguments are asserted rather than developed; each claim needs reasoning and support behind it.",
+        "The response describes the issue rather than arguing a position on it.",
+      ],
+      P: [
+        "A position is not discernible; begin by answering the question in a single sentence — that becomes your thesis.",
+        "The response does not yet construct arguments; let's review the claim–reason–evidence structure together.",
+        "Reasoning is absent or contradictory; we'll work on building one solid argument at a time.",
+      ],
+    },
+  },
+
+  evidence: {
+    name: "Evidence",
+    blurb: "Relevance, accuracy, specificity, and development of the evidence used to support the arguments.",
+    desc: {
+      E:  "Evidence is relevant, accurate, and detailed, reflecting a comprehensive command of course content.",
+      PF: "Evidence is relevant and accurate, and clearly supports the arguments.",
+      S:  "Evidence is generally relevant but lacks specific detail or full development.",
+      L:  "Evidence is scant, generic, or contains significant inaccuracies.",
+      P:  "Evidence is largely absent, inaccurate, or unrelated to the arguments.",
+    },
+    comments: {
+      E: [
+        "Your evidence is relevant, accurate, and detailed, drawn from a strong command of course content.",
+        "Examples are deliberately chosen and fully developed, giving your arguments real persuasive weight.",
+        "You synthesize evidence from multiple contexts, showing comprehensive understanding.",
+      ],
+      PF: [
+        "Your evidence is relevant and accurate, and it clearly supports your arguments.",
+        "Examples are appropriate and generally well developed; adding specific details — dates, figures, outcomes — would strengthen them.",
+        "You demonstrate solid command of course content; one more well-developed example would round out the case.",
+      ],
+      S: [
+        "Your evidence is generally relevant but lacks specific detail; name events, policies, and people precisely.",
+        "Examples are mentioned but not developed — explain how each one supports your argument.",
+        "Some evidence contains inaccuracies; verify facts against your notes before submitting.",
+      ],
+      L: [
+        "Evidence is scant or only loosely connected to your arguments; each argument needs at least one developed, accurate example.",
+        "Significant factual errors undermine the response; review the relevant course content.",
+        "The evidence presented is generic; this paper requires specific knowledge from the course.",
+      ],
+      P: [
+        "Evidence is largely absent or inaccurate; let's identify two or three usable examples from the course together.",
+        "The response relies on opinion without factual support; review your notes on the relevant units.",
+        "The examples given do not relate to the arguments; choose evidence after you've stated each claim.",
+      ],
+    },
+  },
+
+  defenseOfPosition: {
+    name: "Defence of Position",
+    blurb: "Clarity of the position and the quality of the arguments and evidence used to defend it.",
+    desc: {
+      E:  "The position is convincingly defended; arguments are clear and evidence is specific and accurate.",
+      PF: "The position is clearly stated and capably defended with relevant arguments and evidence.",
+      S:  "The position is stated but the defence is general; evidence is relevant but thin.",
+      L:  "The position is unclear or weakly defended; evidence contains errors or doesn't connect.",
+      P:  "A position and supporting case are not evident.",
+    },
+    comments: {
+      E: [
+        "Your position is convincingly defended through clear arguments and specific, accurate evidence.",
+        "Your reasoning is persuasive and your examples are well chosen and fully explained.",
+        "The case you build is coherent from introduction to conclusion.",
+      ],
+      PF: [
+        "Your position is clearly stated and capably defended with relevant arguments and evidence.",
+        "Your examples are appropriate and mostly well developed; adding specific detail would increase their impact.",
+        "The defence is logical and consistent; addressing one opposing idea would make it even stronger.",
+      ],
+      S: [
+        "Your position is stated, but the defence is general; develop your arguments with more specific evidence.",
+        "Examples are relevant but thin — explain how each one supports your position.",
+        "Stay on one side of the issue; the response shifts position partway through.",
+      ],
+      L: [
+        "Your position is unclear or weakly defended; state it plainly and give at least two supported reasons.",
+        "Evidence contains errors or doesn't connect to your arguments; review the related course material.",
+        "The response describes the topic instead of arguing a position; answer the question directly.",
+      ],
+      P: [
+        "A position and supporting case are not yet evident; let's build a simple claim-and-reasons outline together.",
+        "The response does not address the assigned issue; reread the prompt and identify what is being asked.",
+        "Arguments and evidence are absent; we'll start with one argument and one example and build from there.",
+      ],
+    },
+  },
+
+  qualityLanguage: {
+    name: "Quality of Language and Expression",
+    blurb: "Fluency and organization of the writing, vocabulary, and control of sentence construction, grammar, and mechanics.",
+    desc: {
+      E:  "Writing is fluent and effectively organized; vocabulary is precise; errors are inconsequential.",
+      PF: "Writing is clearly organized and controlled; minor errors do not impede meaning.",
+      S:  "Writing is adequately organized; general vocabulary and occasional errors blunt its effect.",
+      L:  "Organization is uneven; frequent errors hamper the message.",
+      P:  "Errors and disorganization severely impede the response.",
+    },
+    comments: {
+      E: [
+        "Your writing is fluent and effectively organized, with precise vocabulary and confident control of sentence construction.",
+        "Errors, if present, are inconsequential and never interfere with meaning.",
+        "Your style and tone are well suited to persuasive writing.",
+      ],
+      PF: [
+        "Your writing is clearly organized and controlled, with appropriate vocabulary; minor errors do not impede meaning.",
+        "Sentences are varied and generally polished; a final proofread would remove the few remaining slips.",
+        "The tone is appropriately persuasive and consistent throughout.",
+      ],
+      S: [
+        "Your writing is adequately organized, but general vocabulary and occasional errors blunt its effect.",
+        "Errors sometimes distract the reader; build proofreading into your process.",
+        "Organization is functional; clearer transitions would strengthen the flow of your argument.",
+      ],
+      L: [
+        "Uneven organization and frequent errors hamper your message; revise paragraph by paragraph.",
+        "Sentence errors regularly interrupt the reader; review fragments and run-ons.",
+        "Vocabulary is too informal or imprecise for the task; aim for clear, specific academic language.",
+      ],
+      P: [
+        "Errors and disorganization severely impede the response; let's set a revision plan with one focus at a time.",
+        "Meaning is frequently lost at the sentence level; we'll practise sentence construction together.",
+        "The writing needs foundational editing support; please see me to plan next steps.",
+      ],
+    },
+  },
+};
+
+/* Assignments per subject and stream. The same rubric structure is used at
+   the 10 / 20 / 30 levels (adapted from the Grade 12 scoring guides). */
+const COMMENT_DATA = {
+  ELA: {
+    label: "English Language Arts",
+    sub: "Personal, creative, and critical/analytical responses to texts",
+    streams: {
+      "-1": [
+        {
+          id: "pr1", name: "Personal Response to Texts",
+          sub: "Personal/creative response exploring the assignment topic in relation to the text(s).",
+          cats: [
+            { key: "ideasImpressions", weight: 1 },
+            { key: "presentation", weight: 1 },
+          ],
+        },
+        {
+          id: "ca1", name: "Critical/Analytical Response to Literary Texts",
+          sub: "Analytical essay discussing how a literary text develops the assignment topic.",
+          cats: [
+            { key: "thoughtUnderstanding", weight: 1.5 },
+            { key: "supportingEvidence", weight: 1.5 },
+            { key: "formStructure", weight: 1 },
+            { key: "mattersOfChoice", weight: 1 },
+            { key: "mattersOfCorrectness", weight: 1 },
+          ],
+        },
+      ],
+      "-2": [
+        {
+          id: "vr2", name: "Visual Reflection",
+          sub: "Reflective response to a visual text, exploring ideas and impressions it suggests.",
+          cats: [
+            { key: "ideasImpressions", weight: 1 },
+            { key: "presentation", weight: 1 },
+          ],
+        },
+        {
+          id: "le2", name: "Literary Exploration",
+          sub: "Essay exploring the assignment topic in relation to a literary text.",
+          cats: [
+            { key: "thoughtSupport", weight: 1.5 },
+            { key: "formStructure", weight: 1 },
+            { key: "mattersOfChoice", weight: 1 },
+            { key: "mattersOfCorrectness", weight: 1 },
+          ],
+        },
+        {
+          id: "pw2", name: "Persuasive Writing in Context",
+          sub: "Functional persuasive writing for a specified audience, purpose, and format.",
+          cats: [
+            { key: "thoughtSupport", weight: 1 },
+            { key: "writingSkills", weight: 1 },
+          ],
+        },
+      ],
+    },
+  },
+  SS: {
+    label: "Social Studies",
+    sub: "Source interpretation and position/persuasive writing",
+    streams: {
+      "-1": [
+        {
+          id: "si1", name: "Source Interpretation (Assignment I)",
+          sub: "Interpretation of source perspectives and their links to course concepts.",
+          cats: [
+            { key: "interpretationOfSources", weight: 3 },
+            { key: "commSocial", weight: 1 },
+          ],
+        },
+        {
+          id: "pp1", name: "Position Paper (Assignment II)",
+          sub: "Essay defending a position on an issue while addressing the perspective in the source.",
+          cats: [
+            { key: "analysisOfSource", weight: 1 },
+            { key: "argumentation", weight: 1 },
+            { key: "evidence", weight: 1 },
+            { key: "commSocial", weight: 1 },
+          ],
+        },
+      ],
+      "-2": [
+        {
+          id: "si2", name: "Source Interpretation (Assignment I)",
+          sub: "Interpretation of source perspectives and their links to course concepts.",
+          cats: [
+            { key: "interpretationOfSources", weight: 3 },
+            { key: "commSocial", weight: 1 },
+          ],
+        },
+        {
+          id: "pw2", name: "Persuasive Writing (Assignment II)",
+          sub: "Persuasive essay defending a position on the assigned issue.",
+          cats: [
+            { key: "defenseOfPosition", weight: 1 },
+            { key: "qualityLanguage", weight: 1 },
+          ],
+        },
+      ],
+    },
+  },
+};
+
+/* =====================================================================
+   APP STATE + NAVIGATION
+   ===================================================================== */
+
+const STEPS = ["Subject", "Course", "Assignment", "Criteria", "Comments", "Summary"];
+const STORAGE_KEY = "essayFeedbackState_v1";
+
+let state = blankState();
+
+function blankState() {
+  return {
+    step: 0,
+    subject: null,       // 'ELA' | 'SS'
+    grade: null,         // '10' | '20' | '30'
+    stream: null,        // '-1' | '-2'
+    assignmentId: null,
+    student: "",
+    levels: {},          // catKey -> level key
+    comments: {},        // catKey -> [chosen comment strings]
+  };
+}
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+function restore() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && typeof s.step === "number") state = Object.assign(blankState(), s);
+    }
+  } catch (e) {}
+}
+
+function currentAssignment() {
+  if (!state.subject || !state.stream || !state.assignmentId) return null;
+  return COMMENT_DATA[state.subject].streams[state.stream]
+    .find(a => a.id === state.assignmentId) || null;
+}
+function courseName() {
+  if (!state.subject || !state.grade) return "";
+  const base = state.subject === "ELA" ? "ELA" : "Social Studies";
+  return base + " " + state.grade + state.stream;
+}
+
+function go(step) { state.step = step; save(); render(); window.scrollTo(0, 0); }
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+/* =====================================================================
+   RENDERING
+   ===================================================================== */
+
+function render() {
+  renderStepper();
+  renderCrumbs();
+  const app = document.getElementById("app");
+  switch (state.step) {
+    case 0: app.innerHTML = viewSubject(); break;
+    case 1: app.innerHTML = viewCourse(); break;
+    case 2: app.innerHTML = viewAssignment(); break;
+    case 3: app.innerHTML = viewCriteria(); break;
+    case 4: app.innerHTML = viewComments(); break;
+    case 5: app.innerHTML = viewSummary(); break;
+  }
+}
+
+function renderStepper() {
+  document.getElementById("stepper").innerHTML = STEPS.map((s, i) => {
+    const cls = i === state.step ? "active" : (i < state.step ? "done" : "");
+    return `<div class="step-dot ${cls}">${i + 1}. ${s}</div>`;
+  }).join("");
+}
+
+function renderCrumbs() {
+  const bits = [];
+  if (state.subject) bits.push(COMMENT_DATA[state.subject].label);
+  if (state.grade) bits.push(state.grade + state.stream);
+  const a = currentAssignment();
+  if (a) bits.push(a.name);
+  if (state.student) bits.push("Student: " + state.student);
+  document.getElementById("crumbs").innerHTML =
+    bits.map(b => `<span class="crumb">${esc(b)}</span>`).join("");
+}
+
+/* ---- Step 1: Subject ---- */
+function viewSubject() {
+  return `
+  <div class="panel">
+    <h2>Step 1 — Choose the subject</h2>
+    <p class="hint">Which course is this assessment for?</p>
+    <div class="choice-grid">
+      ${Object.entries(COMMENT_DATA).map(([key, s]) => `
+        <button class="choice-btn" onclick="pickSubject('${key}')">
+          <span class="big">${s.label}</span>
+          <span class="sub">${s.sub}</span>
+        </button>`).join("")}
+    </div>
+  </div>`;
+}
+function pickSubject(key) {
+  if (state.subject !== key) {
+    state.grade = null; state.stream = null; state.assignmentId = null;
+    state.levels = {}; state.comments = {};
+  }
+  state.subject = key;
+  go(1);
+}
+
+/* ---- Step 2: Course (grade + stream) ---- */
+function viewCourse() {
+  const courses = [];
+  for (const g of ["10", "20", "30"]) for (const st of ["-1", "-2"]) courses.push([g, st]);
+  return `
+  <div class="panel">
+    <h2>Step 2 — Choose the course level</h2>
+    <p class="hint">Grade (10 / 20 / 30) and stream (-1 / -2) for ${esc(COMMENT_DATA[state.subject].label)}.</p>
+    <div class="course-grid">
+      ${courses.map(([g, st]) => `
+        <button class="choice-btn" onclick="pickCourse('${g}','${st}')">
+          <span class="big">${g}${st}</span>
+          <span class="sub">${st === "-1" ? "Academic stream" : "Applied stream"}</span>
+        </button>`).join("")}
+    </div>
+    <div class="nav-row"><button class="btn btn-ghost" onclick="go(0)">&larr; Back</button><span></span></div>
+  </div>`;
+}
+function pickCourse(grade, stream) {
+  if (state.stream !== stream) { state.assignmentId = null; state.levels = {}; state.comments = {}; }
+  state.grade = grade; state.stream = stream;
+  go(2);
+}
+
+/* ---- Step 3: Assignment ---- */
+function viewAssignment() {
+  const list = COMMENT_DATA[state.subject].streams[state.stream];
+  return `
+  <div class="panel">
+    <h2>Step 3 — Choose the writing assignment</h2>
+    <p class="hint">Assignments for ${esc(courseName())}. Rubrics are adapted from the diploma scoring guides.</p>
+    <div class="choice-grid">
+      ${list.map(a => `
+        <button class="choice-btn" onclick="pickAssignment('${a.id}')">
+          <span class="big">${esc(a.name)}</span>
+          <span class="sub">${esc(a.sub)}<br><em>Criteria: ${a.cats.map(c => CATEGORIES[c.key].name).join(" · ")}</em></span>
+        </button>`).join("")}
+    </div>
+    <div class="nav-row"><button class="btn btn-ghost" onclick="go(1)">&larr; Back</button><span></span></div>
+  </div>`;
+}
+function pickAssignment(id) {
+  if (state.assignmentId !== id) { state.levels = {}; state.comments = {}; }
+  state.assignmentId = id;
+  go(3);
+}
+
+/* ---- Step 4: Criteria descriptors ---- */
+function viewCriteria() {
+  const a = currentAssignment();
+  return `
+  <div class="panel">
+    <h2>Step 4 — Score each criterion</h2>
+    <p class="hint">${esc(courseName())} · ${esc(a.name)}. Choose the descriptor that best matches the student's writing.</p>
+    <div class="field">
+      <label for="studentName">Student name (optional — appears on the summary)</label>
+      <input type="text" id="studentName" value="${esc(state.student)}"
+             oninput="state.student = this.value; save(); renderCrumbs();" placeholder="e.g. Jordan M." />
+    </div>
+    ${a.cats.map(c => {
+      const cat = CATEGORIES[c.key];
+      const sel = state.levels[c.key] || "";
+      return `
+      <div class="crit-block">
+        <h3>${esc(cat.name)}${sel ? levelBadge(sel) : ""}</h3>
+        <p class="crit-desc">${esc(cat.blurb)}</p>
+        <select onchange="pickLevel('${c.key}', this.value)">
+          <option value="">— Select a descriptor —</option>
+          ${LEVELS.map(l => {
+            const text = l.key === "INS"
+              ? "Insufficient — too brief to assess, or no attempt to address the assignment"
+              : `${l.name} (${l.score}) — ${cat.desc[l.key]}`;
+            return `<option value="${l.key}" ${sel === l.key ? "selected" : ""}>${esc(text)}</option>`;
+          }).join("")}
+        </select>
+      </div>`;
+    }).join("")}
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="go(2)">&larr; Back</button>
+      <button class="btn btn-primary" id="toComments" onclick="goComments()"
+        ${a.cats.every(c => state.levels[c.key]) ? "" : "disabled"}>Choose comments &rarr;</button>
+    </div>
+  </div>`;
+}
+function levelBadge(key) {
+  const l = LEVEL_BY_KEY[key];
+  return `<span class="level-badge lv-${key}">${l.name}</span>`;
+}
+function pickLevel(catKey, value) {
+  if (value) state.levels[catKey] = value; else delete state.levels[catKey];
+  // Comments chosen for a different level no longer apply
+  delete state.comments[catKey];
+  save();
+  render();
+}
+function goComments() {
+  const a = currentAssignment();
+  if (a.cats.every(c => state.levels[c.key])) go(4);
+}
+
+/* ---- Step 5: Comments ---- */
+function viewComments() {
+  const a = currentAssignment();
+  return `
+  <div class="panel">
+    <h2>Step 5 — Build the feedback comments</h2>
+    <p class="hint">Suggestions are matched to the descriptor you chose for each criterion. Add as many as you like, plus your own custom comments.</p>
+    ${a.cats.map(c => {
+      const cat = CATEGORIES[c.key];
+      const lv = state.levels[c.key];
+      const bank = lv === "INS" ? INS_COMMENTS : (cat.comments[lv] || []);
+      const chosen = state.comments[c.key] || [];
+      const remaining = bank.filter(cm => !chosen.includes(cm));
+      return `
+      <div class="crit-block">
+        <h3>${esc(cat.name)}${levelBadge(lv)}</h3>
+        ${chosen.length ? `<ul class="picked-comments">
+          ${chosen.map((cm, i) => `<li><span>${esc(cm)}</span>
+            <button title="Remove" onclick="removeComment('${c.key}', ${i})">&times;</button></li>`).join("")}
+        </ul>` : `<p class="crit-desc">No comments added yet.</p>`}
+        ${remaining.length ? `
+          <select onchange="addComment('${c.key}', this.value); this.selectedIndex = 0;">
+            <option value="">+ Add a suggested comment…</option>
+            ${remaining.map(cm => `<option value="${esc(cm)}">${esc(cm)}</option>`).join("")}
+          </select>` : `<p class="crit-desc"><em>All suggested comments added.</em></p>`}
+        <div class="add-custom">
+          <textarea id="custom-${c.key}" placeholder="Write a custom comment for this criterion…"></textarea>
+          <button class="mini-btn" onclick="addCustom('${c.key}')">Add custom comment</button>
+        </div>
+      </div>`;
+    }).join("")}
+    <div class="nav-row">
+      <button class="btn btn-ghost" onclick="go(3)">&larr; Back</button>
+      <button class="btn btn-primary" onclick="go(5)">View summary &rarr;</button>
+    </div>
+  </div>`;
+}
+function addComment(catKey, text) {
+  if (!text) return;
+  (state.comments[catKey] = state.comments[catKey] || []).push(text);
+  save(); render();
+}
+function addCustom(catKey) {
+  const box = document.getElementById("custom-" + catKey);
+  const text = box.value.trim();
+  if (!text) return;
+  addComment(catKey, text);
+}
+function removeComment(catKey, idx) {
+  state.comments[catKey].splice(idx, 1);
+  save(); render();
+}
+
+/* ---- Step 6: Summary ---- */
+function computeOverall(a) {
+  let got = 0, max = 0;
+  for (const c of a.cats) {
+    const lv = LEVEL_BY_KEY[state.levels[c.key]];
+    got += lv.score * c.weight;
+    max += 5 * c.weight;
+  }
+  return { got, max, pct: Math.round((got / max) * 100) };
+}
+
+function viewSummary() {
+  const a = currentAssignment();
+  const ov = computeOverall(a);
+  const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+  const hasIns = a.cats.some(c => state.levels[c.key] === "INS");
+  return `
+  <div class="panel" id="summaryPanel">
+    <div class="summary-head">
+      <h2>Essay Feedback Summary</h2>
+      <div class="summary-meta">
+        ${state.student ? `<strong>${esc(state.student)}</strong> · ` : ""}${esc(courseName())} ·
+        ${esc(a.name)} · ${esc(today)}
+      </div>
+    </div>
+
+    <table class="score-table">
+      <thead><tr><th>Criterion</th><th>Level</th><th>Score</th></tr></thead>
+      <tbody>
+        ${a.cats.map(c => {
+          const lv = LEVEL_BY_KEY[state.levels[c.key]];
+          return `<tr>
+            <td>${esc(CATEGORIES[c.key].name)}</td>
+            <td>${levelBadge(lv.key)}</td>
+            <td>${lv.key === "INS" ? "INS" : lv.score + " / 5"}</td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+      <tfoot>
+        <tr><td colspan="2">Overall (weighted)</td>
+        <td>${ov.pct}%${hasIns ? " *" : ""}</td></tr>
+      </tfoot>
+    </table>
+    ${hasIns ? `<p class="crit-desc">* One or more criteria were Insufficient and scored as 0.</p>` : ""}
+
+    ${a.cats.map(c => {
+      const list = state.comments[c.key] || [];
+      if (!list.length) return "";
+      return `
+      <div class="summary-cat">
+        <h3>${esc(CATEGORIES[c.key].name)}</h3>
+        <ul>${list.map(cm => `<li>${esc(cm)}</li>`).join("")}</ul>
+      </div>`;
+    }).join("") || `<p class="crit-desc">No comments were selected.</p>`}
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="copySummary()">Copy summary</button>
+      <button class="btn btn-ghost" onclick="window.print()">Print / Save as PDF</button>
+      <button class="btn btn-accent" onclick="nextStudent()">Next student (same assignment)</button>
+      <button class="btn btn-ghost" onclick="startOver()">Start over</button>
+    </div>
+    <div class="nav-row" style="margin-top:14px;">
+      <button class="btn btn-ghost" onclick="go(4)">&larr; Back to comments</button><span></span>
+    </div>
+  </div>`;
+}
+
+function summaryText() {
+  const a = currentAssignment();
+  const ov = computeOverall(a);
+  const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
+  const lines = [];
+  lines.push("ESSAY FEEDBACK SUMMARY");
+  if (state.student) lines.push("Student: " + state.student);
+  lines.push("Course: " + courseName());
+  lines.push("Assignment: " + a.name);
+  lines.push("Date: " + today);
+  lines.push("");
+  lines.push("SCORES");
+  for (const c of a.cats) {
+    const lv = LEVEL_BY_KEY[state.levels[c.key]];
+    lines.push("- " + CATEGORIES[c.key].name + ": " + lv.name +
+      (lv.key === "INS" ? "" : " (" + lv.score + "/5)"));
+  }
+  lines.push("Overall (weighted): " + ov.pct + "%");
+  lines.push("");
+  lines.push("COMMENTS");
+  for (const c of a.cats) {
+    const list = state.comments[c.key] || [];
+    if (!list.length) continue;
+    lines.push(CATEGORIES[c.key].name + ":");
+    for (const cm of list) lines.push("  • " + cm);
+    lines.push("");
+  }
+  return lines.join("\n").trim() + "\n";
+}
+
+function copySummary() {
+  const text = summaryText();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => toast("Summary copied to clipboard"))
+      .catch(() => fallbackCopy(text));
+  } else fallbackCopy(text);
+}
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); toast("Summary copied to clipboard"); }
+  catch (e) { toast("Copy failed — select and copy manually"); }
+  document.body.removeChild(ta);
+}
+
+function nextStudent() {
+  state.student = "";
+  state.levels = {};
+  state.comments = {};
+  go(3);
+  toast("Ready for the next student");
+}
+function startOver() {
+  state = blankState();
+  save();
+  go(0);
+}
+
+restore();
+render();
+</script>
+</body>
+</html>
