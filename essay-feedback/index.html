@@ -1894,6 +1894,69 @@ function esc(s) {
 }
 
 /* =====================================================================
+   GRADE-LEVEL WORDING
+   The comment banks are written at the Grade 12 (diploma) standard. For
+   Grade 10 and 20 we soften general academic vocabulary to a more
+   accessible reading level. Course-content terms (ideological, liberalism,
+   collectivism, etc.) are deliberately left intact. Grade 30 is unchanged.
+   This is display-only: state stores the original text, so switching grade
+   never alters what was scored, and the layer is easy to tune or remove.
+   ===================================================================== */
+const SOFTEN_SHARED = [
+  ["sophisticated", "strong"], ["sophistication", "skill"],
+  ["perceptively", "thoughtfully"], ["perceptive", "thoughtful"],
+  ["insightfully", "thoughtfully"], ["insightful", "thoughtful"],
+  ["nuanced", "balanced"],
+  ["comprehensively", "thoroughly"], ["comprehensive", "thorough"],
+  ["deconstructing", "breaking down"], ["deconstruction", "breakdown"], ["deconstructs", "breaks down"],
+  ["articulating", "expressing"], ["articulate", "express"],
+  ["exceptionally", "very"], ["exceptional", "excellent"],
+  ["judiciously", "carefully"], ["judicious", "careful"],
+  ["cohesive", "well-connected"], ["cohesion", "connection"],
+  ["tangential", "off-topic"],
+  ["superficially", "on the surface"], ["superficial", "surface-level"],
+  ["profoundly", "deeply"], ["profound", "deep"],
+  ["rigorous", "careful"], ["rigour", "care"], ["rigor", "care"],
+  ["pragmatic", "practical"], ["meticulous", "careful"],
+];
+const SUBS_20 = SOFTEN_SHARED.concat([
+  ["conventional", "typical"], ["conventionally", "typically"],
+]);
+const SUBS_10 = SOFTEN_SHARED.concat([
+  ["conventional", "basic"], ["conventionally", "in a basic way"],
+  ["demonstrating", "showing"], ["demonstrates", "shows"], ["demonstrate", "show"],
+  ["utilizing", "using"], ["utilizes", "uses"], ["utilize", "use"],
+  ["incorporating", "including"], ["incorporates", "includes"], ["incorporate", "include"],
+  ["establishing", "setting up"], ["establishes", "sets up"], ["establish", "set up"],
+  ["numerous", "many"], ["frequently", "often"],
+  ["evident", "clear"],
+  ["precisely", "exactly"], ["precise", "exact"], ["precision", "accuracy"],
+  ["contemporary", "modern"], ["straightforward", "simple"],
+  ["generalized", "general"],
+]);
+
+function applySubs(text, subs) {
+  let out = text;
+  for (const [from, to] of subs) {
+    const re = new RegExp("\\b" + from + "\\b", "gi");
+    out = out.replace(re, (m) =>
+      (m[0] === m[0].toUpperCase() && m[0] !== m[0].toLowerCase())
+        ? to.charAt(0).toUpperCase() + to.slice(1)
+        : to);
+  }
+  return out;
+}
+/* Simplify a comment/descriptor for the currently selected grade. */
+function simplify(text) {
+  if (state.grade === "20") return applySubs(text, SUBS_20);
+  if (state.grade === "10") return applySubs(text, SUBS_10);
+  return text;
+}
+/* Simplify then HTML-escape, for display. */
+function sesc(text) { return esc(simplify(text)); }
+
+
+/* =====================================================================
    RENDERING
    ===================================================================== */
 
@@ -2024,13 +2087,13 @@ function viewCriteria() {
       return `
       <div class="crit-block">
         <h3>${esc(cat.name)}${sel ? levelBadge(sel) : ""}</h3>
-        <p class="crit-desc">${esc(cat.blurb)}</p>
+        <p class="crit-desc">${sesc(cat.blurb)}</p>
         <select onchange="pickLevel('${c.key}', this.value)">
           <option value="">— Select a descriptor —</option>
           ${LEVELS.map(l => {
             const text = l.key === "INS"
               ? "Insufficient — too brief to assess, or no attempt to address the assignment"
-              : `${l.name} (${l.score}) — ${cat.desc[l.key]}`;
+              : `${l.name} (${l.score}) — ${simplify(cat.desc[l.key])}`;
             return `<option value="${l.key}" ${sel === l.key ? "selected" : ""}>${esc(text)}</option>`;
           }).join("")}
         </select>
@@ -2087,7 +2150,7 @@ function viewBankComments(c) {
     ${remaining.length ? `
       <select onchange="addComment('${c.key}', this.value); this.selectedIndex = 0;">
         <option value="">+ Add a suggested comment…</option>
-        ${remaining.map(cm => `<option value="${esc(cm)}">${esc(cm)}</option>`).join("")}
+        ${remaining.map(cm => `<option value="${esc(cm)}">${sesc(cm)}</option>`).join("")}
       </select>` : `<p class="crit-desc"><em>All suggested comments added.</em></p>`}
     ${customBox(c.key)}
   </div>`;
@@ -2117,7 +2180,7 @@ function viewFocusComments(c) {
     </select>
     ${matched ? `
       <div style="background:#fcfdff;border:1.5px solid var(--border);border-radius:8px;padding:12px;margin-top:10px;">
-        <p style="font-size:0.9rem;line-height:1.5;">${esc(matched)}</p>
+        <p style="font-size:0.9rem;line-height:1.5;">${sesc(matched)}</p>
         ${alreadyAdded
           ? `<p class="crit-desc" style="margin-top:8px;"><em>Already added.</em></p>`
           : `<button class="mini-btn" onclick="addFocusComment('${c.key}')">Add this comment</button>`}
@@ -2128,7 +2191,7 @@ function viewFocusComments(c) {
 
 function chosenList(catKey, chosen) {
   return chosen.length ? `<ul class="picked-comments">
-    ${chosen.map((cm, i) => `<li><span>${esc(cm)}</span>
+    ${chosen.map((cm, i) => `<li><span>${sesc(cm)}</span>
       <button title="Remove" onclick="removeComment('${catKey}', ${i})">&times;</button></li>`).join("")}
   </ul>` : `<p class="crit-desc">No comments added yet.</p>`;
 }
@@ -2216,7 +2279,7 @@ function viewSummary() {
       return `
       <div class="summary-cat">
         <h3>${esc(CATEGORIES[c.key].name)}</h3>
-        <ul>${list.map(cm => `<li>${esc(cm)}</li>`).join("")}</ul>
+        <ul>${list.map(cm => `<li>${sesc(cm)}</li>`).join("")}</ul>
       </div>`;
     }).join("") || `<p class="crit-desc">No comments were selected.</p>`}
 
@@ -2256,7 +2319,7 @@ function summaryText() {
     const list = state.comments[c.key] || [];
     if (!list.length) continue;
     lines.push(CATEGORIES[c.key].name + ":");
-    for (const cm of list) lines.push("  • " + cm);
+    for (const cm of list) lines.push("  • " + simplify(cm));
     lines.push("");
   }
   return lines.join("\n").trim() + "\n";
