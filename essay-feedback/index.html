@@ -665,6 +665,67 @@ const CATEGORIES = {
     },
   },
 
+  /* SS 30-1 Assignment I — Relationships among the sources.
+     Same focus-based structure: pick a Topic / Conceptual Focus to surface
+     the standardized comment for that focus and the chosen rating. */
+  sourceRelationships: {
+    name: "Relationships Among Sources",
+    blurb: "Explanation of the relationships among the sources — how they connect, contrast, and map onto the ideological spectrum.",
+    desc: {
+      E:  "Relationships among the sources are explained perceptively and thoroughly.",
+      PF: "Relationships among the sources are explained capably and purposefully.",
+      S:  "Relationships among the sources are explained adequately and straightforwardly.",
+      L:  "Relationships among the sources are explained superficially or incompletely.",
+      P:  "Relationships among the sources are explained scantly or illogically.",
+    },
+    focusBank: {
+      focuses: [
+        "Thematic Synthesis",
+        "Spectrum Mapping",
+        "Conceptual Alignment",
+        "Dialectical Tension",
+        "Systemic Reaction",
+      ],
+      comments: {
+        "Thematic Synthesis": {
+          E:  "The explanation of the relationships is perceptive and thorough, synthesizing all three sources around a highly sophisticated analysis of the appropriate extent of state intervention during economic and social crises.",
+          PF: "The explanation of the relationship is capable and purposeful, identifying that all three sources address the central question of the degree to which a government should regulate the economy.",
+          S:  "The explanation of the relationships is adequate and straightforward, identifying a basic common theme of state power versus individual rights across all three sources.",
+          L:  "The explanation of the relationships is superficial and incomplete, demonstrating a confused understanding of how the sources connect to a common theme.",
+          P:  "The explanation of the relationships is scant and illogical, demonstrating little or no understanding of a common theme linking the three sources.",
+        },
+        "Spectrum Mapping": {
+          E:  "The candidate perceptively and thoroughly positions the sources on a multidimensional spectrum, demonstrating an advanced understanding of the precise ideological divisions between classical individualism, modern liberal interventionism, and collectivism.",
+          PF: "The candidate purposefully and capably maps the sources, grouping the modern liberal and collectivist values of Source II and Source III in clear contrast to the classical liberal individualism of Source I.",
+          S:  "The student's positioning of the sources is straightforward and conventional, grouping them into broad categories of those that support government intervention and those that oppose it.",
+          L:  "The student's positioning of the sources is superficial and redundant, resulting in a confused mapping that misaligns key ideological principles.",
+          P:  "The candidate's comparative analysis is scant and tangential, failing to position the sources on any logical political or economic spectrum.",
+        },
+        "Conceptual Alignment": {
+          E:  "The student's comparison is perceptive and thorough, demonstrating a sophisticated grasp of the alignment between Source I and Source III as shared warnings against the long-term structural dangers of unchecked deficit spending.",
+          PF: "The comparison is capable and purposeful, soundly demonstrating how Source I and Source III both express concern over the negative impacts of government spending on a nation's long-term financial stability.",
+          S:  "The comparison is adequate and conventional, making a straightforward connection between Source I and Source II based on their shared focus on the role of the government in a country's economy.",
+          L:  "The comparison is incomplete and of questionable accuracy, failing to identify the clear thematic commonalities between the sources' economic viewpoints.",
+          P:  "The comparison is scant and illogical, showing a profound lack of understanding of the sources' shared perspectives.",
+        },
+        "Dialectical Tension": {
+          E:  "The response thoroughly and perceptively contrasts the collectivist system of Source II with the liberal protections of Source III, detailing how their views on state supremacy are in direct, fundamental opposition.",
+          PF: "The student capably and purposefully contrasts the state control championed in Source II with the defense of individual liberties and protest rights depicted in Source I and Source III.",
+          S:  "The student provides a straightforward contrast, noting that while Source II wants the government to control everything, Source I argues that individual choices are more important.",
+          L:  "The response displays a superficial and incomplete contrast, showing a confused understanding of the fundamental differences between state control and individual liberty.",
+          P:  "The student provides a scant and tangential contrast, failing to recognize the key ideological tensions between the sources.",
+        },
+        "Systemic Reaction": {
+          E:  "The explanation is perceptive and thorough, framing Source III as an insightful, illustrative warning of the inevitable structural consequences that arise when the deficit-spending policies of Source II are implemented over a long-term period.",
+          PF: "The explanation is capable and purposeful, accurately framing the protest in Source III as a logical, real-world reaction to the economic exploitation and wealth disparity critiqued in Source II.",
+          S:  "The explanation of the relationships is straightforward, conventionally describing how the financial crises mentioned in one source leads to the public protests depicted in another.",
+          L:  "The explanation of relationships is redundant and incomplete, offering only a simplistic description of the sources' content without explaining any meaningful interactions.",
+          P:  "The response is scant and illogical, merely listing brief, unrelated summaries of each source without attempting to explain any relationships.",
+        },
+      },
+    },
+  },
+
   commSocial: {
     name: "Communication",
     blurb: "Organization of the writing, vocabulary (including social studies terminology), and control of mechanics and grammar.",
@@ -968,6 +1029,7 @@ const COMMENT_DATA = {
           sub: "Interpretation of source perspectives and their links to course concepts.",
           cats: [
             { key: "sourceInterpFocus", weight: 3 },
+            { key: "sourceRelationships", weight: 3 },
             { key: "commSocial", weight: 1 },
           ],
         },
