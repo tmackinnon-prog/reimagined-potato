@@ -601,6 +601,66 @@ const CATEGORIES = {
     },
   },
 
+  /* SS 30-1 Assignment I — Explanations and Support (focus-based, 8 marks).
+     The five "Comment" columns of the rubric table are the focuses. */
+  explanationsSupport: {
+    name: "Explanations and Support",
+    blurb: "Quality of the explanations of democratic action, individualism, and modern liberalism, the justification of the chosen concept, and the historical/curricular support provided.",
+    desc: {
+      E:  "Explanations are deliberate and comprehensive; justification and support are perceptive and accurate.",
+      PF: "Explanations are purposeful and clear; justification and support are appropriate and relevant.",
+      S:  "Explanations are straightforward and general; justification and support are valid but basic.",
+      L:  "Explanations are overgeneralized or confused; justification and support are weak or contain errors.",
+      P:  "Explanations are minimal or mistaken; justification and support are absent or largely invalid.",
+    },
+    focusBank: {
+      focuses: [
+        "Political Actions in Democracy",
+        "Core Values of Individualism",
+        "Principles of Modern Liberalism",
+        "Conceptual Justification",
+        "Historical & Curricular Support",
+      ],
+      comments: {
+        "Political Actions in Democracy": {
+          E:  "The evaluation of the chosen democratic action is exceptionally deliberate and comprehensive, revealing a highly perceptive understanding of civic influence.",
+          PF: "The explanation of the selected democratic action is purposeful and appropriate, showing a clear understanding of political participation.",
+          S:  "The explanation of individual action in a democracy is straightforward and general, showing an acceptable but basic grasp of civic engagement.",
+          L:  "The student's explanation of democratic participation is overgeneralized and repetitive, showing a confused understanding of political influence.",
+          P:  "The discussion of democratic actions is tangential and minimal, showing a negligible understanding of political systems.",
+        },
+        "Core Values of Individualism": {
+          E:  "The explanation establishes a sophisticated, nuanced link between self-reliance and individualism, demonstrating how personal autonomy drives societal progress.",
+          PF: "The student provides a clear explanation of economic freedom, accurately demonstrating how market competition aligns with individualist tenets.",
+          S:  "The student describes self-reliance in general terms, relying on simple everyday analogies rather than structured ideological analysis.",
+          L:  "The response displays a confused understanding of individualism, frequently conflating basic selfishness with the philosophical tenets of autonomy.",
+          P:  "The explanation of individualist values is mistaken, showing a failure to grasp how self-reliance or competition functions in society.",
+        },
+        "Principles of Modern Liberalism": {
+          E:  "The student provides an outstanding evaluation of modern liberalism by thoroughly demonstrating how collective rights protect marginalized communities.",
+          PF: "The response explains modern liberalism with clarity, correctly identifying how government-funded maternity leave balancing represents collectivist goals.",
+          S:  "The explanation of modern liberal principles is valid but general, describing basic welfare programs without connecting them to systemic ideas.",
+          L:  "The explanation of modern liberalism is superficial, containing substantial misconceptions about the distinction between liberalism and state socialism.",
+          P:  "The student fails to address modern liberalism, showing a minimal understanding of collective rights or social safety nets.",
+        },
+        "Conceptual Justification": {
+          E:  "The response demonstrates a profound understanding of the task by clearly justifying why the chosen characteristic holds conceptual priority over other values.",
+          PF: "The student demonstrates a clear understanding of the task by offering appropriate justifications for the conceptual priority of the chosen term.",
+          S:  "The justification of the chosen concept is straightforward, though the reasoning occasionally shifts toward definition rather than evaluation.",
+          L:  "The justification is weak and redundant, failing to explain why the chosen characteristic is more important than other provided terms.",
+          P:  "The justification is virtually absent, with the student merely copying the provided terms without attempting to evaluate or compare them.",
+        },
+        "Historical & Curricular Support": {
+          E:  "The argument is supported by highly specific and accurate historical evidence, such as referencing the legal achievements of the Famous Five.",
+          PF: "The support is relevant and appropriate, using correct examples like Adam Smith's \"invisible hand\" with only minor, non-detracting errors.",
+          S:  "The evidence provided is relevant but general and incompletely developed, relying on broad descriptions of historical events.",
+          L:  "Support is superficial and contains significant errors, such as misidentifying historical eras or confusing key ideological theorists.",
+          P:  "Support is incomplete, marginally relevant, and contains frequent errors that severely undermine the validity of the response.",
+        },
+      },
+    },
+  },
+
   /* SS 30-1 Assignment I — Source Analysis (Section 1). Focus-based:
      pick a Topic / Conceptual Focus to surface the standardized comment
      for that focus and the chosen rating. */
@@ -1269,6 +1329,382 @@ CATEGORIES.analysisOfSourceFocus = Object.assign({}, CATEGORIES.sourceAnalysis, 
   blurb: "Understanding of the source's perspective and how effectively it is addressed in developing the position — its deconstruction, philosophical context, nuance, stakeholders, and underlying assumptions.",
 });
 
+/* ===== SS 30-2 focus-based rubric sections (Assignments I, II, III) ===== */
+Object.assign(CATEGORIES, {
+
+  /* 30-2 Assignment I, Section 2 — Communication (2 marks). */
+  comm30_2A1: {
+    name: "Communication",
+    blurb: "Structure and coherence, vocabulary precision, sentence control, grammar and mechanics, and flow and fluency.",
+    desc: {
+      E:  "Communication is fluent and cohesive: precise vocabulary, polished sentences, controlled mechanics.",
+      PF: "Communication is clear and logical: specific vocabulary, effective sentences, minor errors only.",
+      S:  "Communication is functional: adequate vocabulary, basic sentence control, some errors.",
+      L:  "Communication is uneven: imprecise vocabulary, faltering sentences, numerous errors.",
+      P:  "Communication is disorganized: ineffective vocabulary and pervasive errors.",
+    },
+    focusBank: {
+      focuses: ["Structure & Coherence", "Vocabulary Precision", "Sentence Control", "Grammar & Mechanics", "Flow & Fluency"],
+      comments: {
+        "Structure & Coherence": {
+          E:  "The writing is fluent, fluidly written, and purposefully organized to construct a highly cohesive conceptual argument.",
+          PF: "The response is clearly organized and logical, utilizing appropriate transitions to connect paragraphs.",
+          S:  "The writing is generally clear and functionally organized, dividing the response into a straightforward paragraph structure.",
+          L:  "The writing is uneven and incomplete, lacking a discernibly organized structure or a logical flow of ideas.",
+          P:  "The response is disorganized and chaotic, making it extremely difficult to identify any planned structural outline.",
+        },
+        "Vocabulary Precision": {
+          E:  "Vocabulary is exceptionally precise and sophisticated, utilizing appropriate academic and political terminology with ease.",
+          PF: "Diction and vocabulary are specific, allowing the student to communicate ideological concepts with clarity.",
+          S:  "Vocabulary is adequate, though the student occasionally relies on repetitive, simplistic, or colloquial phrasing.",
+          L:  "Vocabulary is imprecise and inappropriate, making it difficult to clearly understand the student's main points.",
+          P:  "Vocabulary is ineffective, highly limited, and frequently incorrect, demonstrating a lack of familiarity with basic terms.",
+        },
+        "Sentence Control": {
+          E:  "The student demonstrates confident and polished control of complex sentence structures, ensuring a highly readable essay.",
+          PF: "The writing frequently demonstrates effective control of sentence construction, containing a good variety of sentence types.",
+          S:  "The response demonstrates basic control of sentence construction, preferring simple, straightforward grammatical patterns.",
+          L:  "Faltering control of sentence structure is evident, characterized by frequent run-ons, fragments, and awkward syntax.",
+          P:  "A severe lack of control over sentence construction is demonstrated, resulting in incoherent phrasing throughout the paper.",
+        },
+        "Grammar & Mechanics": {
+          E:  "Grammar and mechanics are consistently controlled, and any errors present are entirely inconsequential to the overall flow.",
+          PF: "Mechanics, spelling, and grammar are controlled, and minor errors do not detract from the communication of ideas.",
+          S:  "Errors in mechanics, spelling, or punctuation are present but do not seriously interfere with readability or meaning.",
+          L:  "Grammatical and mechanical errors are numerous, significantly hindering the overall communication of the essay.",
+          P:  "Persistent grammatical and mechanical errors impede basic comprehension and make the text difficult to read.",
+        },
+        "Flow & Fluency": {
+          E:  "The overall narrative demonstrates a mature, academic voice that enhances the delivery of the ideological evaluation.",
+          PF: "The prose maintains a distinct, focused, and objective tone that aligns well with the demands of the assignment.",
+          S:  "The tone is functional, though paragraph transitions are somewhat abrupt and the narrative flow can be mechanical.",
+          L:  "The voice of the response is unconvincing, and a lack of coherence prevents the development of a persuasive argument.",
+          P:  "The overall communication is severely compromised, with the writing appearing fragmented and unfinished.",
+        },
+      },
+    },
+  },
+
+  /* 30-2 Assignment II — Interpretation of Sources (8 marks). */
+  interp30_2A2: {
+    name: "Interpretation of Sources",
+    blurb: "Interpretation of visual, statistical, and symbolic sources, their curricular contextualization, and synthesis across all sources.",
+    desc: {
+      E:  "Source interpretation is insightful and comprehensive across visual, data, and symbolic sources.",
+      PF: "Source interpretation is specific and accurate across the sources.",
+      S:  "Source interpretation is valid but general.",
+      L:  "Source interpretation is overgeneralized or confused.",
+      P:  "Source interpretation is mistaken or absent.",
+    },
+    focusBank: {
+      focuses: ["Visual Source Interpretation", "Statistical/Data Interpretation", "Cartoon/Symbolic Interpretation", "Curricular Contextualization", "Multi-Source Synthesis"],
+      comments: {
+        "Visual Source Interpretation": {
+          E:  "The interpretation of the photographic source is highly insightful, perceptively connecting the protest imagery to systemic civil rights activism.",
+          PF: "The interpretation of the visual source is specific and accurate, correctly identifying how public rallies are used to protest systemic issues.",
+          S:  "The interpretation of the photograph is valid but general, describing the depicted protest actions without explaining their deeper social meaning.",
+          L:  "The interpretation of the visual source is overgeneralized, displaying a confused understanding of the protest's objectives or context.",
+          P:  "The interpretation of the photographic source is mistaken or irrelevant, showing a complete misunderstanding of the depicted scene.",
+        },
+        "Statistical/Data Interpretation": {
+          E:  "The student provides an exceptionally thorough analysis of the statistical data, detailing how the metrics reflect broader civic participation trends.",
+          PF: "The student provides a clear interpretation of the statistical chart, accurately connecting voter apathy statistics to democratic challenges.",
+          S:  "The student summarizes the data set in a straightforward manner, identifying the main percentages but offering limited analysis of their implications.",
+          L:  "The student's analysis of the statistical data contains substantial misconceptions, misreading key numbers or drawing incorrect conclusions.",
+          P:  "The student fails to analyze the statistical data, either ignoring the source completely or misstating basic numbers.",
+        },
+        "Cartoon/Symbolic Interpretation": {
+          E:  "The interpretation of the political cartoon is comprehensive, showing a keen awareness of the structural irony and environmental hypocrisy portrayed.",
+          PF: "The student's analysis of the cartoon is purposeful and sound, correctly identifying the critique of individual complacency in environmental issues.",
+          S:  "The interpretation of the cartoon is valid but basic, recognizing the literal conflict depicted without fully grasping the underlying irony.",
+          L:  "The analysis of the political cartoon is superficial and literal, focusing on minor artistic details while missing the central message.",
+          P:  "The analysis of the political cartoon is incorrect or absent, showing a failure to comprehend basic visual metaphors.",
+        },
+        "Curricular Contextualization": {
+          E:  "The student demonstrates a thorough and perceptive understanding of social studies by placing the sources within specific ideological debates.",
+          PF: "The response demonstrates a clear understanding of the task by correctly associating the sources with relevant government or individual roles.",
+          S:  "The response demonstrates an acceptable understanding of the task, though minor conceptual oversimplifications or errors are present.",
+          L:  "The response demonstrates a confused understanding of the task, struggling to connect the sources to the roles of individuals or governments.",
+          P:  "The response demonstrates a minimal understanding of the task, failing to identify what the sources communicate about social roles.",
+        },
+        "Multi-Source Synthesis": {
+          E:  "All three sources are addressed with comprehensive depth, showing how they collectively explore the tension between autonomy and state control.",
+          PF: "The student interprets all three sources with a consistent level of detail, drawing appropriate and relevant evidence from each document.",
+          S:  "The student addresses all three sources, but the depth of interpretation is uneven, with the analysis of one source being notably weaker.",
+          L:  "The student fails to address all three sources adequately, often providing a highly distorted or incomplete overview of the documents.",
+          P:  "The student provides a disjointed and incomplete interpretation, with severe errors in factual details throughout the analysis.",
+        },
+      },
+    },
+  },
+
+  /* 30-2 Assignment II — Defence of Position (8 marks). */
+  defence30_2A2: {
+    name: "Defence of Position",
+    blurb: "Argumentative strength, integration of the sources, use of social studies knowledge, persuasive logic, and conceptual complexity.",
+    desc: {
+      E:  "The position is convincingly defended with strong arguments, source integration, and knowledge.",
+      PF: "The position is soundly defended with appropriate arguments and evidence.",
+      S:  "The position is adequately defended in a straightforward way.",
+      L:  "The position is weakly defended with oversimplified logic.",
+      P:  "A position is not clearly defended.",
+    },
+    focusBank: {
+      focuses: ["Argumentative Strength", "Source Integration", "Use of Social Studies Knowledge", "Persuasive Logic", "Conceptual Complexity"],
+      comments: {
+        "Argumentative Strength": {
+          E:  "The defence of the position is anchored in highly convincing, logical arguments that address the complexities of government intervention.",
+          PF: "The defence of the position is based on one or more sound, well-developed arguments that justify the role of government.",
+          S:  "The defence of the position is based on adequate arguments, presenting a straightforward and acceptable view on societal roles.",
+          L:  "The defence of the position is based on oversimplified assertions and questionable logic, failing to establish a convincing stance.",
+          P:  "The position taken is difficult to determine, as the student's arguments are highly fragmented or missing.",
+        },
+        "Source Integration": {
+          E:  "The student integrates the sources with exceptional skill, using specific details to support their stance on individual responsibility.",
+          PF: "The student uses appropriate details from the sources to support their arguments about individual civic duties.",
+          S:  "The student refers to the sources in a general manner, using basic details to support their position rather than deeply analyzing them.",
+          L:  "The student's use of the sources is superficial, with the documents being referenced in an inaccurate or forced manner.",
+          P:  "The student makes little to no attempt to integrate the sources, often ignoring them entirely during the defence of their position.",
+        },
+        "Use of Social Studies Knowledge": {
+          E:  "The response is supported by specific and accurate external knowledge, such as the historical impact of the Winnipeg General Strike.",
+          PF: "The argument is supported by relevant external social studies knowledge, referencing policies like the Canadian Charter of Rights and Freedoms.",
+          S:  "The response utilizes relevant but general external evidence, relying on simple descriptions of government functions.",
+          L:  "The response lacks relevant external knowledge, containing significant factual errors about political or economic systems.",
+          P:  "The response contains frequent and severe errors in content, displaying a negligible understanding of basic social studies concepts.",
+        },
+        "Persuasive Logic": {
+          E:  "The argument maintains outstanding logical consistency, effectively showing how individual choices have broader collective consequences.",
+          PF: "The response is logically structured, explaining how public health mandates can be balanced with individual choices.",
+          S:  "The argument is straightforward, though the reasoning occasionally relies on simplistic assertions rather than developed logic.",
+          L:  "The argument is weak and inconsistent, frequently contradicting itself or relying on circular reasoning.",
+          P:  "The defence relies on illogical statements or personal rants that are completely detached from the assigned task.",
+        },
+        "Conceptual Complexity": {
+          E:  "The student demonstrates a perceptive understanding of the social contract, balancing personal freedoms against the common good.",
+          PF: "The student demonstrates a clear understanding of the task, offering a realistic perspective on how the state should support its citizens.",
+          S:  "The student demonstrates an acceptable understanding of the task, though the position fails to address potential counterarguments.",
+          L:  "The student demonstrates a confused understanding of the task, presenting arguments that do not align with the stated position.",
+          P:  "The student demonstrates a minimal understanding of the course material, presenting an incomplete and ineffective response.",
+        },
+      },
+    },
+  },
+
+  /* 30-2 Assignment II — Communication (4 marks). */
+  comm30_2A2: {
+    name: "Communication",
+    blurb: "Structural control, diction and vocabulary, stylistic voice, syntactic complexity, and mechanics and formatting.",
+    desc: {
+      E:  "Communication is fluent: precise diction, engaging voice, complex syntax, controlled mechanics.",
+      PF: "Communication is clear: specific diction, sound voice, capable syntax, minor errors.",
+      S:  "Communication is functional: adequate diction and basic syntax with some errors.",
+      L:  "Communication is uneven: imprecise diction, awkward voice and syntax, numerous errors.",
+      P:  "Communication is disorganized with pervasive errors.",
+    },
+    focusBank: {
+      focuses: ["Structural Control", "Diction & Vocabulary", "Stylistic Voice", "Syntactic Complexity", "Mechanics & Formatting"],
+      comments: {
+        "Structural Control": {
+          E:  "The writing is fluent and purposefully organized, flowing seamlessly from source analysis to the defence of position.",
+          PF: "The response is clearly and logically organized, utilizing clean transitions between the source interpretations and the argument.",
+          S:  "The writing is generally clear and functionally organized into a basic, predictable paragraph structure.",
+          L:  "The writing is uneven, incomplete, and lacks a coherent structural plan across the different sections.",
+          P:  "The writing is highly unclear and disorganized, with little to no coherent structure or logical flow.",
+        },
+        "Diction & Vocabulary": {
+          E:  "Vocabulary is precise and sophisticated, utilizing appropriate social studies terminology to enhance the analysis.",
+          PF: "Vocabulary is specific and appropriate, allowing the student to articulate complex ideological perspectives with clarity.",
+          S:  "Vocabulary is adequate, though the student occasionally relies on repetitive, simplistic, or colloquial phrasing.",
+          L:  "Imprecise or inappropriate vocabulary is used, which frequently obscures the student's line of reasoning.",
+          P:  "Vocabulary is ineffective, highly limited, and frequently incorrect, demonstrating a lack of academic literacy.",
+        },
+        "Stylistic Voice": {
+          E:  "Effective stylistic choices contribute to the creation of an engaging, professional, and authoritative voice.",
+          PF: "Appropriate stylistic choices contribute to the creation of a distinct, objective, and academically sound voice.",
+          S:  "Basic stylistic choices contribute to a functional and clear voice that conveys the main arguments.",
+          L:  "Awkward stylistic choices contribute to an unconvincing, passive, or inappropriate voice for an academic assessment.",
+          P:  "Ineffective stylistic choices result in an unsuitable, confusing, or virtually absent voice.",
+        },
+        "Syntactic Complexity": {
+          E:  "The student demonstrates confident control of varied and complex sentence structures, ensuring exceptional readability.",
+          PF: "The writing frequently demonstrates capable control of sentence construction, with a good balance of simple and complex sentences.",
+          S:  "The response demonstrates basic control of sentence construction, preferring simple and straightforward sentence patterns.",
+          L:  "Faltering control of sentence structure is evident, characterized by frequent run-ons, fragments, and awkward syntax.",
+          P:  "A profound lack of control over basic sentence construction, grammar, spelling, and punctuation is displayed.",
+        },
+        "Mechanics & Formatting": {
+          E:  "Spelling, punctuation, and grammar are controlled, and any errors present are entirely inconsequential to the report's quality.",
+          PF: "Grammar, punctuation, and mechanics are controlled, and minor errors do not detract from the communication of ideas.",
+          S:  "Minor errors in spelling, punctuation, or grammar are present, but they do not seriously interfere with communication.",
+          L:  "Grammatical and mechanical errors are numerous, significantly hindering the overall readability of the response.",
+          P:  "Constant and severe grammatical errors throughout the text constantly impede the communication of basic ideas.",
+        },
+      },
+    },
+  },
+
+  /* 30-2 Assignment III — Exploration and Analysis (8 marks). */
+  exploration30_2A3: {
+    name: "Exploration and Analysis",
+    blurb: "Exploration of the issue across voter competency, electoral reform, and global trade, analysis of citizen perspectives, and conceptual synthesis.",
+    desc: {
+      E:  "The issue is explored insightfully across the prompts with strong conceptual synthesis.",
+      PF: "The issue is explored soundly and clearly across the prompts.",
+      S:  "The issue is explored in a valid but general way.",
+      L:  "The issue is explored superficially or with misconceptions.",
+      P:  "The issue is explored minimally or incorrectly.",
+    },
+    focusBank: {
+      focuses: ["Voter Competency Tests", "Electoral System Reform", "Global Human Rights & Trade", "Analyzing Citizen Perspectives", "Conceptual Synthesis"],
+      comments: {
+        "Voter Competency Tests": {
+          E:  "The exploration of the issue is highly insightful, perceptively explaining the tension between ensuring an informed electorate and protecting democratic franchise.",
+          PF: "The exploration of the voter competency issue is sound and capable, clearly identifying the main arguments for and against testing.",
+          S:  "The exploration of the voter competency test issue is valid but general, describing basic ideas of fairness in an acceptable manner.",
+          L:  "The exploration of the voter competency issue is superficial, displaying a confused understanding of democratic rights or access.",
+          P:  "The exploration of the voter competency issue is mistaken or irrelevant, showing a failure to comprehend the central prompt.",
+        },
+        "Electoral System Reform": {
+          E:  "The student provides an exceptionally thorough analysis of electoral systems, detailing how different voting methods impact proportional representation.",
+          PF: "The student provides a clear analysis of electoral reform, accurately comparing the stability of first-past-the-post with proportional representation.",
+          S:  "The student provides a straightforward analysis of electoral systems, identifying the main characteristics of voting methods without deep analysis.",
+          L:  "The student's analysis of electoral systems contains substantial misconceptions, confusing basic features of major voting models.",
+          P:  "The student fails to analyze the electoral systems, either ignoring the topic completely or providing incorrect information.",
+        },
+        "Global Human Rights & Trade": {
+          E:  "The exploration of the trade issue is comprehensive, showing a deep understanding of the conflict between economic gains and ethical policy.",
+          PF: "The exploration of global trade and human rights is specific and accurate, outlining the main ethical and economic concerns of the debate.",
+          S:  "The exploration of trade and human rights is valid but basic, explaining the simple trade-off between ethical values and business interests.",
+          L:  "The exploration of global trade is overgeneralized, displaying a confused understanding of how trade relations impact domestic markets.",
+          P:  "The exploration of global trade is incorrect or absent, showing a complete lack of familiarity with international relation concepts.",
+        },
+        "Analyzing Citizen Perspectives": {
+          E:  "The student provides a thoughtful and thorough analysis of all three citizen perspectives, correctly identifying their underlying ideological beliefs.",
+          PF: "The analysis of the citizen viewpoints is appropriate and purposeful, demonstrating a clear understanding of each prompt's core argument.",
+          S:  "The analysis of the citizen viewpoints is general and straightforward, summarizing their positions without fully explaining their values.",
+          L:  "The analysis of the citizen viewpoints is limited and redundant, frequently repeating the prompt's language without adding any new insights.",
+          P:  "The analysis of the citizen viewpoints is minimal or tangential, showing a failure to understand the provided perspectives.",
+        },
+        "Conceptual Synthesis": {
+          E:  "The response demonstrates a profound understanding of the task by connecting the central issue to systemic, global, and historical contexts.",
+          PF: "The student demonstrates a clear understanding of the task, using appropriate and relevant details to explore the complexities of the issue.",
+          S:  "The response demonstrates an acceptable understanding of the task, though the exploration occasionally relies on simple, everyday assumptions.",
+          L:  "The response demonstrates an incomplete understanding of the task, containing significant errors regarding basic political or economic concepts.",
+          P:  "The response demonstrates a minimal understanding of the task, with frequent and severe errors in content throughout the text.",
+        },
+      },
+    },
+  },
+
+  /* 30-2 Assignment III — Defence of Position (8 marks). */
+  defence30_2A3: {
+    name: "Defence of Position",
+    blurb: "Argumentative rigor, specificity of evidence, policy justification, pragmatic analysis, and the handling of counterarguments.",
+    desc: {
+      E:  "The position is rigorously defended with specific evidence, justification, and counterargument.",
+      PF: "The position is soundly defended with relevant evidence and counterargument.",
+      S:  "The position is adequately defended in a straightforward way.",
+      L:  "The position is weakly defended with inconsistent logic.",
+      P:  "A position is not clearly defended.",
+    },
+    focusBank: {
+      focuses: ["Argumentative Rigor", "Evidence Specificity", "Policy Justification", "Pragmatic Analysis", "Addressing Counterarguments"],
+      comments: {
+        "Argumentative Rigor": {
+          E:  "The defence of the position is based on highly convincing, logical arguments that address the systemic complexities of the policy issue.",
+          PF: "The defence of the position is based on sound, well-developed arguments that justify the chosen policy or system.",
+          S:  "The defence of the position is based on adequate arguments, presenting a straightforward and acceptable view on the central issue.",
+          L:  "The defence of the position is based on oversimplified assertions and questionable logic, failing to establish a convincing stance.",
+          P:  "The position taken is difficult to determine, as the student's arguments are highly fragmented, contradictory, or missing.",
+        },
+        "Evidence Specificity": {
+          E:  "The student supports their stance with specific and accurate evidence, validating the arguments with relevant historical or contemporary precedents.",
+          PF: "Appropriate and relevant evidence is provided to support the stance, referencing correct historical events or contemporary policies.",
+          S:  "The evidence used to support the position is relevant but general and incompletely developed, relying on basic assertions.",
+          L:  "The evidence selected to support the position is superficial and contains significant errors, showing a confused understanding of the topic.",
+          P:  "Little to no attempt is made to defend a position on the issue, showing a negligible understanding of the assigned task.",
+        },
+        "Policy Justification": {
+          E:  "The policy justification is outstanding, showing how the proposed actions align with democratic values and long-term societal well-being.",
+          PF: "The student provides a clear justification of their position, demonstrating a sound understanding of its impacts on society.",
+          S:  "The justification of the position is straightforward, though the reasoning occasionally relies on simplistic moral or economic claims.",
+          L:  "The justification is weak and redundant, failing to establish a clear connection between the chosen policy and societal well-being.",
+          P:  "Evidence, if present, is completely incomplete, irrelevant, and contains frequent and severe errors in content.",
+        },
+        "Pragmatic Analysis": {
+          E:  "The response demonstrates a perceptive understanding of the issue by evaluating the practical risks and benefits of the chosen stance.",
+          PF: "The argument is logically structured, explaining how the practical benefits of the chosen stance outweigh the potential drawbacks.",
+          S:  "The response evaluates the practical impacts of the chosen stance in a basic manner, without exploring complex systemic effects.",
+          L:  "The argument is inconsistent, containing logical contradictions that weaken the overall persuasiveness of the response.",
+          P:  "The response fails to address the prompt's question, resulting in a minimal and highly flawed argument.",
+        },
+        "Addressing Counterarguments": {
+          E:  "The student masterfully addresses opposing viewpoints, demonstrating why their selected position is the most viable and ethical option.",
+          PF: "The response demonstrates a clear understanding of the task, acknowledging opposing viewpoints while maintaining a consistent position.",
+          S:  "The student demonstrates an acceptable understanding of the task, though the defence lacks a rigorous exploration of counterarguments.",
+          L:  "The student demonstrates a confused understanding of the task, presenting arguments that do not align with the stated position.",
+          P:  "The student makes assertions that are logically incoherent and completely detached from social studies knowledge.",
+        },
+      },
+    },
+  },
+
+  /* 30-2 Assignment III — Communication (4 marks). */
+  comm30_2A3: {
+    name: "Communication",
+    blurb: "Structure and coherence, diction and vocabulary, syntactic complexity, persuasive voice, and mechanical control.",
+    desc: {
+      E:  "Communication is polished: precise diction, persuasive voice, complex syntax, controlled mechanics.",
+      PF: "Communication is clear: specific diction, convincing voice, capable syntax, minor errors.",
+      S:  "Communication is functional: adequate diction and basic syntax with some errors.",
+      L:  "Communication is uneven: imprecise diction, awkward voice and syntax, numerous errors.",
+      P:  "Communication is disorganized with pervasive errors.",
+    },
+    focusBank: {
+      focuses: ["Structure & Coherence", "Diction & Vocabulary", "Syntactic Complexity", "Persuasive Voice", "Mechanical Control"],
+      comments: {
+        "Structure & Coherence": {
+          E:  "The writing is fluent and purposefully organized, establishing a highly polished, cohesive, and logical narrative structure.",
+          PF: "The response is clearly and logically organized, utilizing clean transitions to guide the reader through the argument.",
+          S:  "The writing is generally clear and functionally organized, dividing the response into a straightforward paragraph structure.",
+          L:  "The writing is uneven, incomplete, and lacks a coherent structural plan across the different sections.",
+          P:  "The writing is highly unclear and disorganized, with little to no coherent structure or logical flow.",
+        },
+        "Diction & Vocabulary": {
+          E:  "Vocabulary is exceptionally precise and sophisticated, utilizing appropriate academic, political, and economic terms with ease.",
+          PF: "Vocabulary is specific and appropriate for a senior humanities level, allowing the student to convey complex ideas with clarity.",
+          S:  "Vocabulary is adequate, though the student occasionally relies on repetitive, simplistic, or colloquial phrasing.",
+          L:  "Imprecise or inappropriate vocabulary is used, which frequently obscures the student's line of reasoning.",
+          P:  "Vocabulary is ineffective, highly limited, and frequently incorrect, demonstrating a lack of academic literacy.",
+        },
+        "Syntactic Complexity": {
+          E:  "The student demonstrates confident and polished control of complex sentence structures, ensuring a highly readable essay.",
+          PF: "The writing frequently demonstrates capable control of sentence construction, with a good balance of simple and complex sentences.",
+          S:  "The response demonstrates basic control of sentence construction, preferring simple and straightforward sentence patterns.",
+          L:  "Faltering control of sentence structure is evident, characterized by frequent run-ons, fragments, and awkward syntax.",
+          P:  "A profound lack of control over basic sentence construction, grammar, spelling, and punctuation is displayed.",
+        },
+        "Persuasive Voice": {
+          E:  "Effective stylistic choices contribute to the creation of a highly persuasive, objective, and authoritative voice.",
+          PF: "Appropriate stylistic choices contribute to the development of a distinct, objective, and convincing voice.",
+          S:  "Basic stylistic choices contribute to a functional and clear voice that conveys the main arguments.",
+          L:  "Awkward stylistic choices result in an unconvincing, passive, or inappropriate voice for an academic assessment.",
+          P:  "Ineffective stylistic choices result in an unsuitable, confusing, or virtually absent voice.",
+        },
+        "Mechanical Control": {
+          E:  "Spelling, punctuation, and grammar are controlled, and any errors present are entirely inconsequential to the overall flow.",
+          PF: "Minor errors in spelling, grammar, or punctuation are present, but they do not detract from the communication of ideas.",
+          S:  "Minor errors in spelling, punctuation, or grammar are present, but they do not seriously interfere with communication.",
+          L:  "Grammatical and mechanical errors are numerous, significantly hindering the overall readability of the response.",
+          P:  "Constant and severe grammatical errors throughout the text constantly impede the communication of basic ideas.",
+        },
+      },
+    },
+  },
+
+});
+
 /* Assignments per subject and stream. The same rubric structure is used at
    the 10 / 20 / 30 levels (adapted from the Grade 12 scoring guides). */
 const COMMENT_DATA = {
@@ -1355,19 +1791,29 @@ const COMMENT_DATA = {
       ],
       "-2": [
         {
-          id: "si2", name: "Source Interpretation (Assignment I)",
-          sub: "Interpretation of source perspectives and their links to course concepts.",
+          id: "si2", name: "Assignment I — Explanations & Support",
+          sub: "Explanations of democratic action, individualism, and modern liberalism, with communication.",
           cats: [
-            { key: "interpretationOfSources", weight: 3 },
-            { key: "commSocial", weight: 1 },
+            { key: "explanationsSupport", weight: 8 },
+            { key: "comm30_2A1", weight: 2 },
           ],
         },
         {
-          id: "pw2", name: "Persuasive Writing (Assignment II)",
-          sub: "Persuasive essay defending a position on the assigned issue.",
+          id: "pp2", name: "Assignment II — Source Interpretation & Position",
+          sub: "Interpretation of visual, data, and symbolic sources; defence of position; communication.",
           cats: [
-            { key: "defenseOfPosition", weight: 1 },
-            { key: "qualityLanguage", weight: 1 },
+            { key: "interp30_2A2", weight: 8 },
+            { key: "defence30_2A2", weight: 8 },
+            { key: "comm30_2A2", weight: 4 },
+          ],
+        },
+        {
+          id: "ea3", name: "Assignment III — Issue Exploration & Position",
+          sub: "Exploration and analysis of an issue; defence of position; communication.",
+          cats: [
+            { key: "exploration30_2A3", weight: 8 },
+            { key: "defence30_2A3", weight: 8 },
+            { key: "comm30_2A3", weight: 4 },
           ],
         },
       ],
