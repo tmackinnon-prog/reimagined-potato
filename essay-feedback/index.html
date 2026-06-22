@@ -601,6 +601,70 @@ const CATEGORIES = {
     },
   },
 
+  /* SS 30-1 Assignment I — Source Interpretation.
+     Standardized evaluator comments are organized by Topic / Conceptual
+     Focus and then by reporting level. On the criteria step the teacher
+     picks one overall rating (used for scoring); on the comments step a
+     focus dropdown surfaces the matching standardized comment, and several
+     focuses can be added. */
+  sourceInterpFocus: {
+    name: "Interpretation of Sources",
+    blurb: "Accuracy and depth of the interpretation of each source's perspective and its links to course concepts (classical and modern liberalism, collectivism, civil liberties).",
+    desc: {
+      E:  "Interpretation is sophisticated, insightful, and precise, with perceptive links to course concepts.",
+      PF: "Interpretation is logical, specific, and adept, with sound links to course concepts.",
+      S:  "Interpretation is generally accurate but straightforward; links to course concepts are general.",
+      L:  "Interpretation is incomplete or confuses the perspective(s); links to course concepts are vague.",
+      P:  "Interpretation misreads the source(s); links to course concepts are missing.",
+    },
+    focusBank: {
+      focuses: [
+        "Classical Liberalism",
+        "Modern Liberalism",
+        "Collectivism / State Authority",
+        "Civil Liberties & Protest",
+        "Philosophical Alignment",
+      ],
+      comments: {
+        "Classical Liberalism": {
+          E:  "The candidate's deconstruction of the classical liberal perspective is sophisticated and precise, showing a perceptive understanding of how property rights, individual sovereignty, and laissez-faire economics prevent state-led encroachment on civil liberties.",
+          PF: "The interpretation is logical and specific, demonstrating a sound understanding of classical liberalism by explaining how self-reliance, competition, and consumer sovereignty drive free-market dynamics.",
+          S:  "The interpretation of classical liberalism is adequate and straightforward, showing a conventional understanding of how individual choice and capitalism allow citizens to pursue their self-interest.",
+          L:  "The student's analysis of classical liberalism is incomplete and vague, demonstrating a confused understanding of how individual choice and property rights operate within free-market systems.",
+          P:  "The interpretation of classical liberalism is scant and inaccurate, demonstrating little to no understanding of how individual initiative and capitalism link to the principles of freedom.",
+        },
+        "Modern Liberalism": {
+          E:  "The student provides an insightful and precise interpretation of modern liberalism, perceptively explaining the economic rationale for government deficit spending and social welfare initiatives during prolonged recessionary busts.",
+          PF: "The student provides a logical and specific interpretation of modern liberal practices, explaining with clarity how state-directed economic actions (e.g., Keynesian stimulus plans) aim to protect families and safeguard jobs.",
+          S:  "The student provides an adequate and conventional explanation of modern liberalism, demonstrating a generalized understanding of the role of state-supported social programs in helping marginalized citizens.",
+          L:  "The interpretation of modern liberal economic principles is simplistic and incomplete, displaying a confused understanding of the difference between state welfare initiatives and complete collectivism.",
+          P:  "The candidate provides a scant and irrelevant analysis of modern liberal systems, displaying little to no understanding of government intervention or economic stimulus strategies.",
+        },
+        "Collectivism / State Authority": {
+          E:  "The analysis of collectivism is highly sophisticated, demonstrating a perceptive grasp of how state-mandated social policies, public property ownership, and centralized economic planning prioritize the common good over individual self-interest.",
+          PF: "The analysis of collectivist principles is logical and sound, explaining with specificity how centralized planning and state authority are designed to establish economic equality and prevent class exploitation.",
+          S:  "The analysis of collectivism is straightforward and conventional, adequately describing a command economy where the government regulates production to establish a basic level of economic equality.",
+          L:  "The candidate provides an incomplete analysis of state authority, demonstrating a confused understanding of collectivism by equating all economic planning with extreme totalitarian control.",
+          P:  "The analysis of collectivism is scant and inaccurate, with the student simply copying the source text without demonstrating any understanding of centralized state planning or public interest.",
+        },
+        "Civil Liberties & Protest": {
+          E:  "The candidate displays an insightful and sophisticated understanding of civil rights, interpreting the visual or textual representation of democratic dissent as a key protective mechanism for preserving the citizen-state social contract.",
+          PF: "The candidate demonstrates a logical and specific understanding of civil liberties, accurately interpreting how the suspension of rights during crises represents an illiberal compromise in exchange for collective security.",
+          S:  "The candidate provides an adequate, conventional interpretation of civil rights, demonstrating a generalized understanding of how legislation like the Canadian Charter protects individual freedoms.",
+          L:  "The response is vague and simplistic, showing a confused understanding of civil liberties and failing to explain the significance of the citizen's right to protest state policies.",
+          P:  "The response is irrelevant and scant, demonstrating little to no understanding of civil rights or democratic protections by focusing solely on superficial visual details of the source.",
+        },
+        "Philosophical Alignment": {
+          E:  "The response is sophisticated and precise, establishing an insightful philosophical link between the source and historical theorists, such as Locke's defense of natural rights or Friedman's monetarist critique of deficit spending.",
+          PF: "The response is logical and specific, establishing a sound link to political theory by explaining how the source's defense of strong state authority aligns with Hobbes' view of human nature and the social contract.",
+          S:  "The response is adequate and straightforward, conventionally linking the source's support for economic self-interest to Adam Smith's concept of the self-regulating market.",
+          L:  "The student's attempt to align the source with philosophical ideas is incomplete and vague, displaying a confused understanding of theorists and misattributing key concepts.",
+          P:  "The student's alignment of the source with philosophical concepts is scant and inaccurate, demonstrating no clear understanding of the curricular concepts or their historical context.",
+        },
+      },
+    },
+  },
+
   commSocial: {
     name: "Communication",
     blurb: "Organization of the writing, vocabulary (including social studies terminology), and control of mechanics and grammar.",
@@ -903,7 +967,7 @@ const COMMENT_DATA = {
           id: "si1", name: "Source Interpretation (Assignment I)",
           sub: "Interpretation of source perspectives and their links to course concepts.",
           cats: [
-            { key: "interpretationOfSources", weight: 3 },
+            { key: "sourceInterpFocus", weight: 3 },
             { key: "commSocial", weight: 1 },
           ],
         },
@@ -958,6 +1022,7 @@ function blankState() {
     assignmentId: null,
     student: "",
     levels: {},          // catKey -> level key
+    focus: {},           // catKey -> selected focus (focusBank categories only)
     comments: {},        // catKey -> [chosen comment strings]
   };
 }
@@ -1167,36 +1232,89 @@ function viewComments() {
   <div class="panel">
     <h2>Step 5 — Build the feedback comments</h2>
     <p class="hint">Suggestions are matched to the descriptor you chose for each criterion. Add as many as you like, plus your own custom comments.</p>
-    ${a.cats.map(c => {
-      const cat = CATEGORIES[c.key];
-      const lv = state.levels[c.key];
-      const bank = lv === "INS" ? INS_COMMENTS : (cat.comments[lv] || []);
-      const chosen = state.comments[c.key] || [];
-      const remaining = bank.filter(cm => !chosen.includes(cm));
-      return `
-      <div class="crit-block">
-        <h3>${esc(cat.name)}${levelBadge(lv)}</h3>
-        ${chosen.length ? `<ul class="picked-comments">
-          ${chosen.map((cm, i) => `<li><span>${esc(cm)}</span>
-            <button title="Remove" onclick="removeComment('${c.key}', ${i})">&times;</button></li>`).join("")}
-        </ul>` : `<p class="crit-desc">No comments added yet.</p>`}
-        ${remaining.length ? `
-          <select onchange="addComment('${c.key}', this.value); this.selectedIndex = 0;">
-            <option value="">+ Add a suggested comment…</option>
-            ${remaining.map(cm => `<option value="${esc(cm)}">${esc(cm)}</option>`).join("")}
-          </select>` : `<p class="crit-desc"><em>All suggested comments added.</em></p>`}
-        <div class="add-custom">
-          <textarea id="custom-${c.key}" placeholder="Write a custom comment for this criterion…"></textarea>
-          <button class="mini-btn" onclick="addCustom('${c.key}')">Add custom comment</button>
-        </div>
-      </div>`;
-    }).join("")}
+    ${a.cats.map(c => CATEGORIES[c.key].focusBank ? viewFocusComments(c) : viewBankComments(c)).join("")}
     <div class="nav-row">
       <button class="btn btn-ghost" onclick="go(3)">&larr; Back</button>
       <button class="btn btn-primary" onclick="go(5)">View summary &rarr;</button>
     </div>
   </div>`;
 }
+/* Standard criterion: suggested comments matched to the chosen level. */
+function viewBankComments(c) {
+  const cat = CATEGORIES[c.key];
+  const lv = state.levels[c.key];
+  const bank = lv === "INS" ? INS_COMMENTS : (cat.comments[lv] || []);
+  const chosen = state.comments[c.key] || [];
+  const remaining = bank.filter(cm => !chosen.includes(cm));
+  return `
+  <div class="crit-block">
+    <h3>${esc(cat.name)}${levelBadge(lv)}</h3>
+    ${chosenList(c.key, chosen)}
+    ${remaining.length ? `
+      <select onchange="addComment('${c.key}', this.value); this.selectedIndex = 0;">
+        <option value="">+ Add a suggested comment…</option>
+        ${remaining.map(cm => `<option value="${esc(cm)}">${esc(cm)}</option>`).join("")}
+      </select>` : `<p class="crit-desc"><em>All suggested comments added.</em></p>`}
+    ${customBox(c.key)}
+  </div>`;
+}
+
+/* Focus-based criterion (e.g. SS 30-1 Assignment I): pick a Topic /
+   Conceptual Focus, and the standardized comment for that focus and the
+   chosen rating is offered. Multiple focuses can be added. */
+function viewFocusComments(c) {
+  const cat = CATEGORIES[c.key];
+  const lv = state.levels[c.key];
+  const chosen = state.comments[c.key] || [];
+  const fb = cat.focusBank;
+  const focus = state.focus[c.key] || "";
+  const matched = (focus && lv && lv !== "INS") ? fb.comments[focus][lv] : "";
+  const alreadyAdded = matched && chosen.includes(matched);
+  return `
+  <div class="crit-block">
+    <h3>${esc(cat.name)}${levelBadge(lv)}</h3>
+    <p class="crit-desc">Choose a topic / conceptual focus to surface the standardized comment for the
+      <strong>${esc(LEVEL_BY_KEY[lv].name)}</strong> rating. Add as many focuses as the response addresses.</p>
+    ${chosenList(c.key, chosen)}
+    <label style="display:block;font-weight:600;font-size:0.9rem;margin:6px 0 6px;">Topic / Conceptual Focus</label>
+    <select onchange="pickFocus('${c.key}', this.value)">
+      <option value="">— Select a focus —</option>
+      ${fb.focuses.map(f => `<option value="${esc(f)}" ${focus === f ? "selected" : ""}>${esc(f)}</option>`).join("")}
+    </select>
+    ${matched ? `
+      <div style="background:#fcfdff;border:1.5px solid var(--border);border-radius:8px;padding:12px;margin-top:10px;">
+        <p style="font-size:0.9rem;line-height:1.5;">${esc(matched)}</p>
+        ${alreadyAdded
+          ? `<p class="crit-desc" style="margin-top:8px;"><em>Already added.</em></p>`
+          : `<button class="mini-btn" onclick="addFocusComment('${c.key}')">Add this comment</button>`}
+      </div>` : (lv === "INS" ? `<p class="crit-desc" style="margin-top:8px;">Standardized comments are not used for an Insufficient rating.</p>` : "")}
+    ${customBox(c.key)}
+  </div>`;
+}
+
+function chosenList(catKey, chosen) {
+  return chosen.length ? `<ul class="picked-comments">
+    ${chosen.map((cm, i) => `<li><span>${esc(cm)}</span>
+      <button title="Remove" onclick="removeComment('${catKey}', ${i})">&times;</button></li>`).join("")}
+  </ul>` : `<p class="crit-desc">No comments added yet.</p>`;
+}
+function customBox(catKey) {
+  return `<div class="add-custom">
+    <textarea id="custom-${catKey}" placeholder="Write a custom comment for this criterion…"></textarea>
+    <button class="mini-btn" onclick="addCustom('${catKey}')">Add custom comment</button>
+  </div>`;
+}
+function pickFocus(catKey, value) {
+  if (value) state.focus[catKey] = value; else delete state.focus[catKey];
+  save(); render();
+}
+function addFocusComment(catKey) {
+  const focus = state.focus[catKey];
+  const lv = state.levels[catKey];
+  if (!focus || !lv || lv === "INS") return;
+  addComment(catKey, CATEGORIES[catKey].focusBank.comments[focus][lv]);
+}
+
 function addComment(catKey, text) {
   if (!text) return;
   (state.comments[catKey] = state.comments[catKey] || []).push(text);
@@ -1331,6 +1449,7 @@ function fallbackCopy(text) {
 function nextStudent() {
   state.student = "";
   state.levels = {};
+  state.focus = {};
   state.comments = {};
   go(3);
   toast("Ready for the next student");
