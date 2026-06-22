@@ -46,6 +46,16 @@
   }
   .step-dot.active { background: var(--brand); color: #fff; font-weight: 600; }
   .step-dot.done { background: #d6e6d9; color: var(--ok); }
+  .step-dot.clickable { cursor: pointer; }
+  .step-dot.clickable:hover { filter: brightness(0.95); text-decoration: underline; }
+
+  .restart-btn {
+    margin-top: 10px; background: #fff; color: var(--brand);
+    border: 1.5px solid var(--border); border-radius: 999px;
+    padding: 6px 16px; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .restart-btn:hover { background: var(--brand-light); border-color: var(--brand); }
 
   /* selection breadcrumb */
   .crumbs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; min-height: 28px; }
@@ -167,6 +177,7 @@
   <header>
     <h1>Essay Feedback Builder</h1>
     <div class="tagline">Alberta ELA &amp; Social Studies · Grades 10 / 20 / 30 · -1 and -2 streams</div>
+    <button class="restart-btn" id="restartBtn" onclick="startOver()" hidden>&#8635; Start over</button>
   </header>
 
   <div class="stepper" id="stepper"></div>
@@ -1903,8 +1914,14 @@ function render() {
 function renderStepper() {
   document.getElementById("stepper").innerHTML = STEPS.map((s, i) => {
     const cls = i === state.step ? "active" : (i < state.step ? "done" : "");
-    return `<div class="step-dot ${cls}">${i + 1}. ${s}</div>`;
+    // Earlier (already-completed) steps are clickable to jump back.
+    const clickable = i < state.step;
+    return `<div class="step-dot ${cls} ${clickable ? "clickable" : ""}"
+      ${clickable ? `onclick="go(${i})"` : ""}>${i + 1}. ${s}</div>`;
   }).join("");
+  // Show the header "Start over" button whenever there is work in progress.
+  const btn = document.getElementById("restartBtn");
+  if (btn) btn.hidden = (state.step === 0 && !state.subject);
 }
 
 function renderCrumbs() {
@@ -2272,9 +2289,14 @@ function nextStudent() {
   toast("Ready for the next student");
 }
 function startOver() {
+  // Guard against accidental loss when an assessment is in progress.
+  const inProgress = state.subject || Object.keys(state.levels).length ||
+    Object.keys(state.comments).length || state.student;
+  if (inProgress && !window.confirm("Start over and clear the current assessment? This can't be undone.")) return;
   state = blankState();
   save();
   go(0);
+  toast("Started over");
 }
 
 restore();
