@@ -601,6 +601,67 @@ const CATEGORIES = {
     },
   },
 
+  /* SS 30-1 Assignment I — Source Analysis (Section 1). Focus-based:
+     pick a Topic / Conceptual Focus to surface the standardized comment
+     for that focus and the chosen rating. */
+  sourceAnalysis: {
+    name: "Source Analysis (Section 1)",
+    blurb: "Depth of the analysis of the source's ideological perspective — its deconstruction, philosophical context, nuance, stakeholders, and underlying assumptions.",
+    desc: {
+      E:  "Source analysis is insightful and sophisticated, deconstructing the perspective with conceptual precision.",
+      PF: "Source analysis is capable and adept, with a sound, accurate understanding of the perspective.",
+      S:  "Source analysis is conventional and straightforward, with a generalized understanding of the perspective.",
+      L:  "Source analysis is incomplete and lacks depth, with a confused understanding of the perspective.",
+      P:  "Source analysis is illogical and tangential, with minimal or incorrect understanding of the perspective.",
+    },
+    focusBank: {
+      focuses: [
+        "Deconstruction",
+        "Philosophical Context",
+        "Complexity & Nuance",
+        "Stakeholder Alignment",
+        "Critique of Assumptions",
+      ],
+      comments: {
+        "Deconstruction": {
+          E:  "The analysis of the source is insightful and sophisticated, deconstructing the prompt's ideological perspective with an exceptional level of conceptual precision.",
+          PF: "The analysis of the source is capable and adept, demonstrating a sound and accurate understanding of the source's support for classical liberal individualism.",
+          S:  "The analysis of the source is conventional and straightforward, demonstrating a generalized understanding of the prompt's support for a capitalist economic system.",
+          L:  "The analysis of the source is incomplete and lacks depth, demonstrating a confused understanding of the source's underlying ideological perspective.",
+          P:  "The analysis of the source is illogical and tangential, demonstrating a minimal or incorrect understanding of the source's ideological perspective.",
+        },
+        "Philosophical Context": {
+          E:  "The student demonstrates a comprehensive understanding of the source by contextualizing its principles within the historical development of classical liberalism and free-market capitalism.",
+          PF: "The candidate deconstructs the source capably, demonstrating a solid understanding of how its ideas relate to historical shifts from early capitalism to the modern welfare state.",
+          S:  "The student provides a straightforward analysis, demonstrating a basic understanding of the source by relating its ideas to a standard definition of individual freedom.",
+          L:  "The student provides an incomplete analysis, showing a confused understanding of how the source's ideas connect to broader historical or political movements.",
+          P:  "The student's analysis is illogical and simply copies the source text, demonstrating no understanding of the historical context of the ideas.",
+        },
+        "Complexity & Nuance": {
+          E:  "The response is insightful and sophisticated, perceptively recognizing the nuanced tensions between individual initiative and the necessity of a collective social safety net.",
+          PF: "The response is capable and adept, clearly identifying the primary ideological tensions between free-market principles and the role of the government in society.",
+          S:  "The response is straightforward, recognizing the basic tension between individual self-reliance and government assistance in a conventional manner.",
+          L:  "The response is incomplete, demonstrating a confused and superficial understanding of the tension between individualism and collectivism.",
+          P:  "The response is tangential and illogical, showing a profound lack of understanding of any political or economic tensions within the prompt.",
+        },
+        "Stakeholder Alignment": {
+          E:  "The candidate demonstrates a comprehensive understanding of the source, insightfully identifying the distinct stakeholders (e.g., neoliberals versus modern liberals) who would support or reject the prompt.",
+          PF: "The student demonstrates a sound understanding of the ideological spectrum, capably identifying that supporters of laissez-faire capitalism would strongly align with the prompt's message.",
+          S:  "The candidate demonstrates a generalized understanding, adequately identifying that wealthy individuals or business owners would likely agree with the source.",
+          L:  "The candidate's alignment of stakeholders is vague and incomplete, showing a confused mapping of supporters and opponents of the source.",
+          P:  "The candidate provides an illogical mapping, demonstrating little or no understanding of how different ideologies align with the source.",
+        },
+        "Critique of Assumptions": {
+          E:  "The student's analysis is highly sophisticated, offering a profound critique of the source's underlying assumption that dependency on government support represents a failure of individual character.",
+          PF: "The candidate's analysis is adept, logically demonstrating the limitations of the source's claim that success is solely a result of individual effort.",
+          S:  "The student's analysis is straightforward and conventional, pointing out in a basic way that sometimes people require government support due to factors beyond their control.",
+          L:  "The student's analysis lacks depth, presenting a confused and simplistic critique of the source's assumptions without addressing its core arguments.",
+          P:  "The student's analysis is irrelevant and scant, failing to offer any coherent critique of the source's core assumptions.",
+        },
+      },
+    },
+  },
+
   /* SS 30-1 Assignment I — Source Interpretation.
      Standardized evaluator comments are organized by Topic / Conceptual
      Focus and then by reporting level. On the criteria step the teacher
@@ -726,6 +787,67 @@ const CATEGORIES = {
     },
   },
 
+  /* SS 30-1 Assignment I — Communication (focus-based). Same structure:
+     pick a Topic / Conceptual Focus to surface the standardized comment
+     for that focus and the chosen rating. */
+  commSocialFocus: {
+    name: "Communication",
+    blurb: "Organization of the writing, vocabulary (including social studies terminology), sentence structure, flow, and control of mechanics and grammar.",
+    desc: {
+      E:  "Communication is skillful: precise vocabulary, sophisticated structure, and near-flawless mechanics.",
+      PF: "Communication is capable: appropriate vocabulary, controlled structure, and minor errors only.",
+      S:  "Communication is adequate: conventional vocabulary and straightforward structure with occasional errors.",
+      L:  "Communication falters: imprecise vocabulary, awkward structure, and frequent errors.",
+      P:  "Communication is uncontrolled: inaccurate vocabulary, chaotic structure, and pervasive errors.",
+    },
+    focusBank: {
+      focuses: [
+        "Vocabulary & Terminology",
+        "Sentence Structure",
+        "Mechanics & Grammar",
+        "Paragraph Organization",
+        "Flow & Transitions",
+      ],
+      comments: {
+        "Vocabulary & Terminology": {
+          E:  "The vocabulary is highly precise and deliberately chosen, incorporating sophisticated social studies terminology to articulate complex political relationships clearly.",
+          PF: "The vocabulary is appropriate and specific, incorporating accurate curricular terms that strengthen the overall analysis of the sources.",
+          S:  "The vocabulary is conventional and generalized, relying on common, non-specialized phrasing to describe political and economic concepts.",
+          L:  "The vocabulary is imprecise, simplistic, and inappropriate, frequently misusing key terms and weakening the overall academic quality of the response.",
+          P:  "The vocabulary is overgeneralized and inaccurate, demonstrating a profound lack of command over basic curricular concepts and terminology.",
+        },
+        "Sentence Structure": {
+          E:  "The sentence structure is controlled and sophisticated, using varied sentence lengths and complex clauses to build a highly engaging and academic narrative.",
+          PF: "The sentence structure is controlled and effective, consistently maintaining grammatical clarity and focus throughout the response.",
+          S:  "The sentence structure is controlled and straightforward, effectively conveying ideas but relying on repetitive and simple patterns.",
+          L:  "The sentence structure is awkward and inconsistent, frequently causing confusion and disrupting the logical flow of the arguments.",
+          P:  "The sentence structure is uncontrolled and chaotic, frequently resulting in incomplete or grammatically incorrect sentences.",
+        },
+        "Mechanics & Grammar": {
+          E:  "The writing demonstrates a skillful, near-flawless control of mechanics, punctuation, and academic grammar, presenting a highly polished response under timed conditions.",
+          PF: "The writing demonstrates a capable control of mechanics and grammar, with minor errors that do not impede the overall clarity of communication.",
+          S:  "The writing demonstrates basic control of mechanics and grammar, though minor errors and occasional lapses in control are present.",
+          L:  "The writing demonstrates a faltering control of mechanics and grammar, with frequent errors that obscure the meaning of key sentences.",
+          P:  "The writing demonstrates a profound lack of control of mechanics, spelling, and grammar, making the response highly difficult to read.",
+        },
+        "Paragraph Organization": {
+          E:  "The response is judiciously organized in paragraph form, displaying clear structural intent and a highly cohesive layout throughout.",
+          PF: "The response is purposefully organized into clear paragraphs, providing a logical and structured presentation of ideas.",
+          S:  "The response is adequately organized in paragraph form, following a standard and predictable structural layout.",
+          L:  "The response is ineffectively organized and lacks clear paragraph structure, presenting ideas in a disjointed and confusing manner.",
+          P:  "The response is haphazardly organized and lacks any discernible paragraph structure, presenting ideas in a random and disorganized fashion.",
+        },
+        "Flow & Transitions": {
+          E:  "The writing flows seamlessly, utilizing sophisticated transitional devices that guide the reader effortlessly between distinct analytical ideas.",
+          PF: "The flow of the argument is clear and purposeful, with effective transition sentences that smoothly connect paragraph topics.",
+          S:  "The flow of the writing is straightforward and functional, utilizing basic transitional phrases to connect the main ideas.",
+          L:  "The flow of the writing is disrupted and awkward, with abrupt shifts between ideas and a lack of effective transitions.",
+          P:  "The writing lacks any logical flow or coherence, with fragmented ideas that fail to establish a connected argument.",
+        },
+      },
+    },
+  },
+
   commSocial: {
     name: "Communication",
     blurb: "Organization of the writing, vocabulary (including social studies terminology), and control of mechanics and grammar.",
@@ -843,6 +965,124 @@ const CATEGORIES = {
     },
   },
 
+  /* SS 30-1 Assignment II — Argumentation (focus-based). */
+  argumentationFocus: {
+    name: "Argumentation",
+    blurb: "Clarity of the position taken and the logic, consistency, and persuasiveness of the arguments developed to defend it.",
+    desc: {
+      E:  "The position is convincingly defended through sophisticated, logically cohesive arguments.",
+      PF: "The position is persuasively defended through clear, logical arguments.",
+      S:  "The position is generally defended through straightforward, conventional arguments.",
+      L:  "The position is inconsistently defended; reasoning is confused or contradictory.",
+      P:  "The position is not coherently defended; reasoning is illogical or absent.",
+    },
+    focusBank: {
+      focuses: [
+        "Thesis & Stance",
+        "Logical Cohesion",
+        "Structural Development",
+        "Ideological Alignment",
+        "Counterargument",
+      ],
+      comments: {
+        "Thesis & Stance": {
+          E:  "The position established is convincingly supported by a highly sophisticated, nuanced thesis that clearly defines the student's stance in relation to modern liberal principles.",
+          PF: "The position established is persuasively supported by a clear, purposeful thesis that establishes a logical stance in response to the source.",
+          S:  "The position established is generally supported by an appropriately chosen thesis that presents a straightforward and conventional stance on the source.",
+          L:  "The position established is confusing and largely unrelated to the arguments, presenting a vague or inconsistent stance on the source.",
+          P:  "The position established has little or no relationship to the source or the arguments, failing to present a coherent stance on the prompt.",
+        },
+        "Logical Cohesion": {
+          E:  "The argumentation is consistent and compelling, utilizing advanced, step-by-step logic to demonstrate why extreme individualism cannot sustain a stable society.",
+          PF: "The argumentation is logical and capably developed, utilizing clear reasoning to show how unchecked economic freedom can lead to systemic instability.",
+          S:  "The argumentation is straightforward and conventional, demonstrating an adequate understanding of the topic through clear, basic reasoning.",
+          L:  "The argumentation is repetitive, simplistic, and based on uninformed belief, showing a confused understanding of the logical requirements of the assignment.",
+          P:  "The argumentation is irrelevant and illogical, demonstrating a profound lack of critical thinking and reasoning skills.",
+        },
+        "Structural Development": {
+          E:  "The candidate's arguments are compellingly developed, presenting a highly cohesive and well-structured line of reasoning that remains consistent throughout the entire paper.",
+          PF: "The candidate's arguments are purposefully developed, maintaining a structured and logical line of reasoning that supports the thesis from beginning to end.",
+          S:  "The candidate's arguments are generally developed, following a basic and conventional essay structure that mostly supports the main position.",
+          L:  "The candidate's line of reasoning is inconsistent and contradictory, frequently drifting away from the established position.",
+          P:  "The response is disorganized and inconsistent, presenting disjointed ideas that fail to build a connected line of reasoning.",
+        },
+        "Ideological Alignment": {
+          E:  "The relationship between the position taken and the source is perceptively developed, using sophisticated ideological analysis to consistently support the central thesis.",
+          PF: "The relationship between the position taken and the source is clearly developed, maintaining a solid and logical connection to the prompt's ideological themes.",
+          S:  "The relationship between the position taken and the source is generally developed, though the connection occasionally drifts into simple narration of historical events.",
+          L:  "The relationship between the position taken and the source is superficially developed, demonstrating a confused understanding of the prompt's ideological themes.",
+          P:  "The relationship between the position taken and the source is minimally developed, demonstrating little or no understanding of the prompt's ideological perspective.",
+        },
+        "Counterargument": {
+          E:  "The writer perceptively develops the argument, integrating a highly sophisticated exploration of opposing viewpoints to strengthen and qualify the primary position.",
+          PF: "The response capably develops the argument, incorporating a logical discussion of opposing viewpoints to build a more persuasive position.",
+          S:  "The student's argument is straightforward, attempting to address opposing viewpoints in a conventional, basic manner.",
+          L:  "The student's argument is simplistic and repetitive, failing to address opposing viewpoints in any meaningful or logical way.",
+          P:  "The student's argument is illogical and irrelevant, failing to address any complexities or alternative viewpoints.",
+        },
+      },
+    },
+  },
+
+  /* SS 30-1 Assignment II — Evidence (focus-based). */
+  evidenceFocus: {
+    name: "Evidence",
+    blurb: "Relevance, accuracy, specificity, and development of the evidence used to support the arguments.",
+    desc: {
+      E:  "Evidence is sophisticated, accurate, and deliberately chosen to support the argument.",
+      PF: "Evidence is specific, purposeful, and accurate, with only minor errors.",
+      S:  "Evidence is conventional and generalized, described in a basic manner.",
+      L:  "Evidence is unfocused and incompletely developed, with notable inaccuracies.",
+      P:  "Evidence is irrelevant and inaccurate, with major errors.",
+    },
+    focusBank: {
+      focuses: [
+        "Historical Accuracy",
+        "Case Study Depth",
+        "Relevance of Cases",
+        "Conceptual Integration",
+        "Explanatory Relevance",
+      ],
+      comments: {
+        "Historical Accuracy": {
+          E:  "The evidence is sophisticated and deliberately chosen, displaying a highly comprehensive and accurate grasp of social studies knowledge with an impressive relative absence of error.",
+          PF: "The evidence used is specific and purposeful, selected accurately to support the main points of the argument, with only minor, non-distracting errors in historical detail.",
+          S:  "The evidence is conventional and straightforward, relying on generalized, well-known historical examples that are described in a basic manner.",
+          L:  "The evidence used is potentially relevant but is unfocused and incompletely developed, containing notable inaccuracies and extraneous details.",
+          P:  "The evidence is irrelevant and inaccurate, containing major and revealing errors that undermine the factual basis of the entire essay.",
+        },
+        "Case Study Depth": {
+          E:  "The student provides a thorough and comprehensive discussion of Roosevelt's New Deal, insightfully analyzing how specific alphabet agencies and the Social Security Act restored economic stability.",
+          PF: "The candidate provides a capable and adept discussion of the Great Depression, soundly explaining how John Maynard Keynes' demand-side theories justified the use of fiscal stimulus.",
+          S:  "The candidate provides a straightforward summary of the Great Depression, conventionally noting that the 1929 crash caused massive unemployment until the government stepped in.",
+          L:  "The student's discussion of historical examples is superficial and confused, providing only a vague and simplistic description of major events.",
+          P:  "The student's discussion of examples is scant and minimal, demonstrating an almost complete lack of historical or contemporary knowledge.",
+        },
+        "Relevance of Cases": {
+          E:  "The historical examples are deliberately chosen and highly relevant, perfectly supporting the thesis by demonstrating the practical failure of unregulated laissez-faire capitalism.",
+          PF: "The selected examples are specific and purposeful, clearly demonstrating how the lack of government regulations during the Industrial Revolution led to severe worker exploitation.",
+          S:  "The selected examples are conventional and straightforward, adequately showing that early industrial factories were unsafe and relied heavily on child labor.",
+          L:  "The selected examples are unfocused and incompletely developed, showing difficulty in establishing a clear connection to the central thesis.",
+          P:  "The selected examples are irrelevant and inaccurate, failing to support the thesis or align with the requirements of the prompt.",
+        },
+        "Conceptual Integration": {
+          E:  "The response displays an insightful understanding of social studies knowledge, seamlessly integrating theoretical macroeconomic concepts with specific historical case studies.",
+          PF: "The discussion of evidence reveals a solid understanding of social studies, capably connecting historical events to the core ideological principles of the curriculum.",
+          S:  "The discussion reveals an acceptable, basic understanding of social studies, linking historical facts to generalized ideological definitions in a straightforward manner.",
+          L:  "The discussion reveals a superficial and confused understanding of social studies knowledge, frequently misapplying key curricular concepts.",
+          P:  "The scant discussion reveals a profound lack of understanding of social studies knowledge and its practical application to the assignment.",
+        },
+        "Explanatory Relevance": {
+          E:  "The student thoroughly analyzes the evidence, ensuring that every historical fact and statistical detail serves as a powerful, direct support for the central argument.",
+          PF: "The student capably structures the evidence, providing clear and logical explanations of how each historical case study supports the primary thesis.",
+          S:  "The student integrates the evidence conventionally, presenting historical summaries in separate paragraphs with a basic, generalized connection to the main thesis.",
+          L:  "The candidate's evidence is disorganized and poorly integrated, relying on historical narrative that is largely unrelated to the core argument.",
+          P:  "The candidate's evidence is illogical and disjointed, serving as a distraction rather than a supporting element for the argument.",
+        },
+      },
+    },
+  },
+
   evidence: {
     name: "Evidence",
     blurb: "Relevance, accuracy, specificity, and development of the evidence used to support the arguments.",
@@ -921,6 +1161,65 @@ const CATEGORIES = {
     },
   },
 
+  /* SS 30-1 Assignment II — Communication (focus-based). */
+  commPositionFocus: {
+    name: "Communication",
+    blurb: "Fluency and organization of the writing, syntax, structural cohesion, vocabulary, and control of mechanics and grammar.",
+    desc: {
+      E:  "Communication is skillful: fluent style, sophisticated syntax, strong cohesion, and polished mechanics.",
+      PF: "Communication is capable: clear style, controlled syntax, and only minor errors.",
+      S:  "Communication is adequate: straightforward style and structure with occasional errors.",
+      L:  "Communication falters: awkward style, inconsistent syntax, and frequent errors.",
+      P:  "Communication is uncontrolled: disorganized style and pervasive errors.",
+    },
+    focusBank: {
+      focuses: [
+        "Stylistic Fluency",
+        "Syntactic Control",
+        "Structural Cohesion",
+        "Mechanical Precision",
+        "Vocabulary Selection",
+      ],
+      comments: {
+        "Stylistic Fluency": {
+          E:  "The writing is fluent, skillfully structured, and judiciously organized, consistently maintaining an academic and highly professional tone.",
+          PF: "The writing is clear and purposefully organized, maintaining a professional and appropriate academic tone that effectively communicates the argument.",
+          S:  "The writing is straightforward and functionally organized, successfully conveying the main arguments in a clear, accessible manner.",
+          L:  "The writing is awkward and lacks organization, presenting arguments in a disjointed and confusing manner that weakens the overall academic quality of the essay.",
+          P:  "The writing is unclear and disorganized, presenting ideas in a random and disjointed fashion that makes the essay highly difficult to follow.",
+        },
+        "Syntactic Control": {
+          E:  "The control of syntax, mechanics, and grammar is sophisticated, utilizing varied sentence lengths and complex clauses to build a highly engaging narrative.",
+          PF: "The control of syntax, mechanics, and grammar is capable, ensuring that complex ideas are communicated clearly and logically without causing reader confusion.",
+          S:  "The control of syntax, mechanics, and grammar is adequate, maintaining basic grammatical clarity despite occasional lapses in sentence construction.",
+          L:  "The control of syntax, mechanics, and grammar is inconsistent, frequently resulting in awkward phrasing and grammatically incorrect sentences.",
+          P:  "The control of syntax, mechanics, and grammar is almost entirely lacking, resulting in fragmented and grammatically incorrect sentences.",
+        },
+        "Structural Cohesion": {
+          E:  "The essay is judiciously organized with strong structural cohesion, seamlessly linking the introductory thesis, logical body paragraphs, and analytical conclusion.",
+          PF: "The essay is purposefully organized, utilizing clear topic sentences and logical paragraph transitions to maintain a well-structured progression of ideas.",
+          S:  "The essay is functionally organized into a standard five-paragraph format, using predictable transitions to connect the intro, body, and conclusion.",
+          L:  "The essay lacks a clear organizational structure, with poorly developed paragraphs that fail to establish a logical flow of ideas.",
+          P:  "The essay is haphazardly organized and lacks any discernible structure, failing to establish any logical connection between ideas.",
+        },
+        "Mechanical Precision": {
+          E:  "The response displays an impressive relative absence of mechanical or grammatical error, demonstrating a highly polished final draft under timed conditions.",
+          PF: "Minor errors in spelling, punctuation, or grammar are present, but they are infrequent and do not impede the overall clarity or flow of communication.",
+          S:  "There are occasional lapses in mechanical control and minor spelling or grammatical errors, but the overall communication remains generally clear and readable.",
+          L:  "Frequent errors in spelling, punctuation, and grammar are present, obscuring the clarity of communication and disrupting the flow of the argument.",
+          P:  "Jarring errors in mechanics, spelling, and grammar are present throughout the essay, severely impeding communication and readability.",
+        },
+        "Vocabulary Selection": {
+          E:  "The vocabulary is precise and deliberately chosen, incorporating sophisticated curricular terminology to elevate the overall analysis of the prompt.",
+          PF: "The vocabulary is appropriate and specific, incorporating accurate curricular terms that strengthen the overall clarity of the analysis.",
+          S:  "The vocabulary is conventional and generalized, relying on simple, non-specific language rather than precise, high-level academic terminology.",
+          L:  "The vocabulary is imprecise, simplistic, and inappropriate, frequently misusing key terms and weakening the overall clarity of the analysis.",
+          P:  "The vocabulary is overgeneralized and inaccurate, demonstrating a profound lack of command over basic curricular concepts and terminology.",
+        },
+      },
+    },
+  },
+
   qualityLanguage: {
     name: "Quality of Language and Expression",
     blurb: "Fluency and organization of the writing, vocabulary, and control of sentence construction, grammar, and mechanics.",
@@ -960,6 +1259,15 @@ const CATEGORIES = {
     },
   },
 };
+
+/* SS 30-1 Assignment II "Analysis of Source" reuses the same focus-based
+   comment bank as the Assignment I Section 1 analysis (identical content),
+   shown under the assignment-appropriate name. On the diploma rubric a
+   Limited or Poor score here caps the other categories at Satisfactory. */
+CATEGORIES.analysisOfSourceFocus = Object.assign({}, CATEGORIES.sourceAnalysis, {
+  name: "Analysis of Source",
+  blurb: "Understanding of the source's perspective and how effectively it is addressed in developing the position — its deconstruction, philosophical context, nuance, stakeholders, and underlying assumptions.",
+});
 
 /* Assignments per subject and stream. The same rubric structure is used at
    the 10 / 20 / 30 levels (adapted from the Grade 12 scoring guides). */
@@ -1030,17 +1338,18 @@ const COMMENT_DATA = {
           cats: [
             { key: "sourceInterpFocus", weight: 3 },
             { key: "sourceRelationships", weight: 3 },
-            { key: "commSocial", weight: 1 },
+            { key: "sourceAnalysis", weight: 3 },
+            { key: "commSocialFocus", weight: 1 },
           ],
         },
         {
           id: "pp1", name: "Position Paper (Assignment II)",
           sub: "Essay defending a position on an issue while addressing the perspective in the source.",
           cats: [
-            { key: "analysisOfSource", weight: 1 },
-            { key: "argumentation", weight: 1 },
-            { key: "evidence", weight: 1 },
-            { key: "commSocial", weight: 1 },
+            { key: "analysisOfSourceFocus", weight: 1 },
+            { key: "argumentationFocus", weight: 1 },
+            { key: "evidenceFocus", weight: 1 },
+            { key: "commPositionFocus", weight: 1 },
           ],
         },
       ],
@@ -1181,7 +1490,7 @@ function viewSubject() {
 function pickSubject(key) {
   if (state.subject !== key) {
     state.grade = null; state.stream = null; state.assignmentId = null;
-    state.levels = {}; state.comments = {};
+    state.levels = {}; state.focus = {}; state.comments = {};
   }
   state.subject = key;
   go(1);
@@ -1206,7 +1515,7 @@ function viewCourse() {
   </div>`;
 }
 function pickCourse(grade, stream) {
-  if (state.stream !== stream) { state.assignmentId = null; state.levels = {}; state.comments = {}; }
+  if (state.stream !== stream) { state.assignmentId = null; state.levels = {}; state.focus = {}; state.comments = {}; }
   state.grade = grade; state.stream = stream;
   go(2);
 }
@@ -1229,7 +1538,7 @@ function viewAssignment() {
   </div>`;
 }
 function pickAssignment(id) {
-  if (state.assignmentId !== id) { state.levels = {}; state.comments = {}; }
+  if (state.assignmentId !== id) { state.levels = {}; state.focus = {}; state.comments = {}; }
   state.assignmentId = id;
   go(3);
 }
