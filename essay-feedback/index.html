@@ -2017,81 +2017,171 @@ function ela2Cat(baseKey, name, eps) {
   return { name: name, blurb: b.blurb, desc: b.desc,
     comments: Object.assign({}, b.comments, eps) };
 }
+/* Prompt-keyed (focus) ELA -2 content section. Each topic+level holds an
+   array of comments; name/blurb/descriptors are reused from the base. */
+function ela2Focus(baseKey, name, focuses, comments) {
+  const b = CATEGORIES[baseKey];
+  return { name: name, blurb: b.blurb, desc: b.desc,
+    focusBank: { focuses: focuses, comments: comments } };
+}
 Object.assign(CATEGORIES, {
 
-  /* Assignment I — Visual Reflection: Ideas and Impressions. */
-  ela2VrIdeas: ela2Cat("ideasImpressions", "Ideas and Impressions", {
-    E: [
-      "The student's reflection on the rooftop garden photo offers insightful, carefully considered perceptions of how urban environments can coexist with nature, showing deep conceptual thought.",
-      "Support is precise and purposefully chosen, drawing strong connections between the children's hospital setting, the superhero costumes, and the profound impact of kindness.",
-      "The prose is skillfully developed, analyzing how the lone fox serves as a powerful symbol for the quiet coexistence between nature and community.",
-      "Perceptions are insightful and carefully considered, showing an advanced ability to analyze how composition, lighting, and visual contrasts convey a theme of environmental healing.",
-      "The response is skillfully developed, using the hospital window washers as a clear, compelling metaphor for the brave, quiet heroes who help run our world.",
-    ],
-    PF: [
-      "The student's perceptions of the city rooftop garden are thoughtful and considered, focusing on how nature provides a calm place of refuge amidst busy urban development.",
-      "The response is coherently developed, establishing a clear connection between the superhero costumes and the visual details of the children's hospital.",
-      "Support is relevant and detailed, linking the fox looking over the snowy community to a thoughtful discussion about finding quiet beauty in the world.",
-      "The reflection is coherently developed, explaining how visual elements like the contrast between the green garden and the surrounding high-rises highlight our environmental responsibilities.",
-      "The student's discussion of real-life heroes is thoughtful and well considered, using the window washers to build a clear, well-supported argument about community support.",
-    ],
-    S: [
-      "The student's perceptions are appropriate but generalized, discussing how the rooftop garden shows we need more plants in busy city areas.",
-      "The response is generally clearly developed, explaining that the window cleaners dress up as comic book heroes to make hospitalized children happy.",
-      "Support is adequate and generally connected to the image of the winter fox, although the discussion of nature and community remains literal and broad.",
-      "The reflection is generally clearly developed, using basic details from the photograph to support a straightforward, appropriate discussion about environmental issues.",
-      "The student provides adequate, straightforward connections to the visual prompt, explaining that the window cleaners show bravery by working at high altitudes.",
-    ],
+  /* Assignment I — Visual Reflection: Ideas and Impressions (prompt-keyed). */
+  ela2VrIdeas: ela2Focus("ideasImpressions", "Ideas and Impressions",
+    ["Rooftop Garden (Urban Growth vs. Environmental Preservation)", "Window Washers (Acts of Kindness & Inspiration)", "Winter Fox (Nature, Isolation & Community)"], {
+    "Rooftop Garden (Urban Growth vs. Environmental Preservation)": {
+      E: [
+        "The student's reflection on the rooftop garden photo offers insightful, carefully considered perceptions of how urban environments can coexist with nature, showing deep conceptual thought.",
+        "Perceptions are insightful and carefully considered, showing an advanced ability to analyze how composition, lighting, and visual contrasts convey a theme of environmental healing.",
+      ],
+      PF: [
+        "The student's perceptions of the city rooftop garden are thoughtful and considered, focusing on how nature provides a calm place of refuge amidst busy urban development.",
+        "The reflection is coherently developed, explaining how visual elements like the contrast between the green garden and the surrounding high-rises highlight our environmental responsibilities.",
+      ],
+      S: [
+        "The student's perceptions are appropriate but generalized, discussing how the rooftop garden shows we need more plants in busy city areas.",
+        "The reflection is generally clearly developed, using basic details from the photograph to support a straightforward, appropriate discussion about environmental issues.",
+      ],
+      L: ["The reflection on the rooftop garden is vague, offering superficial or ambiguous impressions that struggle to connect the image of nature in the city to a clear idea."],
+      P: ["The response shows minimal engagement with the rooftop garden image, with underdeveloped or irrelevant ideas that do not address the relationship between nature and urban growth."],
+    },
+    "Window Washers (Acts of Kindness & Inspiration)": {
+      E: [
+        "Support is precise and purposefully chosen, drawing strong connections between the children's hospital setting, the superhero costumes, and the profound impact of kindness.",
+        "The response is skillfully developed, using the hospital window washers as a clear, compelling metaphor for the brave, quiet heroes who help run our world.",
+      ],
+      PF: [
+        "The response is coherently developed, establishing a clear connection between the superhero costumes and the visual details of the children's hospital.",
+        "The student's discussion of real-life heroes is thoughtful and well considered, using the window washers to build a clear, well-supported argument about community support.",
+      ],
+      S: [
+        "The response is generally clearly developed, explaining that the window cleaners dress up as comic book heroes to make hospitalized children happy.",
+        "The student provides adequate, straightforward connections to the visual prompt, explaining that the window cleaners show bravery by working at high altitudes.",
+      ],
+      L: ["The reflection on the superhero window washers is vague, offering superficial impressions of kindness that are not clearly tied to the details of the image."],
+      P: ["The response shows minimal engagement with the window washers image, with underdeveloped or irrelevant ideas that do not address the impact of everyday acts of kindness."],
+    },
+    "Winter Fox (Nature, Isolation & Community)": {
+      E: ["The prose is skillfully developed, analyzing how the lone fox serves as a powerful symbol for the quiet coexistence between nature and community."],
+      PF: ["Support is relevant and detailed, linking the fox looking over the snowy community to a thoughtful discussion about finding quiet beauty in the world."],
+      S: ["Support is adequate and generally connected to the image of the winter fox, although the discussion of nature and community remains literal and broad."],
+      L: ["The reflection on the winter fox is vague, offering superficial or ambiguous impressions that do not clearly connect the animal to ideas of nature, isolation, or community."],
+      P: ["The response shows minimal engagement with the winter fox image, with underdeveloped or irrelevant ideas that fail to address the relationship between wildlife and human settlement."],
+    },
   }),
 
-  /* Assignment I — Visual Reflection: Presentation. */
-  ela2VrPresentation: ela2Cat("presentation", "Presentation", {
-    E: [
-      "The student's voice is exceptionally engaging and confident, establishing an immediate, powerful connection with the reader.",
-      "Stylistic choices are precise and effective, using vivid descriptions of the rooftop garden to create a strong, polished narrative.",
-      "The writing features a highly convincing voice, using parallel sentence structures and thoughtful rhetorical questions to highlight the impact of everyday heroes.",
-      "Precise vocabulary and fluent phrasing are used to describe the visual contrast between the bright red fox and the cool blue tones of the snowy town.",
-      "The student's voice is confident and highly polished, maintaining an appropriate tone that enhances the overall impact of the visual reflection.",
-    ],
-    PF: [
-      "The student's voice is distinct and well considered, conveying a clear, appropriate tone that is maintained consistently.",
-      "Stylistic choices are specific and frequently effective, utilizing descriptive language to capture the atmosphere of the urban garden.",
-      "Sentence structures are purposefully shaped for effect, enhancing the discussion of how small acts of kindness can lift a community's spirits.",
-      "The prose features a competent, distinct voice, using specific diction to describe the serene setting of the winter valley.",
-      "Stylistic choices are specific and effective, using sensory details to describe the physical challenges and bravery of the hospital window washers.",
-    ],
-    S: [
-      "The student's voice is matter-of-fact and appropriate, conveying ideas and impressions in a clear, functional, and straightforward manner.",
-      "Stylistic choices are adequate and occasionally effective, relying on simple, everyday vocabulary to describe the city garden.",
-      "Sentence structures are generally straightforward and clear, providing a basic, reliable framework for the student's ideas.",
-      "The tone of the reflection is appropriate and matter-of-fact, enabling a clear and direct description of the winter town and the fox.",
-      "Stylistic choices are adequate, utilizing simple and predictable language to discuss how doctors and nurses serve as real-world heroes.",
-    ],
+  /* Assignment I — Visual Reflection: Presentation (prompt-keyed; voice/style
+     comments that are prompt-neutral are offered under every prompt). */
+  ela2VrPresentation: ela2Focus("presentation", "Presentation",
+    ["Rooftop Garden (Urban Growth vs. Environmental Preservation)", "Window Washers (Acts of Kindness & Inspiration)", "Winter Fox (Nature, Isolation & Community)"], {
+    "Rooftop Garden (Urban Growth vs. Environmental Preservation)": {
+      E: [
+        "Stylistic choices are precise and effective, using vivid descriptions of the rooftop garden to create a strong, polished narrative.",
+        "The student's voice is exceptionally engaging and confident, establishing an immediate, powerful connection with the reader.",
+        "The student's voice is confident and highly polished, maintaining an appropriate tone that enhances the overall impact of the visual reflection.",
+      ],
+      PF: [
+        "Stylistic choices are specific and frequently effective, utilizing descriptive language to capture the atmosphere of the urban garden.",
+        "The student's voice is distinct and well considered, conveying a clear, appropriate tone that is maintained consistently.",
+      ],
+      S: [
+        "Stylistic choices are adequate and occasionally effective, relying on simple, everyday vocabulary to describe the city garden.",
+        "The student's voice is matter-of-fact and appropriate, conveying ideas and impressions in a clear, functional, and straightforward manner.",
+        "Sentence structures are generally straightforward and clear, providing a basic, reliable framework for the student's ideas.",
+      ],
+      L: ["The voice is undiscerning and the tone uneven, with imprecise stylistic choices that weaken the description of the rooftop garden."],
+      P: ["The voice is confused and the tone unsuitable, with ineffective stylistic choices that fail to convey any clear impression of the garden image."],
+    },
+    "Window Washers (Acts of Kindness & Inspiration)": {
+      E: [
+        "The writing features a highly convincing voice, using parallel sentence structures and thoughtful rhetorical questions to highlight the impact of everyday heroes.",
+        "The student's voice is exceptionally engaging and confident, establishing an immediate, powerful connection with the reader.",
+        "The student's voice is confident and highly polished, maintaining an appropriate tone that enhances the overall impact of the visual reflection.",
+      ],
+      PF: [
+        "Sentence structures are purposefully shaped for effect, enhancing the discussion of how small acts of kindness can lift a community's spirits.",
+        "Stylistic choices are specific and effective, using sensory details to describe the physical challenges and bravery of the hospital window washers.",
+        "The student's voice is distinct and well considered, conveying a clear, appropriate tone that is maintained consistently.",
+      ],
+      S: [
+        "Stylistic choices are adequate, utilizing simple and predictable language to discuss how doctors and nurses serve as real-world heroes.",
+        "The student's voice is matter-of-fact and appropriate, conveying ideas and impressions in a clear, functional, and straightforward manner.",
+        "Sentence structures are generally straightforward and clear, providing a basic, reliable framework for the student's ideas.",
+      ],
+      L: ["The voice is undiscerning and the tone uneven, with imprecise stylistic choices that weaken the portrayal of the window washers and their act of kindness."],
+      P: ["The voice is confused and the tone unsuitable, with ineffective stylistic choices that fail to convey any clear impression of the heroes in the image."],
+    },
+    "Winter Fox (Nature, Isolation & Community)": {
+      E: [
+        "Precise vocabulary and fluent phrasing are used to describe the visual contrast between the bright red fox and the cool blue tones of the snowy town.",
+        "The student's voice is exceptionally engaging and confident, establishing an immediate, powerful connection with the reader.",
+        "The student's voice is confident and highly polished, maintaining an appropriate tone that enhances the overall impact of the visual reflection.",
+      ],
+      PF: [
+        "The prose features a competent, distinct voice, using specific diction to describe the serene setting of the winter valley.",
+        "The student's voice is distinct and well considered, conveying a clear, appropriate tone that is maintained consistently.",
+      ],
+      S: [
+        "The tone of the reflection is appropriate and matter-of-fact, enabling a clear and direct description of the winter town and the fox.",
+        "The student's voice is matter-of-fact and appropriate, conveying ideas and impressions in a clear, functional, and straightforward manner.",
+        "Sentence structures are generally straightforward and clear, providing a basic, reliable framework for the student's ideas.",
+      ],
+      L: ["The voice is undiscerning and the tone uneven, with imprecise stylistic choices that weaken the description of the winter fox and its setting."],
+      P: ["The voice is confused and the tone unsuitable, with ineffective stylistic choices that fail to convey any clear impression of the winter scene."],
+    },
   }),
 
-  /* Assignment II — Literary Exploration: Thought and Support. */
-  ela2LeThought: ela2Cat("thoughtSupport", "Thought and Support", {
-    E: [
-      "The student demonstrates an insightful understanding of the topic, perceptively analyzing how self-confidence shapes Andy Dufresne's major decisions in The Shawshank Redemption.",
-      "Support is precise and effective, drawing detailed connections between Maggie Fitzgerald's boxing goals in Million Dollar Baby and her sense of accomplishment.",
-      "The literary example is related effectively, showing how Guy Montag's pursuit of knowledge in Fahrenheit 451 is shaped by moments of failure and success.",
-      "Ideas are perceptively explored, contrastingly analyzing Willy Loman's tragic path in Death of a Salesman to show how a lack of true passion can lead to despair.",
-      "An insightful understanding of the prompt is demonstrated, seamlessly connecting the provided reading selection to the student's own experience of pursuing a challenging goal.",
-    ],
-    PF: [
-      "A well-considered understanding of the topic is demonstrated, thoughtfully exploring how Thao's self-confidence in Gran Torino is developed through positive mentorship.",
-      "The student's ideas are thoughtfully explored, using relevant examples from Million Dollar Baby to show how pursuing a goal brings purpose to life.",
-      "The literary example is related competently, discussing how Montag's actions in Fahrenheit 451 are influenced by his passion for books.",
-      "Support is specific and relevant, linking the student's personal experience in martial arts or hunting to a thoughtful discussion of the prompt.",
-      "The response is thoughtfully explored, using clear examples from the provided text to show how determination helps characters overcome doubt.",
-    ],
-    S: [
-      "A defensible understanding of the topic is demonstrated, straightforwardly discussing how Andy's self-confidence helps him make friends in prison in The Shawshank Redemption.",
-      "The literary example is related adequately, describing how Sean helps Will overcome his painful past in Good Will Hunting to achieve his goals.",
-      "Support is relevant but tends to be general, relying on basic plot summaries of Fahrenheit 451 to discuss Montag's rebellion.",
-      "The student's ideas are appropriately explored, straightforwardly explaining how failing a test or facing a sports challenge can influence motivation.",
-      "The response is appropriate and straightforward, drawing basic and predictable connections between the characters in the excerpt and the thematic prompt.",
-    ],
+  /* Assignment II — Literary Exploration: Thought and Support (prompt-keyed;
+     prompt-neutral comments are offered under every prompt). */
+  ela2LeThought: ela2Focus("thoughtSupport", "Thought and Support",
+    ["Self-Confidence and Decisions", "Accomplishment and Goals", "Passion, Success, and Failure"], {
+    "Self-Confidence and Decisions": {
+      E: ["The student demonstrates an insightful understanding of the topic, perceptively analyzing how self-confidence shapes Andy Dufresne's major decisions in The Shawshank Redemption."],
+      PF: [
+        "A well-considered understanding of the topic is demonstrated, thoughtfully exploring how Thao's self-confidence in Gran Torino is developed through positive mentorship.",
+        "The response is thoughtfully explored, using clear examples from the provided text to show how determination helps characters overcome doubt.",
+        "Support is specific and relevant, linking the student's personal experience in martial arts or hunting to a thoughtful discussion of the prompt.",
+      ],
+      S: [
+        "A defensible understanding of the topic is demonstrated, straightforwardly discussing how Andy's self-confidence helps him make friends in prison in The Shawshank Redemption.",
+        "The response is appropriate and straightforward, drawing basic and predictable connections between the characters in the excerpt and the thematic prompt.",
+      ],
+      L: ["The discussion of how self-confidence shapes decisions is superficial, offering an oversimplified understanding of the character and weak supporting detail."],
+      P: ["The response shows little understanding of how self-confidence influences decisions, with ideas and support that are largely absent or unrelated to the chosen text."],
+    },
+    "Accomplishment and Goals": {
+      E: [
+        "Support is precise and effective, drawing detailed connections between Maggie Fitzgerald's boxing goals in Million Dollar Baby and her sense of accomplishment.",
+        "An insightful understanding of the prompt is demonstrated, seamlessly connecting the provided reading selection to the student's own experience of pursuing a challenging goal.",
+      ],
+      PF: [
+        "The student's ideas are thoughtfully explored, using relevant examples from Million Dollar Baby to show how pursuing a goal brings purpose to life.",
+        "Support is specific and relevant, linking the student's personal experience in martial arts or hunting to a thoughtful discussion of the prompt.",
+      ],
+      S: [
+        "The literary example is related adequately, describing how Sean helps Will overcome his painful past in Good Will Hunting to achieve his goals.",
+        "The response is appropriate and straightforward, drawing basic and predictable connections between the characters in the excerpt and the thematic prompt.",
+      ],
+      L: ["The discussion of accomplishment and goals is superficial, with an oversimplified grasp of the character's pursuit and thin, loosely connected support."],
+      P: ["The response shows little understanding of how pursuing a goal creates a sense of accomplishment, with ideas and support that are largely absent or irrelevant."],
+    },
+    "Passion, Success, and Failure": {
+      E: [
+        "The literary example is related effectively, showing how Guy Montag's pursuit of knowledge in Fahrenheit 451 is shaped by moments of failure and success.",
+        "Ideas are perceptively explored, contrastingly analyzing Willy Loman's tragic path in Death of a Salesman to show how a lack of true passion can lead to despair.",
+      ],
+      PF: [
+        "The literary example is related competently, discussing how Montag's actions in Fahrenheit 451 are influenced by his passion for books.",
+        "Support is specific and relevant, linking the student's personal experience in martial arts or hunting to a thoughtful discussion of the prompt.",
+      ],
+      S: [
+        "Support is relevant but tends to be general, relying on basic plot summaries of Fahrenheit 451 to discuss Montag's rebellion.",
+        "The student's ideas are appropriately explored, straightforwardly explaining how failing a test or facing a sports challenge can influence motivation.",
+        "The response is appropriate and straightforward, drawing basic and predictable connections between the characters in the excerpt and the thematic prompt.",
+      ],
+      L: ["The discussion of passion, success, and failure is superficial, offering oversimplified ideas and support that only loosely relate to the chosen text."],
+      P: ["The response shows little understanding of how success or failure shapes the pursuit of a passion, with ideas and support that are largely absent or irrelevant."],
+    },
   }),
 
   /* Assignment II — Literary Exploration: Form and Structure. */
@@ -2169,29 +2259,69 @@ Object.assign(CATEGORIES, {
     ],
   }),
 
-  /* Assignment III — Persuasive Writing in Context: Thought and Support. */
-  ela2PwThought: ela2Cat("thoughtSupport", "Thought and Support", {
-    E: [
-      "The student demonstrates a highly perceptive, thorough understanding of the issue, analyzing the long-term consequences of attendance fines on low-income students like Geraldine McQueen.",
-      "The argument is exceptionally persuasive, using academic data to show how a flipped classroom model can disadvantage students who lack access to technology.",
-      "Support is well defined and purposefully chosen, synthesizing community views to show how a driving campaign helps youth secure employment.",
-      "The writing shows a sophisticated awareness of the target audience, directly addressing and refuting the counterarguments of the opposing side.",
-      "The voice is consistently confident, formal, and authentic to the assigned persona, creating an immediate and authoritative connection with the reader.",
-    ],
-    PF: [
-      "A thoughtful and competent understanding of the issue is demonstrated, presenting sound arguments against using financial penalties for student absences.",
-      "The student's arguments are well considered, explaining how pre-recorded lessons could eliminate valuable classroom discussion.",
-      "Support is specific and relevant, using survey data and stakeholder quotes to show how a driver's licence builds youth independence.",
-      "The student successfully integrates details from the sources, using specific quotes, statistics, or perspectives to build a strong, credible defense.",
-      "The voice is competent and professional, maintaining a consistent, appropriate tone that is highly suited to the target school board or town council.",
-    ],
-    S: [
-      "A sufficient but generalized understanding of the issue is demonstrated, outlining the basic arguments for and against the attendance fine policy.",
-      "The student's arguments are appropriate and straightforward, focusing on how a flipped classroom saves time for homework help.",
-      "Support is relevant but general, using broad summaries of source information and lacking in tight, persuasive consistency.",
-      "Information from the provided sources is incorporated, but the integration tends to be simple repetition rather than thoughtful synthesis or analysis.",
-      "The student's voice is clear and appropriate, maintaining a functional tone that clearly conveys the chosen side of the argument.",
-    ],
+  /* Assignment III — Persuasive Writing in Context: Thought and Support
+     (prompt-keyed; prompt-neutral comments offered under every prompt). */
+  ela2PwThought: ela2Focus("thoughtSupport", "Thought and Support",
+    ["Attendance Penalty Fines", "The Flipped Classroom", "Youth Driving Campaign"], {
+    "Attendance Penalty Fines": {
+      E: [
+        "The student demonstrates a highly perceptive, thorough understanding of the issue, analyzing the long-term consequences of attendance fines on low-income students like Geraldine McQueen.",
+        "The writing shows a sophisticated awareness of the target audience, directly addressing and refuting the counterarguments of the opposing side.",
+        "The voice is consistently confident, formal, and authentic to the assigned persona, creating an immediate and authoritative connection with the reader.",
+      ],
+      PF: [
+        "A thoughtful and competent understanding of the issue is demonstrated, presenting sound arguments against using financial penalties for student absences.",
+        "The student successfully integrates details from the sources, using specific quotes, statistics, or perspectives to build a strong, credible defense.",
+        "The voice is competent and professional, maintaining a consistent, appropriate tone that is highly suited to the target school board or town council.",
+      ],
+      S: [
+        "A sufficient but generalized understanding of the issue is demonstrated, outlining the basic arguments for and against the attendance fine policy.",
+        "Support is relevant but general, using broad summaries of source information and lacking in tight, persuasive consistency.",
+        "Information from the provided sources is incorporated, but the integration tends to be simple repetition rather than thoughtful synthesis or analysis.",
+        "The student's voice is clear and appropriate, maintaining a functional tone that clearly conveys the chosen side of the argument.",
+      ],
+      L: ["The argument about attendance fines is oversimplified and inconsistent, with limited use of the sources and weak awareness of the audience."],
+      P: ["The response shows little understanding of the attendance-fine issue, offering an unclear position with minimal or irrelevant support."],
+    },
+    "The Flipped Classroom": {
+      E: [
+        "The argument is exceptionally persuasive, using academic data to show how a flipped classroom model can disadvantage students who lack access to technology.",
+        "The writing shows a sophisticated awareness of the target audience, directly addressing and refuting the counterarguments of the opposing side.",
+        "The voice is consistently confident, formal, and authentic to the assigned persona, creating an immediate and authoritative connection with the reader.",
+      ],
+      PF: [
+        "The student's arguments are well considered, explaining how pre-recorded lessons could eliminate valuable classroom discussion.",
+        "The student successfully integrates details from the sources, using specific quotes, statistics, or perspectives to build a strong, credible defense.",
+        "The voice is competent and professional, maintaining a consistent, appropriate tone that is highly suited to the target school board or town council.",
+      ],
+      S: [
+        "The student's arguments are appropriate and straightforward, focusing on how a flipped classroom saves time for homework help.",
+        "Support is relevant but general, using broad summaries of source information and lacking in tight, persuasive consistency.",
+        "Information from the provided sources is incorporated, but the integration tends to be simple repetition rather than thoughtful synthesis or analysis.",
+        "The student's voice is clear and appropriate, maintaining a functional tone that clearly conveys the chosen side of the argument.",
+      ],
+      L: ["The argument about the flipped classroom is oversimplified and inconsistent, with limited use of the sources and weak awareness of the audience."],
+      P: ["The response shows little understanding of the flipped-classroom issue, offering an unclear position with minimal or irrelevant support."],
+    },
+    "Youth Driving Campaign": {
+      E: [
+        "Support is well defined and purposefully chosen, synthesizing community views to show how a driving campaign helps youth secure employment.",
+        "The writing shows a sophisticated awareness of the target audience, directly addressing and refuting the counterarguments of the opposing side.",
+        "The voice is consistently confident, formal, and authentic to the assigned persona, creating an immediate and authoritative connection with the reader.",
+      ],
+      PF: [
+        "Support is specific and relevant, using survey data and stakeholder quotes to show how a driver's licence builds youth independence.",
+        "The student successfully integrates details from the sources, using specific quotes, statistics, or perspectives to build a strong, credible defense.",
+        "The voice is competent and professional, maintaining a consistent, appropriate tone that is highly suited to the target school board or town council.",
+      ],
+      S: [
+        "Support is relevant but general, using broad summaries of source information and lacking in tight, persuasive consistency.",
+        "Information from the provided sources is incorporated, but the integration tends to be simple repetition rather than thoughtful synthesis or analysis.",
+        "The student's voice is clear and appropriate, maintaining a functional tone that clearly conveys the chosen side of the argument.",
+      ],
+      L: ["The argument about the youth driving campaign is oversimplified and inconsistent, with limited use of the sources and weak awareness of the audience."],
+      P: ["The response shows little understanding of the youth-driving issue, offering an unclear position with minimal or irrelevant support."],
+    },
   }),
 
   /* Assignment III — Persuasive Writing in Context: Writing Skills. */
@@ -2664,18 +2794,26 @@ function viewBankComments(c) {
 /* Focus-based criterion (e.g. SS 30-1 Assignment I): pick a Topic /
    Conceptual Focus, and the standardized comment for that focus and the
    chosen rating is offered. Multiple focuses can be added. */
+/* The standardized comment(s) for a focus category's selected focus and
+   level. A cell may hold a single string or an array of comments. */
+function focusMatches(catKey) {
+  const cat = CATEGORIES[catKey];
+  const focus = state.focus[catKey], lv = state.levels[catKey];
+  if (!focus || !lv || lv === "INS") return [];
+  const v = cat.focusBank.comments[focus] && cat.focusBank.comments[focus][lv];
+  return v == null ? [] : [].concat(v);
+}
 function viewFocusComments(c) {
   const cat = CATEGORIES[c.key];
   const lv = state.levels[c.key];
   const chosen = state.comments[c.key] || [];
   const fb = cat.focusBank;
   const focus = state.focus[c.key] || "";
-  const matched = (focus && lv && lv !== "INS") ? fb.comments[focus][lv] : "";
-  const alreadyAdded = matched && chosen.includes(matched);
+  const matches = focusMatches(c.key);
   return `
   <div class="crit-block">
     <h3>${esc(cat.name)}${levelBadge(lv)}</h3>
-    <p class="crit-desc">Choose a topic / conceptual focus to surface the standardized comment for the
+    <p class="crit-desc">Choose a topic / conceptual focus to surface the standardized comment(s) for the
       <strong>${esc(LEVEL_BY_KEY[lv].name)}</strong> rating. Add as many focuses as the response addresses.</p>
     ${chosenList(c.key, chosen)}
     <label style="display:block;font-weight:600;font-size:0.9rem;margin:6px 0 6px;">Topic / Conceptual Focus</label>
@@ -2683,13 +2821,13 @@ function viewFocusComments(c) {
       <option value="">— Select a focus —</option>
       ${fb.focuses.map(f => `<option value="${esc(f)}" ${focus === f ? "selected" : ""}>${esc(f)}</option>`).join("")}
     </select>
-    ${matched ? `
+    ${matches.length ? matches.map((m, i) => `
       <div style="background:#fcfdff;border:1.5px solid var(--border);border-radius:8px;padding:12px;margin-top:10px;">
-        <p style="font-size:0.9rem;line-height:1.5;">${sesc(matched)}</p>
-        ${alreadyAdded
+        <p style="font-size:0.9rem;line-height:1.5;">${sesc(m)}</p>
+        ${chosen.includes(m)
           ? `<p class="crit-desc" style="margin-top:8px;"><em>Already added.</em></p>`
-          : `<button class="mini-btn" onclick="addFocusComment('${c.key}')">Add this comment</button>`}
-      </div>` : (lv === "INS" ? `<p class="crit-desc" style="margin-top:8px;">Standardized comments are not used for an Insufficient rating.</p>` : "")}
+          : `<button class="mini-btn" onclick="addFocusComment('${c.key}', ${i})">Add this comment</button>`}
+      </div>`).join("") : (lv === "INS" ? `<p class="crit-desc" style="margin-top:8px;">Standardized comments are not used for an Insufficient rating.</p>` : "")}
     ${customBox(c.key)}
   </div>`;
 }
@@ -2710,11 +2848,10 @@ function pickFocus(catKey, value) {
   if (value) state.focus[catKey] = value; else delete state.focus[catKey];
   save(); render();
 }
-function addFocusComment(catKey) {
-  const focus = state.focus[catKey];
-  const lv = state.levels[catKey];
-  if (!focus || !lv || lv === "INS") return;
-  addComment(catKey, CATEGORIES[catKey].focusBank.comments[focus][lv]);
+function addFocusComment(catKey, i) {
+  const matches = focusMatches(catKey);
+  const text = matches[i || 0];
+  if (text) addComment(catKey, text);
 }
 
 function addComment(catKey, text) {
