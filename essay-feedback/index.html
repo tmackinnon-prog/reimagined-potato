@@ -1716,6 +1716,298 @@ Object.assign(CATEGORIES, {
 
 });
 
+/* ===== ELA -1 focus-based rubric sections (Personal Response &
+   Critical/Analytical Response). The focus is the prompt topic (A-E).
+   Names, blurbs, and descriptors are reused from the base categories. ===== */
+const ELA_TOPICS = [
+  "Topic A: Pursuit/Compromise of Happiness",
+  "Topic B: Struggle to Restore Honour & Certainty",
+  "Topic C: Individual's Construction of Place",
+  "Topic D: Power of Recovery from Trauma",
+  "Topic E: Independence vs. Circumstance",
+];
+function elaCat(baseKey, comments) {
+  const b = CATEGORIES[baseKey];
+  return { name: b.name, blurb: b.blurb, desc: b.desc,
+    focusBank: { focuses: ELA_TOPICS, comments } };
+}
+Object.assign(CATEGORIES, {
+
+  /* Assignment I, Table 1 — Ideas and Impressions. */
+  ideasImpressionsFocus: elaCat("ideasImpressions", {
+    "Topic A: Pursuit/Compromise of Happiness": {
+      E:  "The exploration of how happiness is compromised is highly insightful, offering confident and discerning reflections on the tragic self-deception inherent in sacrificing one's personal identity for social utility.",
+      PF: "The exploration of how individuals pursue happiness is purposeful, presenting thoughtful and considered ideas about the necessity of choosing authenticity over compliance.",
+      S:  "The student's exploration of happiness is generalized, relying on straightforward and relevant perceptions about the conventional compromise between material wealth and joy.",
+      L:  "The exploration of happiness is vague, demonstrating superficial and ambiguous ideas about why characters choose to compromise their emotional well-being.",
+      P:  "The exploration of happiness is minimal, showing underdeveloped and irrelevant ideas that fail to address the core prompt of the assignment.",
+    },
+    "Topic B: Struggle to Restore Honour & Certainty": {
+      E:  "The response offers an insightful exploration of the struggle for honor, showing discerning perceptions of the existential dread that accompanies a sudden, catastrophic loss of moral certainty.",
+      PF: "The response provides a purposeful exploration of the journey to restore honor, offering thoughtful and considered reflections on how characters navigate guilt to reclaim self-worth.",
+      S:  "The exploration of the struggle for honor is generalized, offering straightforward observations on the predictable ways characters seek validation from their peers.",
+      L:  "The writing presents a vague exploration of the struggle to restore honor, relying on imprecise ideas that fail to distinguish between public reputation and private integrity.",
+      P:  "The student offers a minimal and highly fragmented exploration of honor, utilizing underdeveloped support that shows no comprehension of the prompt.",
+    },
+    "Topic C: Individual's Construction of Place": {
+      E:  "The writing provides an insightful analysis of how place is constructed, confidently articulating how physical geography serves as a psychological canvas for personal belonging.",
+      PF: "The student's ideas regarding the construction of place are thoughtful and considered, purposefully exploring the emotional ties that bind individuals to domestic environments.",
+      S:  "The response presents generalized ideas on the construction of place, offering relevant and straightforward reflections on how moving to a new home prompts personal adaptation.",
+      L:  "The ideas regarding the construction of place are superficial and ambiguous, resulting in a vague exploration that fails to connect physical environments to identity.",
+      P:  "The ideas regarding the construction of place are largely absent or irrelevant, showing an underdeveloped response to the provided texts and prompt.",
+    },
+    "Topic D: Power of Recovery from Trauma": {
+      E:  "The student's exploration of recovery is highly insightful, demonstrating a discerning understanding of the painful, non-linear process of rebuilding an identity in trauma's wake.",
+      PF: "The writing displays a purposeful focus on the power of recovery, utilizing thoughtful and considered perceptions of how individuals emerge stronger after facing profound hardship.",
+      S:  "The student's exploration of recovery is generalized, using straightforward and relevant perceptions about how time eventually heals emotional wounds and restores stability.",
+      L:  "The response offers a vague and superficial exploration of recovery, utilizing imprecise details that show a weak comprehension of how characters heal from trauma.",
+      P:  "The writing demonstrates a minimal and disorganized exploration of recovery, with support that is entirely lacking or unrelated to the theme.",
+    },
+    "Topic E: Independence vs. Circumstance": {
+      E:  "The analysis is exceptionally insightful, discerning the complex psychological tension between the individual's desire to act independently and the comfort of circumstance.",
+      PF: "The exploration of individual autonomy is purposeful, offering considered ideas regarding how personal agency is asserted in defiance of oppressive societal expectations.",
+      S:  "The exploration of independence is generalized, presenting relevant but conventional ideas about the classic conflict between individual desires and social rules.",
+      L:  "The student's exploration of independence is vague, displaying oversimplified and ambiguous ideas about what it means to live unconstrained by social pressure.",
+      P:  "The exploration of individual autonomy is minimal, showing highly confused and underdeveloped ideas that fail to address the conflict with circumstances.",
+    },
+  }),
+
+  /* Assignment I, Table 2 — Presentation. */
+  presentationFocus: elaCat("presentation", {
+    "Topic A: Pursuit/Compromise of Happiness": {
+      E:  "The student creates a highly convincing voice that captures the profound emotional compromise of the character, utilizing precise stylistic choices to establish an adept, contemplative tone.",
+      PF: "The writing establishes a distinct and stable voice, using specific stylistic choices to maintain a competent, thoughtful tone regarding the search for happiness.",
+      S:  "The voice created is apparent, relying on adequate stylistic choices and a conventional tone to appropriately develop the general theme of pursued satisfaction.",
+      L:  "The voice is undiscerning and inconsistent, utilizing imprecise stylistic choices that result in an uneven, highly repetitive tone regarding human happiness.",
+      P:  "The voice created is confused and obscure, with ineffective stylistic choices that fail to establish a suitable tone for the pursuit of happiness.",
+    },
+    "Topic B: Struggle to Restore Honour & Certainty": {
+      E:  "The voice is convincing and authoritative, utilizing precise rhetorical phrasing and an adept tone to skillfully develop the unifying effect of moral redemption.",
+      PF: "The student establishes a distinct persona with a competent tone, capably developing a unifying effect that traces the character's struggle to find moral certainty.",
+      S:  "The writing displays an apparent voice and a conventional tone, appropriately developing a unifying focus on how characters seek validation after failure.",
+      L:  "The writing exhibits an undiscerning voice and an uneven tone, inappropriately and insignificantly developing the unifying effect of restored honor.",
+      P:  "The response exhibits a confused voice and an unsuitable tone, with a unifying effect that is entirely absent regarding the character's moral journey.",
+    },
+    "Topic C: Individual's Construction of Place": {
+      E:  "The writing displays a convincing voice and an exceptionally adept tone, skillfully developing a unifying aesthetic effect that captures the domestic setting's rich textures.",
+      PF: "The voice is distinct and the stylistic choices are specific, capably developing a unifying effect that highlights the emotional impact of a new environment.",
+      S:  "The voice is apparent and the stylistic choices are adequate, appropriately developing a functional, conventional description of the character's domestic space.",
+      L:  "The student creates an undiscerning voice, with imprecise stylistic choices and an uneven tone that fail to appropriately develop the setting's significance.",
+      P:  "The student's voice is obscure, with ineffective stylistic choices that impede basic communication and leave the aesthetic effect entirely absent.",
+    },
+    "Topic D: Power of Recovery from Trauma": {
+      E:  "The student's creation of a convincing, resilient voice is exceptionally polished, utilizing precise stylistic choices to skillfully develop the unifying theme of emotional rebirth.",
+      PF: "The prose exhibits a distinct voice and a competent tone, capably developing the unifying effect of recovery through specific, illustrative descriptions.",
+      S:  "The student creates an apparent voice and a conventional tone, appropriately developing the unifying effect of healing, though transitions are sometimes mechanical.",
+      L:  "The voice is inconsistent and the stylistic choices are imprecise, inappropriately developing the unifying effect of recovery with weak, disjointed transitions.",
+      P:  "The voice is confused and the creation of tone is ineffective, with no discernible unifying effect to support the theme of trauma recovery.",
+    },
+    "Topic E: Independence vs. Circumstance": {
+      E:  "The voice is convincing and distinctive, employing precise syntactic variance and an adept tone to skillfully develop the conflict between agency and convention.",
+      PF: "The student maintains a distinct voice and a competent, objective tone, capably developing a unifying narrative arc that explores personal autonomy.",
+      S:  "The voice is apparent, using adequate stylistic choices and a conventional tone to appropriately develop the basic conflict between choice and expectation.",
+      L:  "The student's voice is undiscerning, with imprecise stylistic choices and an uneven tone that result in an insignificantly developed conflict with convention.",
+      P:  "The writing demonstrates a highly obscure voice and unsuitable tone, with an absent unifying effect that fails to communicate any sense of individual choice.",
+    },
+  }),
+
+  /* Assignment II, Table 3 — Thought and Understanding. */
+  thoughtUnderstandingFocus: elaCat("thoughtUnderstanding", {
+    "Topic A: Pursuit/Compromise of Happiness": {
+      E:  "Ideas are exceptionally insightful and carefully considered, demonstrating a masterful comprehension of how Willy Loman's illusions in Death of a Salesman compromise his happiness.",
+      PF: "Ideas are thoughtful and considered, demonstrating a competent comprehension of how Biff Loman struggles to find authentic happiness away from his father's expectations.",
+      S:  "Ideas are relevant and straightforward, demonstrating a generalized comprehension of how characters in Death of a Salesman fail to find happiness due to commercialism.",
+      L:  "Ideas are superficial and oversimplified, demonstrating a weak comprehension of how characters in Death of a Salesman pursue or compromise their happiness.",
+      P:  "Ideas are largely absent or irrelevant, demonstrating little to no comprehension of how the characters in the chosen text pursue or compromise their happiness.",
+    },
+    "Topic B: Struggle to Restore Honour & Certainty": {
+      E:  "The essay develops an insightful thesis regarding how Hamlet's skepticism hinders his moral certainty, perceptive of the subtle distinctions between personal honor and public revenge.",
+      PF: "The response offers a thoughtful analysis of how King Claudius's guilt prevents him from achieving moral certainty, presenting revealing and sensible interpretations.",
+      S:  "The student presents general but plausible interpretations of how Hamlet's hesitation reflects a straightforward struggle to restore honor to his family.",
+      L:  "The writing displays a weak comprehension of the text, offering incomplete and highly literal interpretations of Hamlet's struggle to prove his uncle's guilt.",
+      P:  "The response offers a highly confused and irrelevant discussion of Hamlet's motivations, showing no comprehension of the literary text or the theme of honor.",
+    },
+    "Topic C: Individual's Construction of Place": {
+      E:  "Ideas are highly insightful and carefully considered, showing a perceptive comprehension of how Nora's domestic environment in A Doll's House represents her psychological captivity.",
+      PF: "The student's ideas are thoughtful and considered, showing a competent comprehension of how the physical and social boundaries in The Glass Roses shape Stephen's sense of belonging.",
+      S:  "The essay displays a generalized comprehension of the text, presenting a plausible interpretation of how the cold, isolated setting in The Glass Roses represents a difficult place of work.",
+      L:  "The student's ideas regarding the domestic setting in A Doll's House are superficial, demonstrating an incomplete and highly oversimplified understanding of the topic.",
+      P:  "The essay displays little to no comprehension of the setting's significance, with ideas that are entirely absent or unrelated to the prompt.",
+    },
+    "Topic D: Power of Recovery from Trauma": {
+      E:  "The student offers an insightful, illuminating analysis of how Robert Ross's connection to animals in The Wars serves as a perceptive catalyst for his traumatic recovery.",
+      PF: "The essay demonstrates a thoughtful and competent comprehension of how the protagonist in Indian Horse utilizes hockey as a sensible, revealing path to recover from institutional trauma.",
+      S:  "The response offers relevant and straightforward ideas about how the protagonist in Sound of Metal adapts to deafness, demonstrating a generalized comprehension of recovery.",
+      L:  "The essay offers a weak and superficial comprehension of recovery in The Wars, relying on highly literal plot descriptions of Robert's experiences in the trenches.",
+      P:  "The writing demonstrates a complete lack of comprehension of the literary text, offering largely irrelevant or absent ideas regarding the process of recovery.",
+    },
+    "Topic E: Independence vs. Circumstance": {
+      E:  "The analysis is exceptionally insightful, demonstrating a discerning comprehension of how characters in The Handmaid's Tale struggle to maintain independence under oppressive circumstances.",
+      PF: "The analysis is thoughtful and considered, presenting revealing interpretations of how the protagonist in Pleasantville capably struggles to achieve independence against rigid conventions.",
+      S:  "The analysis is relevant and straightforward, showing a generalized comprehension of how Nora Helmer's rebellion in A Doll's House represents her need for independence.",
+      L:  "The student's analysis of independence is superficial, offering incomplete and oversimplified observations about the character's reaction to their circumstances.",
+      P:  "The student's response fails to address the prompt, demonstrating no understanding of how characters struggle for independence in the chosen text.",
+    },
+  }),
+
+  /* Assignment II, Table 4 — Supporting Evidence. */
+  supportingEvidenceFocus: elaCat("supportingEvidence", {
+    "Topic A: Pursuit/Compromise of Happiness": {
+      E:  "Support is precise and astutely chosen, utilizing specific details of Willy's kitchen and his garden seeds to convincingly reinforce his compromised happiness.",
+      PF: "Support is specific and well chosen, utilizing Happy Loman's professional behavior and empty pursuits to persuasively reinforce his false sense of happiness.",
+      S:  "Support is general and adequate, utilizing standard plot points from Willy's financial failures to appropriately reinforce his compromised happiness.",
+      L:  "Support is inadequate and inaccurate, relying on a superficial restatement of Willy's arguments with his sons that fails to demonstrate his compromised happiness.",
+      P:  "Support is irrelevant and overgeneralized, with little to no connection to how the characters in the chosen text compromise their happiness.",
+    },
+    "Topic B: Struggle to Restore Honour & Certainty": {
+      E:  "The student selects precise and astutely chosen textual evidence from Hamlet's \"To be or not to be\" soliloquy, maintaining an efficient, valid connection to his existential uncertainty.",
+      PF: "The student provides specific and well-chosen evidence from the mouse-trap play scene to persuasively demonstrate Hamlet's pursuit of certainty.",
+      S:  "The student provides general but adequate support, referencing Hamlet's confrontation with Gertrude to maintain a reasonable connection to his moral struggle.",
+      L:  "The writing displays inadequate support, utilizing inaccurate descriptions of Hamlet's duel with Laertes that lack persuasiveness in relation to his honor.",
+      P:  "The selected evidence is absent or highly inaccurate, displaying little to no connection to the character's struggle to restore moral certainty.",
+    },
+    "Topic C: Individual's Construction of Place": {
+      E:  "The selected evidence is precise and astutely chosen, utilizing Nora's tarantella dance to convincingly reinforce her desperate struggle within the domestic sphere.",
+      PF: "The textual details selected are specific and well chosen, referencing Stephen's interactions with Leka in the bunkhouse to capably reinforce his growing sense of belonging.",
+      S:  "The selected evidence is appropriately chosen in an acceptable way, utilizing general details of the lumber camp in The Glass Roses to support the discussion of place.",
+      L:  "The student's evidence is inadequate and largely a restatement of the plot, showing a weak connection to how the character constructs their sense of place.",
+      P:  "The writing lacks any valid textual support, with references to the setting that are completely absent, irrelevant, or highly flawed.",
+    },
+    "Topic D: Power of Recovery from Trauma": {
+      E:  "Support is precise and astutely chosen, referencing the symbolic destruction of Robert's family photographs to convincingly demonstrate his painful recovery.",
+      PF: "Support is specific and well chosen, utilizing Saul Indian Horse's return to the residential school grounds to persuasively reinforce his recovery process.",
+      S:  "Support is general and adequate, referencing Ruben's time in the deaf community to maintain a reasonable, acceptable connection to the theme of recovery.",
+      L:  "Support is inadequate and inappropriately chosen, relying on a superficial summary of Saul's alcoholism that lacks persuasiveness regarding his recovery.",
+      P:  "Support is irrelevant, overgeneralized, and lacks validity, showing no logical connection to the process of recovery in the chosen text.",
+    },
+    "Topic E: Independence vs. Circumstance": {
+      E:  "The student utilizes precise and astutely chosen details of Offred's private room to convincingly reinforce her internal struggle to maintain independence.",
+      PF: "The student utilizes specific and well-chosen evidence of David's rebellion in Pleasantville to capably maintain a sound connection to the theme of independence.",
+      S:  "The student offers general and adequate support, referencing Nora Helmer's final door slam to maintain a reasonable connection to her need for independence.",
+      L:  "The student utilizes inadequate and inaccurate support, showing a highly weak and superficial connection to the character's struggle for independence.",
+      P:  "The student's evidence is entirely absent or irrelevant, failing to provide any support for the character's struggle against their circumstances.",
+    },
+  }),
+
+  /* Assignment II, Table 5 — Form and Structure. */
+  formStructureFocus: elaCat("formStructure", {
+    "Topic A: Pursuit/Compromise of Happiness": {
+      E:  "A judicious arrangement of ideas and details contributes to a fluent discussion, skillfully integrating Willy's regression into the past as a structural motif for his compromised happiness.",
+      PF: "A purposeful arrangement of ideas and details contributes to a controlled discussion, coherently presenting and sustaining the contrast between Happy's delusions and Biff's reality.",
+      S:  "A straightforward arrangement of ideas provides direction for the discussion, though coherence occasionally falters when transitioning between Willy's different financial compromises.",
+      L:  "A discernible but ineffectual arrangement of ideas provides some direction, resulting in an underdeveloped and disorganized discussion of Willy's compromised happiness.",
+      P:  "A haphazard arrangement of ideas and details provides little to no direction, leaving the discussion of the character's compromised happiness completely lacking or obscure.",
+    },
+    "Topic B: Struggle to Restore Honour & Certainty": {
+      E:  "The essay exhibits a judicious arrangement of ideas, skillfully sustaining an integrated controlling idea that links Hamlet's philosophical paralysis to his loss of moral certainty.",
+      PF: "The student utilizes a purposeful arrangement of ideas, coherently sustaining a controlled discussion of Hamlet's gradual progression toward self-acceptance and certainty.",
+      S:  "The student utilizes a straightforward arrangement of ideas to provide direction, generally maintaining a controlling idea regarding Hamlet's quest to restore his father's honor.",
+      L:  "The writing displays an ineffectual arrangement of ideas, with an inconsistently maintained controlling idea that frequently drifts into a basic summary of Hamlet's actions.",
+      P:  "The response displays a highly haphazard arrangement of thoughts, with an entirely absent controlling idea regarding the restoration of honor or certainty.",
+    },
+    "Topic C: Individual's Construction of Place": {
+      E:  "A judicious arrangement of ideas contributes to an exceptionally fluent discussion, skillfully integrating Torvald's study as a structural symbol of Nora's confined space.",
+      PF: "A purposeful arrangement of ideas contributes to a capably developed discussion, coherently presenting the transition from Stephen's isolation to his sense of belonging in the camp.",
+      S:  "A straightforward arrangement of details provides appropriate direction, generally maintaining a basic controlling idea about how setting influences the characters' sense of belonging.",
+      L:  "The student's organizational choices provide only some direction, resulting in a highly underdeveloped and inconsistently maintained discussion of the character's place.",
+      P:  "The organizational structure is completely haphazard, providing no direction for the discussion and leaving the thematic significance of setting entirely obscure.",
+    },
+    "Topic D: Power of Recovery from Trauma": {
+      E:  "The essay displays a judicious arrangement of ideas, skillfully sustaining a fluent, integrated controlling idea that mirrors Robert's psychological fragmentation and gradual recovery.",
+      PF: "The student provides a purposeful arrangement of details, coherently sustaining a controlled discussion of Saul's descent into despair and his subsequent recovery.",
+      S:  "The essay exhibits a straightforward arrangement of ideas, appropriately developing a general controlling idea about the steps required for a character's recovery.",
+      L:  "The essay exhibits a discernible but ineffectual arrangement of details, with a weakly maintained controlling idea that fails to clarify the character's recovery.",
+      P:  "The writing exhibits a highly disorganized and haphazard arrangement of ideas, with an absent controlling idea that fails to develop any focus on recovery.",
+    },
+    "Topic E: Independence vs. Circumstance": {
+      E:  "A judicious arrangement of ideas and details contributes to a highly fluent discussion, skillfully presenting a tightly integrated controlling idea regarding individual autonomy.",
+      PF: "The essay exhibits a purposeful arrangement of ideas, capably developing a controlled discussion that coherently sustains the central thesis of independent choice.",
+      S:  "The student provides a straightforward arrangement of ideas, providing clear direction for the discussion, though coherence occasionally falters under thematic transition.",
+      L:  "The student provides a highly ineffectual arrangement of ideas, resulting in an underdeveloped discussion that inconsistently maintains the central thesis of independence.",
+      P:  "The student provides a completely haphazard arrangement of details, offering no logical direction for the discussion of individual autonomy.",
+    },
+  }),
+
+  /* Assignment II, Table 6 — Matters of Choice. */
+  mattersOfChoiceFocus: elaCat("mattersOfChoice", {
+    "Topic A: Pursuit/Compromise of Happiness": {
+      E:  "Diction is exceptionally precise, and syntactic structures are polished, contributing to a skillful composition with a convincing voice that captures Willy Loman's tragic hubris.",
+      PF: "Diction is specific and syntactic structures are generally effective, contributing to a considered composition with a capable voice regarding Happy's superficial happiness.",
+      S:  "Diction is adequate, and syntactic structures are straightforward, though attempts at complex structures when discussing Willy's compromised happiness may occasionally feel awkward.",
+      L:  "Diction is imprecise, and syntactic structures are frequently awkward, contributing to a vague composition with an undiscerning voice that oversimplifies Willy's unhappiness.",
+      P:  "Diction is overgeneralized and inaccurate, with uncontrolled syntactic structures that contribute to a confused composition and an ineffective voice regarding the theme of happiness.",
+    },
+    "Topic B: Struggle to Restore Honour & Certainty": {
+      E:  "The writing exhibits precise diction and polished syntactic parallelism, contributing to a convincing, scholarly voice that articulates Hamlet's existential paralysis.",
+      PF: "The student utilizes specific diction and generally effective syntax, contributing to a capable, thoughtful voice that details Hamlet's struggle to find moral certainty.",
+      S:  "The student utilizes adequate diction and straightforward syntax, contributing to a conventional composition with an appropriate voice regarding Hamlet's family honor.",
+      L:  "The student utilizes imprecise and inappropriate diction, with frequently awkward syntax that results in a vague composition and undiscerning voice regarding Hamlet's moral struggle.",
+      P:  "The response exhibits inaccurate diction and uncontrolled syntax, contributing to a highly confused composition with an obscure, ineffective voice regarding family honor.",
+    },
+    "Topic C: Individual's Construction of Place": {
+      E:  "Diction is precise, and the syntactic structures are highly effective, contributing to a convincing voice that illuminates the nuanced dichotomy of Nora's domestic captivity.",
+      PF: "Diction is specific, and the syntactic structures are generally effective, contributing to a considered composition and capable voice regarding Stephen's sense of belonging.",
+      S:  "Diction is adequate, and sentence structures are straightforward, contributing to a conventional composition with an appropriate voice regarding how the camp is described.",
+      L:  "Diction is imprecise, and syntactic structures are frequently awkward, contributing to a vague composition with an undiscerning voice that fails to analyze the domestic setting.",
+      P:  "Diction is overgeneralized, and syntactic structures are uncontrolled, contributing to a confused composition and obscure voice that fails to describe the literary setting.",
+    },
+    "Topic D: Power of Recovery from Trauma": {
+      E:  "The student utilizes precise diction and polished, elegant syntax, contributing to a highly convincing voice that evokes the intense emotional resonance of Robert's recovery.",
+      PF: "The student employs specific diction and generally effective syntax, contributing to a capable, mature voice that capably traces Saul's journey toward healing.",
+      S:  "The writing displays adequate diction and straightforward syntax, contributing to an appropriate, conventional voice that adequately outlines the character's recovery.",
+      L:  "The writing exhibits imprecise diction and frequently awkward sentence patterns, contributing to a vague composition with an undiscerning voice regarding Saul's recovery.",
+      P:  "The writing displays highly inaccurate diction and uncontrolled, unintelligible syntax, contributing to a confused composition with an ineffective voice regarding recovery.",
+    },
+    "Topic E: Independence vs. Circumstance": {
+      E:  "The essay displays precise diction and highly effective syntactic structures, contributing to a convincing voice that sharply analyzes the conflict between self-preservation and authority.",
+      PF: "The writing exhibits specific diction and generally effective sentence patterns, contributing to a considered composition with a capable voice analyzing individual agency.",
+      S:  "The student employs adequate diction and straightforward sentence patterns, contributing to a conventional composition with an appropriate voice regarding personal autonomy.",
+      L:  "The student employs imprecise and inappropriate diction, contributing to a vague composition and undiscerning voice that oversimplifies the character's independence.",
+      P:  "The student utilizes highly overgeneralized diction and uncontrolled syntax, contributing to a confused composition and an obscure, ineffective voice regarding individual choice.",
+    },
+  }),
+
+  /* Assignment II, Table 7 — Matters of Correctness. */
+  mattersOfCorrectnessFocus: elaCat("mattersOfCorrectness", {
+    "Topic A: Pursuit/Compromise of Happiness": {
+      E:  "The writing demonstrates confident control of correct sentence construction, grammar, and mechanics, with an impressive relative absence of error that enhances the analysis of Willy's tragedy.",
+      PF: "The writing demonstrates competent control of sentence construction, grammar, and mechanics, with minor spelling or punctuation errors that are understandable under exam constraints.",
+      S:  "The writing demonstrates control of the basics of correct sentence construction, grammar, and mechanics, though occasional lapses in pronoun reference or comma placement are evident.",
+      L:  "The writing demonstrates faltering control of correct sentence construction and grammar, with a range of errors (such as comma splices) that frequently blur the clarity of communication.",
+      P:  "The writing demonstrates a severe lack of control of correct sentence construction, grammar, and mechanics, with continuous, jarring errors that heavily impair communication.",
+    },
+    "Topic B: Struggle to Restore Honour & Certainty": {
+      E:  "The essay exhibits confident, polished control of grammar and punctuation, with an impressive relative absence of error considering the highly complex analysis of Hamlet's certainty.",
+      PF: "The student exhibits competent control of correct grammar and sentence construction, showing only minor, understandable errors in complex structures regarding Hamlet's struggle.",
+      S:  "The student displays basic control of grammar, usage, and mechanics, with occasional lapses in consistency of verb tense that do not compromise the basic clarity of the analysis.",
+      L:  "The student displays faltering control over mechanics and grammar, with a dense range of errors in spelling and punctuation that blur the clarity of Hamlet's struggle.",
+      P:  "The response exhibits a complete lack of control over grammar and usage, with jarring mechanical errors in almost every sentence that impair the discussion of honor.",
+    },
+    "Topic C: Individual's Construction of Place": {
+      E:  "Confident control of correct sentence construction, usage, and mechanics is consistently maintained, displaying an impressive relative absence of error throughout the discussion of place.",
+      PF: "Competent control of sentence construction, usage, and mechanics is demonstrated, with only minor, understandable errors in complex language structures regarding the setting.",
+      S:  "Control of the basics of correct sentence construction and mechanics is maintained, though occasional errors in spelling or punctuation appear during the discussion of setting.",
+      L:  "Faltering control of sentence construction, usage, and grammar is evident, with a range of mechanical errors that blur the clarity of the discussion regarding place.",
+      P:  "Lack of control of correct sentence construction, usage, and mechanics is demonstrated throughout, with jarring errors that consistently impair the discussion of setting.",
+    },
+    "Topic D: Power of Recovery from Trauma": {
+      E:  "The student demonstrates confident, flawless control over grammar, mechanics, and usage, with an impressive relative absence of error that strengthens the sophisticated discussion of recovery.",
+      PF: "The writing displays competent control of correct sentence construction, grammar, and mechanics, with understandable, minor errors that do not impact the discussion of recovery.",
+      S:  "The writing displays basic control of sentence construction, grammar, and mechanics, with occasional lapses in control that leave the core communication of recovery clear.",
+      L:  "The writing exhibits faltering control of correct grammar and sentence structures, with a range of repetitive errors that heavily blur the clarity of the character's recovery.",
+      P:  "The writing displays a profound lack of control over grammar, sentence structures, and mechanics, with continuous, jarring errors that severely impair communication.",
+    },
+    "Topic E: Independence vs. Circumstance": {
+      E:  "Confident control of sentence construction, grammar, usage, and mechanics is maintained, showing an impressive relative absence of error despite the essay's complex thematic structures.",
+      PF: "Competent control of grammar, usage, and mechanics is maintained throughout the essay, with minor errors in complex language structures being entirely understandable.",
+      S:  "Control of the basics of sentence construction, usage, and mechanics is maintained, though occasional lapses in pronoun-antecedent agreement occur.",
+      L:  "The student demonstrates faltering control of sentence construction, usage, and mechanics, with a range of errors that continuously blur the clarity of communication.",
+      P:  "The student demonstrates a complete lack of control of sentence construction, grammar, and usage, utilizing jarring errors that heavily impair basic communication.",
+    },
+  }),
+
+});
+
 /* Assignments per subject and stream. The same rubric structure is used at
    the 10 / 20 / 30 levels (adapted from the Grade 12 scoring guides). */
 const COMMENT_DATA = {
@@ -1728,19 +2020,19 @@ const COMMENT_DATA = {
           id: "pr1", name: "Personal Response to Texts",
           sub: "Personal/creative response exploring the assignment topic in relation to the text(s).",
           cats: [
-            { key: "ideasImpressions", weight: 1 },
-            { key: "presentation", weight: 1 },
+            { key: "ideasImpressionsFocus", weight: 1 },
+            { key: "presentationFocus", weight: 1 },
           ],
         },
         {
           id: "ca1", name: "Critical/Analytical Response to Literary Texts",
           sub: "Analytical essay discussing how a literary text develops the assignment topic.",
           cats: [
-            { key: "thoughtUnderstanding", weight: 1.5 },
-            { key: "supportingEvidence", weight: 1.5 },
-            { key: "formStructure", weight: 1 },
-            { key: "mattersOfChoice", weight: 1 },
-            { key: "mattersOfCorrectness", weight: 1 },
+            { key: "thoughtUnderstandingFocus", weight: 1.5 },
+            { key: "supportingEvidenceFocus", weight: 1.5 },
+            { key: "formStructureFocus", weight: 1 },
+            { key: "mattersOfChoiceFocus", weight: 1 },
+            { key: "mattersOfCorrectnessFocus", weight: 1 },
           ],
         },
       ],
