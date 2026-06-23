@@ -2008,6 +2008,219 @@ Object.assign(CATEGORIES, {
 
 });
 
+/* ===== ELA -2 Part A comment banks (flat banks: 5 alternative comments
+   per level, Excellent/Proficient/Satisfactory; topic-specific to recent
+   30-2 diploma prompts). Name/blurb/descriptors and Limited/Poor fallback
+   comments are reused from the base ELA categories. ===== */
+function ela2Cat(baseKey, name, eps) {
+  const b = CATEGORIES[baseKey];
+  return { name: name, blurb: b.blurb, desc: b.desc,
+    comments: Object.assign({}, b.comments, eps) };
+}
+Object.assign(CATEGORIES, {
+
+  /* Assignment I — Visual Reflection: Ideas and Impressions. */
+  ela2VrIdeas: ela2Cat("ideasImpressions", "Ideas and Impressions", {
+    E: [
+      "The student's reflection on the rooftop garden photo offers insightful, carefully considered perceptions of how urban environments can coexist with nature, showing deep conceptual thought.",
+      "Support is precise and purposefully chosen, drawing strong connections between the children's hospital setting, the superhero costumes, and the profound impact of kindness.",
+      "The prose is skillfully developed, analyzing how the lone fox serves as a powerful symbol for the quiet coexistence between nature and community.",
+      "Perceptions are insightful and carefully considered, showing an advanced ability to analyze how composition, lighting, and visual contrasts convey a theme of environmental healing.",
+      "The response is skillfully developed, using the hospital window washers as a clear, compelling metaphor for the brave, quiet heroes who help run our world.",
+    ],
+    PF: [
+      "The student's perceptions of the city rooftop garden are thoughtful and considered, focusing on how nature provides a calm place of refuge amidst busy urban development.",
+      "The response is coherently developed, establishing a clear connection between the superhero costumes and the visual details of the children's hospital.",
+      "Support is relevant and detailed, linking the fox looking over the snowy community to a thoughtful discussion about finding quiet beauty in the world.",
+      "The reflection is coherently developed, explaining how visual elements like the contrast between the green garden and the surrounding high-rises highlight our environmental responsibilities.",
+      "The student's discussion of real-life heroes is thoughtful and well considered, using the window washers to build a clear, well-supported argument about community support.",
+    ],
+    S: [
+      "The student's perceptions are appropriate but generalized, discussing how the rooftop garden shows we need more plants in busy city areas.",
+      "The response is generally clearly developed, explaining that the window cleaners dress up as comic book heroes to make hospitalized children happy.",
+      "Support is adequate and generally connected to the image of the winter fox, although the discussion of nature and community remains literal and broad.",
+      "The reflection is generally clearly developed, using basic details from the photograph to support a straightforward, appropriate discussion about environmental issues.",
+      "The student provides adequate, straightforward connections to the visual prompt, explaining that the window cleaners show bravery by working at high altitudes.",
+    ],
+  }),
+
+  /* Assignment I — Visual Reflection: Presentation. */
+  ela2VrPresentation: ela2Cat("presentation", "Presentation", {
+    E: [
+      "The student's voice is exceptionally engaging and confident, establishing an immediate, powerful connection with the reader.",
+      "Stylistic choices are precise and effective, using vivid descriptions of the rooftop garden to create a strong, polished narrative.",
+      "The writing features a highly convincing voice, using parallel sentence structures and thoughtful rhetorical questions to highlight the impact of everyday heroes.",
+      "Precise vocabulary and fluent phrasing are used to describe the visual contrast between the bright red fox and the cool blue tones of the snowy town.",
+      "The student's voice is confident and highly polished, maintaining an appropriate tone that enhances the overall impact of the visual reflection.",
+    ],
+    PF: [
+      "The student's voice is distinct and well considered, conveying a clear, appropriate tone that is maintained consistently.",
+      "Stylistic choices are specific and frequently effective, utilizing descriptive language to capture the atmosphere of the urban garden.",
+      "Sentence structures are purposefully shaped for effect, enhancing the discussion of how small acts of kindness can lift a community's spirits.",
+      "The prose features a competent, distinct voice, using specific diction to describe the serene setting of the winter valley.",
+      "Stylistic choices are specific and effective, using sensory details to describe the physical challenges and bravery of the hospital window washers.",
+    ],
+    S: [
+      "The student's voice is matter-of-fact and appropriate, conveying ideas and impressions in a clear, functional, and straightforward manner.",
+      "Stylistic choices are adequate and occasionally effective, relying on simple, everyday vocabulary to describe the city garden.",
+      "Sentence structures are generally straightforward and clear, providing a basic, reliable framework for the student's ideas.",
+      "The tone of the reflection is appropriate and matter-of-fact, enabling a clear and direct description of the winter town and the fox.",
+      "Stylistic choices are adequate, utilizing simple and predictable language to discuss how doctors and nurses serve as real-world heroes.",
+    ],
+  }),
+
+  /* Assignment II — Literary Exploration: Thought and Support. */
+  ela2LeThought: ela2Cat("thoughtSupport", "Thought and Support", {
+    E: [
+      "The student demonstrates an insightful understanding of the topic, perceptively analyzing how self-confidence shapes Andy Dufresne's major decisions in The Shawshank Redemption.",
+      "Support is precise and effective, drawing detailed connections between Maggie Fitzgerald's boxing goals in Million Dollar Baby and her sense of accomplishment.",
+      "The literary example is related effectively, showing how Guy Montag's pursuit of knowledge in Fahrenheit 451 is shaped by moments of failure and success.",
+      "Ideas are perceptively explored, contrastingly analyzing Willy Loman's tragic path in Death of a Salesman to show how a lack of true passion can lead to despair.",
+      "An insightful understanding of the prompt is demonstrated, seamlessly connecting the provided reading selection to the student's own experience of pursuing a challenging goal.",
+    ],
+    PF: [
+      "A well-considered understanding of the topic is demonstrated, thoughtfully exploring how Thao's self-confidence in Gran Torino is developed through positive mentorship.",
+      "The student's ideas are thoughtfully explored, using relevant examples from Million Dollar Baby to show how pursuing a goal brings purpose to life.",
+      "The literary example is related competently, discussing how Montag's actions in Fahrenheit 451 are influenced by his passion for books.",
+      "Support is specific and relevant, linking the student's personal experience in martial arts or hunting to a thoughtful discussion of the prompt.",
+      "The response is thoughtfully explored, using clear examples from the provided text to show how determination helps characters overcome doubt.",
+    ],
+    S: [
+      "A defensible understanding of the topic is demonstrated, straightforwardly discussing how Andy's self-confidence helps him make friends in prison in The Shawshank Redemption.",
+      "The literary example is related adequately, describing how Sean helps Will overcome his painful past in Good Will Hunting to achieve his goals.",
+      "Support is relevant but tends to be general, relying on basic plot summaries of Fahrenheit 451 to discuss Montag's rebellion.",
+      "The student's ideas are appropriately explored, straightforwardly explaining how failing a test or facing a sports challenge can influence motivation.",
+      "The response is appropriate and straightforward, drawing basic and predictable connections between the characters in the excerpt and the thematic prompt.",
+    ],
+  }),
+
+  /* Assignment II — Literary Exploration: Form and Structure. */
+  ela2LeForm: ela2Cat("formStructure", "Form and Structure", {
+    E: [
+      "A focused controlling idea is skillfully sustained throughout the response, creating a highly unified and polished thematic argument.",
+      "Development of ideas and explanations is exceptionally smooth and coherent, with transitions that guide the reader effortlessly through the analysis.",
+      "The introduction establishes a clear and compelling direction, while the conclusion provides a sophisticated, developed understanding of the topic.",
+      "Paragraph structures are masterfully crafted, with clear topic sentences and precise thematic links that prevent any lapses in logical flow.",
+      "The chosen prose form is manipulated with skill, seamlessly integrating personal reflections and literary analysis into a beautifully unified, cohesive essay.",
+    ],
+    PF: [
+      "A clear controlling idea is sustained throughout the response, ensuring all paragraphs remain focused on the central prompt.",
+      "Development of ideas and explanations is coherent, with clear transitions between the literary analysis and the personal narrative.",
+      "The organization of the discussion is logical and well structured, allowing the reader to easily follow the progression of the student's arguments.",
+      "The student introduces the topic, text, and characters in a structured manner, establishing a clear focus that is maintained throughout the essay.",
+      "The conclusion is cohesive and effective, reinforcing the main controlling idea without relying on simple repetition of previous points.",
+    ],
+    S: [
+      "A controlling idea is evident in the response, though the structural unity of the argument may occasionally falter or drift into minor tangents.",
+      "The development of ideas and explanations is generally clear and coherent, though transitions between paragraph concepts are sometimes abrupt.",
+      "The response contains a recognizable introduction and conclusion, though the final section may rely on a highly predictable, repetitive summary of points.",
+      "The connection between the literary analysis and personal reflections is evident, but the response would benefit from more deliberate transitions to improve structural flow.",
+      "Paragraphs are basic and functional, though the structural links between the student's claims and supporting details are occasionally loose.",
+    ],
+  }),
+
+  /* Assignment II — Literary Exploration: Matters of Choice. */
+  ela2LeChoice: ela2Cat("mattersOfChoice", "Matters of Choice", {
+    E: [
+      "Diction is exceptionally precise, evocative, and effective, utilizing a sophisticated vocabulary to articulate complex literary and thematic concepts with ease.",
+      "Many sentence structures are successfully structured for stylistic effect, showing a polished command of varied lengths, parallel syntax, and rhetorical balance.",
+      "Stylistic choices are intentional and highly effective, contributing to the creation of a highly convincing, authoritative student voice.",
+      "The writing incorporates precise connotative language and vivid imagery, elevating the overall emotional and intellectual impact of the analysis.",
+      "Sophisticated rhetorical devices are integrated with confidence, emphasizing key thematic insights without disrupting the flow of the prose.",
+    ],
+    PF: [
+      "Diction is specific and generally effective, demonstrating a solid vocabulary and appropriate use of literary terms to communicate ideas clearly.",
+      "Many sentences appear to have been purposefully structured for effect, showing competent variety in sentence length, coordination, and subordination.",
+      "Stylistic choices are well considered and specific, contributing to the creation of a competent, clear, and engaging student voice.",
+      "The student utilizes active verbs, descriptive adjectives, and straightforward figurative language to keep the reader engaged.",
+      "Phrasing and word choices are consistently appropriate, avoiding repetitive structures and showing a conscious attempt at stylistic variety.",
+    ],
+    S: [
+      "Diction is appropriate but remains general rather than specific, relying on plain, everyday vocabulary to convey basic thematic ideas.",
+      "Sentence structures are generally straightforward and clear, utilizing standard patterns that are simple but grammatically sound.",
+      "Stylistic choices are adequate, contributing to a clear, straightforward student voice that effectively communicates basic meaning.",
+      "While the language is functional, the overall impact would be enhanced by utilizing more specific verbs and descriptors to avoid repetitiveness.",
+      "The student's expression is plain and predictable, keeping stylistic risks to a minimum while successfully navigating the written task.",
+    ],
+  }),
+
+  /* Assignment II — Literary Exploration: Matters of Correctness. */
+  ela2LeCorrect: ela2Cat("mattersOfCorrectness", "Matters of Correctness", {
+    E: [
+      "The writing demonstrates confident and consistent control of correct sentence construction, usage, grammar, and mechanics.",
+      "The relative insignificance of any minor errors is highly impressive, especially considering the complexity of the sentence structures and arguments.",
+      "The student maintains consistent grammatical agreement, precise pronoun-antecedent reference, and appropriate consistency of verb tense throughout.",
+      "Punctuation, spelling, and capitalization conventions are applied with exceptional accuracy, showing a highly polished, finalized first-draft paper.",
+      "Highly effective editing is evident, with complex structures (like appositives, clauses, and verbal phrases) constructed flawlessly to support communication.",
+    ],
+    PF: [
+      "This writing demonstrates a competent and consistent control of correct sentence construction, word usage, grammar, and mechanics.",
+      "Minor errors in mechanics, grammar, or complex syntax are understandable under examination conditions and do not disrupt the clarity of the text.",
+      "Standard grammatical rules, such as subject-verb agreement and pronoun reference, are followed with high consistency across most paragraphs.",
+      "Basic punctuation, spelling of common vocabulary, and capitalization conventions are applied accurately and independently.",
+      "The text demonstrates a solid foundation in mechanics, with complex compound and complex sentence structures constructed with grammatical competence.",
+    ],
+    S: [
+      "The writing demonstrates control of the basics of correct sentence construction, word usage, grammar, and mechanics.",
+      "There are occasional lapses in control of sentence construction and usage, alongside minor errors in grammar, spelling, or punctuation.",
+      "Despite occasional mechanical errors or structural awkwardness, the student's communication of central ideas remains consistently clear.",
+      "Basic sentence structures (simple and compound) are generally correct, though the student occasionally struggles with complex syntax or punctuation rules.",
+      "Lapses, such as occasional run-on sentences, comma splices, or minor spelling mistakes, are present but do not blur the overall message.",
+    ],
+  }),
+
+  /* Assignment III — Persuasive Writing in Context: Thought and Support. */
+  ela2PwThought: ela2Cat("thoughtSupport", "Thought and Support", {
+    E: [
+      "The student demonstrates a highly perceptive, thorough understanding of the issue, analyzing the long-term consequences of attendance fines on low-income students like Geraldine McQueen.",
+      "The argument is exceptionally persuasive, using academic data to show how a flipped classroom model can disadvantage students who lack access to technology.",
+      "Support is well defined and purposefully chosen, synthesizing community views to show how a driving campaign helps youth secure employment.",
+      "The writing shows a sophisticated awareness of the target audience, directly addressing and refuting the counterarguments of the opposing side.",
+      "The voice is consistently confident, formal, and authentic to the assigned persona, creating an immediate and authoritative connection with the reader.",
+    ],
+    PF: [
+      "A thoughtful and competent understanding of the issue is demonstrated, presenting sound arguments against using financial penalties for student absences.",
+      "The student's arguments are well considered, explaining how pre-recorded lessons could eliminate valuable classroom discussion.",
+      "Support is specific and relevant, using survey data and stakeholder quotes to show how a driver's licence builds youth independence.",
+      "The student successfully integrates details from the sources, using specific quotes, statistics, or perspectives to build a strong, credible defense.",
+      "The voice is competent and professional, maintaining a consistent, appropriate tone that is highly suited to the target school board or town council.",
+    ],
+    S: [
+      "A sufficient but generalized understanding of the issue is demonstrated, outlining the basic arguments for and against the attendance fine policy.",
+      "The student's arguments are appropriate and straightforward, focusing on how a flipped classroom saves time for homework help.",
+      "Support is relevant but general, using broad summaries of source information and lacking in tight, persuasive consistency.",
+      "Information from the provided sources is incorporated, but the integration tends to be simple repetition rather than thoughtful synthesis or analysis.",
+      "The student's voice is clear and appropriate, maintaining a functional tone that clearly conveys the chosen side of the argument.",
+    ],
+  }),
+
+  /* Assignment III — Persuasive Writing in Context: Writing Skills. */
+  ela2PwWriting: ela2Cat("writingSkills", "Writing Skills", {
+    E: [
+      "The selection and use of words and structures are highly effective, demonstrating a polished, persuasive, and sophisticated writing style.",
+      "The writing demonstrates confident and flawless control of correct sentence construction, syntax, usage, grammar, and basic mechanics.",
+      "Rhetorical devices (such as parallel structure, emphatic sentence variations, and precise transition words) are used masterfully to enhance persuasive flow.",
+      "Diction is highly precise and formal, maintaining an impeccable professional tone that is perfectly aligned with the communicative situation.",
+      "The document exhibits exceptionally clean prose, showing strong evidence of editing and a high level of written craft under timed conditions.",
+    ],
+    PF: [
+      "The selection and use of words and structures are frequently effective, presenting a clear, coherent, and highly structured persuasive argument.",
+      "The writing demonstrates a competent and consistent control of correct sentence construction, word usage, grammar, and mechanics.",
+      "Compound and complex sentences are used with solid grammatical control, enhancing the transitions between different pieces of evidence.",
+      "Diction is specific and generally effective, using professional and thematic vocabulary suitable for a formal letter or speech.",
+      "Minor spelling or punctuation errors are rare, understandable given the examination context, and do not detract from the text's overall clarity.",
+    ],
+    S: [
+      "The selection and use of words and structures are occasionally effective, enabling a functional and straightforward presentation of the argument.",
+      "The writing demonstrates basic control of correct sentence construction, word usage, grammar, and mechanics.",
+      "Sentence patterns are clear but simple, sometimes resulting in a repetitive rhythm that lacks persuasive emphasis or stylistic variety.",
+      "Diction is appropriate but general, relying on simple, everyday vocabulary that limits the sophistication of the formal appeal.",
+      "Communication is clear throughout, although occasional lapses in punctuation, spelling, or agreement occur without obscuring the student's meaning.",
+    ],
+  }),
+
+});
+
 /* Assignments per subject and stream. The same rubric structure is used at
    the 10 / 20 / 30 levels (adapted from the Grade 12 scoring guides). */
 const COMMENT_DATA = {
@@ -2038,29 +2251,29 @@ const COMMENT_DATA = {
       ],
       "-2": [
         {
-          id: "vr2", name: "Visual Reflection",
+          id: "vr2", name: "Visual Reflection (Assignment I)",
           sub: "Reflective response to a visual text, exploring ideas and impressions it suggests.",
           cats: [
-            { key: "ideasImpressions", weight: 1 },
-            { key: "presentation", weight: 1 },
+            { key: "ela2VrIdeas", weight: 1 },
+            { key: "ela2VrPresentation", weight: 1 },
           ],
         },
         {
-          id: "le2", name: "Literary Exploration",
+          id: "le2", name: "Literary Exploration (Assignment II)",
           sub: "Essay exploring the assignment topic in relation to a literary text.",
           cats: [
-            { key: "thoughtSupport", weight: 1.5 },
-            { key: "formStructure", weight: 1 },
-            { key: "mattersOfChoice", weight: 1 },
-            { key: "mattersOfCorrectness", weight: 1 },
+            { key: "ela2LeThought", weight: 2 },
+            { key: "ela2LeForm", weight: 1 },
+            { key: "ela2LeChoice", weight: 1 },
+            { key: "ela2LeCorrect", weight: 1 },
           ],
         },
         {
-          id: "pw2", name: "Persuasive Writing in Context",
+          id: "pw2", name: "Persuasive Writing in Context (Assignment III)",
           sub: "Functional persuasive writing for a specified audience, purpose, and format.",
           cats: [
-            { key: "thoughtSupport", weight: 1 },
-            { key: "writingSkills", weight: 1 },
+            { key: "ela2PwThought", weight: 2 },
+            { key: "ela2PwWriting", weight: 1 },
           ],
         },
       ],
