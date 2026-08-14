@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TPGP Generator — Alberta Teacher Professional Growth Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ts-navy:#1C2B3A; --ts-slate:#2C4A6E; --ts-gold:#C8922A; --ts-gold-lt:#F0C060;
+  --ts-steel:#4A7FA5; --ts-light:#EBF0F5; --ts-pale:#FDF8F0; --ts-border:#C5D0DC;
+  --text:#1E2D3D; --muted:#556070; --white:#FFF; --bg:#EDF0F3;
+  --c1:#1A6B5A; --c2:#2A5FA8; --c3:#8B2FC4; --c4:#C05020; --c5:#8B1A1A; --c6:#1A6B4A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Sans 3',sans-serif;font-size:10.5pt;color:var(--text);background:var(--bg);line-height:1.55;}
+.page{max-width:1080px;margin:20px auto 60px;background:var(--white);box-shadow:0 6px 40px rgba(28,43,58,.16);border-radius:4px;overflow:hidden;}
+.stripe{height:7px;background:linear-gradient(90deg,#C8922A 0%,#F0C060 16%,#4A7FA5 33%,#1C2B3A 50%,#2C4A6E 67%,#C8922A 84%,#F0C060 100%);}
+.header{background:var(--ts-navy);color:#fff;padding:30px 48px 26px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;right:-50px;top:-50px;width:260px;height:260px;background:radial-gradient(circle,rgba(200,146,42,.15) 0%,transparent 70%);}
+.header-meta{position:absolute;right:48px;top:26px;text-align:right;color:rgba(255,255,255,.6);font-size:8.5pt;line-height:1.7;font-weight:300;}
+.header h1{font-family:'Lora',serif;font-size:21pt;font-weight:700;line-height:1.2;}
+.header h1 em{color:var(--ts-gold-lt);font-style:normal;}
+.header .tagline{margin-top:7px;font-size:10.5pt;color:rgba(255,255,255,.75);font-weight:300;max-width:720px;}
+
+/* Step bar */
+.stepbar{display:flex;background:var(--ts-slate);color:#fff;padding:0;}
+.step-chip{flex:1;padding:12px 8px;text-align:center;font-size:9pt;font-weight:600;letter-spacing:.4px;position:relative;opacity:.5;transition:opacity .2s;border-right:1px solid rgba(255,255,255,.12);}
+.step-chip:last-child{border-right:none;}
+.step-chip.active{opacity:1;background:rgba(255,255,255,.10);}
+.step-chip.done{opacity:.85;}
+.step-chip .num{display:inline-flex;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.25);align-items:center;justify-content:center;font-weight:700;margin-right:6px;font-size:8.5pt;}
+.step-chip.active .num{background:var(--ts-gold);}
+
+.panel{display:none;padding:26px 48px 12px;}
+.panel.active{display:block;}
+.panel h2{font-family:'Lora',serif;font-size:15pt;color:var(--ts-navy);margin-bottom:4px;}
+.panel .lead{color:var(--muted);font-size:10.5pt;margin-bottom:18px;max-width:820px;}
+
+/* Teacher info */
+.ci-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px 20px;margin-bottom:8px;}
+.ci-field label{display:block;font-size:8pt;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.ci-field input{width:100%;border:none;border-bottom:2px solid var(--ts-border);padding:5px 2px;font-size:10pt;font-family:inherit;color:var(--text);background:transparent;outline:none;}
+.ci-field input:focus{border-bottom-color:var(--ts-slate);}
+
+/* Scale legend */
+.scale-legend{border:1px solid var(--ts-border);border-radius:8px;overflow:hidden;margin:18px 0;}
+.scale-legend-head{background:var(--ts-navy);color:#fff;padding:8px 16px;font-size:9pt;font-weight:600;letter-spacing:.6px;text-transform:uppercase;}
+.scale-grid{display:grid;grid-template-columns:repeat(5,1fr);}
+.scale-item{padding:9px;border-right:1px solid var(--ts-border);text-align:center;}
+.scale-item:last-child{border-right:none;}
+.scale-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-weight:700;font-size:10pt;margin-bottom:3px;}
+.s1 .scale-num{background:#FDECEA;color:#C0392B;} .s2 .scale-num{background:#FEF5E4;color:#D35400;}
+.s3 .scale-num{background:#FDFDE0;color:#B7950B;} .s4 .scale-num{background:#EAFAF1;color:#1E8449;}
+.s5 .scale-num{background:#EAF4FB;color:#1A5276;}
+.scale-label{font-size:8pt;font-weight:600;display:block;} .scale-desc{font-size:7.5pt;color:var(--muted);line-height:1.35;margin-top:2px;}
+
+/* Competency sections */
+.comp-section{margin-top:16px;border:1px solid var(--ts-border);border-radius:8px;overflow:hidden;}
+.comp-header{display:flex;align-items:flex-start;padding:12px 18px;gap:12px;color:#fff;}
+.comp-badge{font-family:'Lora',serif;font-size:12pt;font-weight:700;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,.22);}
+.comp-title{font-family:'Lora',serif;font-size:12pt;font-weight:700;line-height:1.2;}
+.comp-statement{color:rgba(255,255,255,.82);font-size:9pt;font-weight:300;margin-top:3px;font-style:italic;}
+.comp-1 .comp-header{background:#15503F;} .comp-2 .comp-header{background:#1A3D72;}
+.comp-3 .comp-header{background:#5C1F88;} .comp-4 .comp-header{background:#8B3510;}
+.comp-5 .comp-header{background:#6A1515;} .comp-6 .comp-header{background:#123A28;}
+.comp-1 .ind-code{background:var(--c1);} .comp-2 .ind-code{background:var(--c2);}
+.comp-3 .ind-code{background:var(--c3);} .comp-4 .ind-code{background:var(--c4);}
+.comp-5 .ind-code{background:var(--c5);} .comp-6 .ind-code{background:var(--c6);}
+
+table.cl{width:100%;border-collapse:collapse;font-size:9.5pt;}
+table.cl th{padding:7px 8px;font-size:7.5pt;font-weight:700;color:var(--ts-navy);text-transform:uppercase;letter-spacing:.6px;border:1px solid var(--ts-border);text-align:center;background:var(--ts-light);}
+table.cl th.th-ind{text-align:left;width:44%;} table.cl th.th-lk{width:5%;} table.cl th.th-com{text-align:left;width:23%;}
+table.cl td{padding:7px 8px;border:1px solid var(--ts-border);vertical-align:top;}
+table.cl tr:nth-child(even) td{background:#F8FAFB;}
+.ind-cell{display:flex;align-items:flex-start;gap:6px;}
+.ind-code{display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:7pt;padding:2px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0;margin-top:1px;}
+.ind-text{font-size:9pt;line-height:1.45;}
+.lk-group{display:flex;justify-content:center;gap:3px;}
+.lk-btn{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9pt;border:2px solid #CBD5DC;background:#fff;color:#AAB8C2;cursor:pointer;transition:all .15s;user-select:none;}
+.lk-btn:hover{transform:scale(1.15);}
+.lk-btn.sel-1{background:#FDECEA;border-color:#E74C3C;color:#E74C3C;} .lk-btn.sel-2{background:#FEF5E4;border-color:#E67E22;color:#E67E22;}
+.lk-btn.sel-3{background:#FDFDE0;border-color:#D4AC0D;color:#B7950B;} .lk-btn.sel-4{background:#EAFAF1;border-color:#27AE60;color:#27AE60;}
+.lk-btn.sel-5{background:#EAF4FB;border-color:#1A5276;color:#1A5276;}
+.comment-ta{width:100%;min-height:46px;border:1px solid var(--ts-border);border-radius:4px;padding:5px 7px;font-size:8.5pt;font-family:inherit;color:var(--text);background:#FDFEFE;resize:vertical;outline:none;line-height:1.4;}
+.comment-ta:focus{border-color:var(--ts-slate);}
+
+/* Reflections + goals */
+.card{border:1.5px solid var(--ts-border);border-radius:8px;overflow:hidden;margin-top:16px;}
+.card-head{background:var(--ts-slate);color:#fff;padding:9px 16px;font-family:'Lora',serif;font-size:10.5pt;font-weight:600;}
+.card-body{padding:14px 18px;}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ref-box h4{font-size:9pt;font-weight:700;color:var(--ts-navy);margin-bottom:6px;}
+textarea.ta{width:100%;min-height:70px;border:1px solid var(--ts-border);border-radius:4px;padding:7px 9px;font-size:9.5pt;font-family:inherit;color:var(--text);background:#FDFEFE;resize:vertical;outline:none;line-height:1.5;}
+textarea.ta:focus{border-color:var(--ts-slate);}
+.full-ta{min-height:60px;margin-top:6px;}
+table.goals-tbl{width:100%;border-collapse:collapse;font-size:9pt;}
+table.goals-tbl th{background:var(--ts-light);padding:7px 9px;text-align:left;font-size:7.5pt;font-weight:700;color:var(--ts-navy);text-transform:uppercase;letter-spacing:.5px;border:1px solid var(--ts-border);}
+table.goals-tbl td{padding:5px 7px;border:1px solid var(--ts-border);vertical-align:top;}
+.goal-ta{width:100%;min-height:38px;border:none;padding:2px;font-size:8.5pt;font-family:inherit;color:var(--text);background:transparent;resize:vertical;outline:none;line-height:1.4;}
+
+/* Files / URLs */
+.dropzone{border:2px dashed var(--ts-border);border-radius:10px;padding:30px 20px;text-align:center;background:var(--ts-pale);cursor:pointer;transition:border-color .2s,background .2s;}
+.dropzone:hover,.dropzone.drag{border-color:var(--ts-gold);background:#FFF8EC;}
+.dropzone .dz-icon{font-size:30pt;line-height:1;}
+.dropzone .dz-main{font-family:'Lora',serif;font-size:12pt;color:var(--ts-navy);font-weight:600;margin-top:8px;}
+.dropzone .dz-sub{font-size:9pt;color:var(--muted);margin-top:4px;}
+.filelist{margin-top:14px;display:flex;flex-direction:column;gap:6px;}
+.file-row{display:flex;align-items:center;gap:10px;background:var(--ts-light);border:1px solid var(--ts-border);border-radius:6px;padding:8px 12px;font-size:9.5pt;}
+.file-row .fr-name{flex:1;font-weight:600;color:var(--ts-navy);word-break:break-all;}
+.file-row .fr-size{color:var(--muted);font-size:8.5pt;}
+.file-row .fr-x{cursor:pointer;color:#C0392B;font-weight:700;font-size:12pt;line-height:1;padding:0 4px;}
+.url-row{display:flex;gap:8px;margin-bottom:8px;}
+.url-row input{flex:1;border:1px solid var(--ts-border);border-radius:6px;padding:8px 10px;font-size:9.5pt;font-family:inherit;outline:none;}
+.url-row input:focus{border-color:var(--ts-slate);}
+.url-row .u-x{cursor:pointer;color:#C0392B;font-weight:700;font-size:14pt;padding:0 6px;align-self:center;}
+.mini-btn{background:var(--ts-light);border:1px solid var(--ts-border);color:var(--ts-slate);border-radius:6px;padding:7px 14px;font-size:9pt;font-weight:600;cursor:pointer;font-family:inherit;}
+.mini-btn:hover{background:#E1E9F1;}
+
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;}
+.opt-field label{display:block;font-size:8.5pt;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.opt-field input,.opt-field select{width:100%;border:1px solid var(--ts-border);border-radius:6px;padding:9px 11px;font-size:9.5pt;font-family:inherit;outline:none;background:#fff;}
+.opt-field input:focus,.opt-field select:focus{border-color:var(--ts-slate);}
+.hint{font-size:8.5pt;color:var(--muted);margin-top:4px;font-style:italic;}
+
+.callout{background:var(--ts-pale);border:1.5px solid var(--ts-gold);border-radius:8px;padding:13px 18px;display:flex;gap:12px;align-items:flex-start;margin-top:16px;}
+.callout .ic{font-size:18pt;line-height:1;} .callout p{font-size:9.5pt;line-height:1.6;}
+.callout strong{display:block;color:var(--ts-navy);font-family:'Lora',serif;margin-bottom:3px;}
+
+/* Nav bar */
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:18px 48px 30px;gap:12px;}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:9px;padding:12px 26px;font-family:'Lora',serif;font-size:11pt;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s;}
+.btn-primary{background:linear-gradient(135deg,var(--ts-navy),var(--ts-slate));color:#fff;box-shadow:0 4px 16px rgba(28,43,58,.28);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(28,43,58,.36);}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-ghost{background:var(--white);color:var(--ts-slate);border:1.5px solid var(--ts-border);}
+.btn-ghost:hover{background:var(--ts-light);}
+.btn-gold{background:linear-gradient(135deg,var(--ts-gold),#A97A1E);color:#fff;box-shadow:0 4px 16px rgba(200,146,42,.35);}
+.btn-gold:hover{transform:translateY(-2px);}
+
+/* Generate / result */
+#gen-status{display:none;flex-direction:column;align-items:center;gap:14px;padding:40px 20px;text-align:center;}
+.spinner{width:44px;height:44px;border:4px solid var(--ts-light);border-top-color:var(--ts-slate);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#gen-status .msg{font-family:'Lora',serif;font-size:12pt;color:var(--ts-slate);font-weight:600;}
+#gen-status .sub{font-size:9pt;color:var(--muted);}
+.err-box{background:#FDECEA;border:1.5px solid #E74C3C;color:#922;border-radius:8px;padding:14px 18px;font-size:9.5pt;margin-top:12px;display:none;}
+#result{display:none;}
+.result-hero{text-align:center;padding:20px 0 6px;}
+.result-hero .rh-check{font-size:34pt;line-height:1;}
+.result-hero h2{font-family:'Lora',serif;color:var(--ts-navy);font-size:17pt;margin-top:6px;}
+.result-hero p{color:var(--muted);font-size:10pt;margin-top:4px;}
+.preview{border:1px solid var(--ts-border);border-radius:8px;padding:18px 22px;margin-top:16px;background:#FCFDFE;max-height:520px;overflow-y:auto;}
+.preview h3{font-family:'Lora',serif;color:var(--ts-navy);font-size:13pt;margin:14px 0 4px;}
+.preview .goal-title{font-weight:700;color:var(--ts-slate);margin-top:12px;font-size:11pt;}
+.preview .lbl{font-weight:700;color:var(--ts-navy);margin-top:8px;font-size:9.5pt;}
+.preview ul{margin:2px 0 6px 20px;} .preview li{font-size:9.5pt;margin-bottom:2px;}
+.preview .rationale{background:var(--ts-light);border-left:4px solid var(--ts-slate);padding:10px 14px;border-radius:5px;font-size:9.5pt;font-style:italic;margin-bottom:8px;}
+.footer{background:var(--ts-navy);color:rgba(255,255,255,.6);padding:12px 48px;display:flex;justify-content:space-between;font-size:8pt;font-weight:300;flex-wrap:wrap;gap:6px;}
+.footer strong{color:rgba(255,255,255,.9);}
+@media(max-width:720px){.ci-grid,.opt-grid,.ref-grid{grid-template-columns:1fr;}.header-meta{position:static;text-align:left;margin-top:10px;}}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="stripe"></div>
+
+<div class="header">
+  <div class="header-meta">Alberta Teaching Quality Standard<br>Ministerial Order #001/2020 (Amended 2023)<br>Teacher Growth, Supervision &amp; Evaluation</div>
+  <h1>Professional Growth Plan <em>Generator</em></h1>
+  <div class="tagline">Reflect on the TQS, add your own evidence, and generate a draft Teacher Professional Growth Plan built to Alberta's expectations — ready to download as a Word document.</div>
+</div>
+<div class="stripe"></div>
+
+<div class="stepbar">
+  <div class="step-chip active" data-chip="0"><span class="num">1</span>Self-Reflection</div>
+  <div class="step-chip" data-chip="1"><span class="num">2</span>Files &amp; Notes</div>
+  <div class="step-chip" data-chip="2"><span class="num">3</span>Web Links</div>
+  <div class="step-chip" data-chip="3"><span class="num">4</span>Generate</div>
+</div>
+
+<!-- ══ STEP 1: SELF-REFLECTION ══ -->
+<div class="panel active" data-panel="0">
+  <h2>Step 1 · Complete Your TQS Self-Reflection</h2>
+  <p class="lead">Rate how consistently each practice shows up in your teaching right now, and add notes where useful. Your honest ratings — especially the lower ones — become the foundation of your growth goals. Nothing here is an evaluation.</p>
+
+  <div class="ci-grid">
+    <div class="ci-field"><label>Teacher Name</label><input id="t-name" placeholder="Your full name"></div>
+    <div class="ci-field"><label>School / Program</label><input id="t-school" placeholder="e.g. ursa · LYNX · Third Academy"></div>
+    <div class="ci-field"><label>Subject(s) / Grade(s) — your Position</label><input id="t-subjects" placeholder="e.g. Biology 30, Grades 10–12"></div>
+    <div class="ci-field"><label>Years of Experience</label><input id="t-exp" placeholder="e.g. 8 years"></div>
+    <div class="ci-field"><label>Review Type</label><input id="t-review" placeholder="Self-reflection"></div>
+    <div class="ci-field"><label>Date</label><input id="t-date" placeholder="e.g. September 2026"></div>
+    <div class="ci-field">
+      <label>School Year</label>
+      <input id="t-schoolyear" placeholder="e.g. 2026-27">
+      <div class="hint" style="margin-top:3px;">Format: 2025-26, 2026-27, … — sets all the dates in your plan (September start → June end).</div>
+    </div>
+  </div>
+
+  <div class="scale-legend">
+    <div class="scale-legend-head">⭐ Rating Scale — How consistently does this practice show up in your teaching?</div>
+    <div class="scale-grid">
+      <div class="scale-item s1"><div><span class="scale-num">1</span></div><span class="scale-label">Rarely / Not Yet</span><div class="scale-desc">Not yet consistent</div></div>
+      <div class="scale-item s2"><div><span class="scale-num">2</span></div><span class="scale-label">Beginning</span><div class="scale-desc">Sometimes, inconsistently</div></div>
+      <div class="scale-item s3"><div><span class="scale-num">3</span></div><span class="scale-label">Developing</span><div class="scale-desc">Regularly, room to grow</div></div>
+      <div class="scale-item s4"><div><span class="scale-num">4</span></div><span class="scale-label">Proficient</span><div class="scale-desc">Consistent, works well</div></div>
+      <div class="scale-item s5"><div><span class="scale-num">5</span></div><span class="scale-label">Exemplary</span><div class="scale-desc">A genuine strength</div></div>
+    </div>
+  </div>
+
+  <div id="comp-container"></div>
+
+  <div class="card">
+    <div class="card-head">🎯 Draft Growth Goals (optional starting points)</div>
+    <div class="card-body">
+      <p class="hint" style="margin-bottom:10px;">If you already have goals in mind, jot them here — the generator will build on them. Otherwise leave blank and let your ratings drive the plan.</p>
+      <table class="goals-tbl">
+        <thead><tr><th style="width:4%;">#</th><th style="width:26%;">TQS Competency</th><th style="width:38%;">What I Will Do Differently</th><th style="width:16%;">By When</th><th style="width:16%;">Support Needed</th></tr></thead>
+        <tbody id="goals-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">🌟 Overall Professional Reflections</div>
+    <div class="card-body">
+      <div class="ref-grid">
+        <div class="ref-box"><h4>✨ Two or three things I do really well</h4><textarea class="ta" id="r-strengths" placeholder="Name the competencies and concrete ways they show up…"></textarea></div>
+        <div class="ref-box"><h4>🔧 One or two TQS areas I want to strengthen</h4><textarea class="ta" id="r-strengthen" placeholder="Which competency, if strengthened, would matter most to your students?"></textarea></div>
+        <div class="ref-box"><h4>💡 A new strategy or approach I want to try</h4><textarea class="ta" id="r-strategy" placeholder="A new instructional approach, FNMI resource, assessment strategy…"></textarea></div>
+        <div class="ref-box"><h4>🙋 Professional learning or support I'd find helpful</h4><textarea class="ta" id="r-support" placeholder="A course, workshop, conversation, or resource…"></textarea></div>
+      </div>
+      <div style="margin-top:12px;">
+        <h4 style="font-size:9pt;font-weight:700;color:var(--ts-navy);margin-bottom:4px;">Additional thoughts, questions, or observations</h4>
+        <textarea class="ta full-ta" id="r-additional" placeholder="Anything else on your mind…"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STEP 2: FILES ══ -->
+<div class="panel" data-panel="1">
+  <h2>Step 2 · Add Supporting Files &amp; Notes</h2>
+  <p class="lead">Attach anything you'd like your plan to draw on — last year's growth plan, your school education plan, PD certificates, student data summaries, reflections. Accepted: PDF, Word (.docx / .doc), and text (.txt). These stay on your machine and are sent only to generate your plan.</p>
+
+  <div class="dropzone" id="dropzone">
+    <div class="dz-icon">📎</div>
+    <div class="dz-main">Drop files here, or click to browse</div>
+    <div class="dz-sub">PDF · DOCX · DOC · TXT</div>
+    <input type="file" id="file-input" multiple accept=".pdf,.docx,.doc,.txt,.md" style="display:none;">
+  </div>
+  <div class="filelist" id="filelist"></div>
+
+  <div class="card">
+    <div class="card-head">📝 Anything else for consideration</div>
+    <div class="card-body">
+      <textarea class="ta full-ta" id="notes" style="min-height:120px;" placeholder="Context, priorities, constraints, school goals, personal aspirations, timelines — anything you want the plan to take into account…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STEP 3: URLS ══ -->
+<div class="panel" data-panel="2">
+  <h2>Step 3 · Add Web Links to Consider</h2>
+  <p class="lead">List any web pages you'd like taken into account — your division's growth-plan guidance, curriculum pages, PD offerings, research articles. The generator will read the text of each page.</p>
+  <div id="url-list"></div>
+  <button class="mini-btn" id="add-url">+ Add another link</button>
+  <div class="callout">
+    <div class="ic">🔗</div>
+    <div><strong>Optional</strong><p>You can skip this step entirely. The Alberta Teaching Quality Standard and provincial TPGP expectations are already built into the generator.</p></div>
+  </div>
+</div>
+
+<!-- ══ STEP 4: GENERATE ══ -->
+<div class="panel" data-panel="3">
+  <h2>Step 4 · Generate Your Draft TPGP</h2>
+  <p class="lead">Choose your options and generate. Your plan will follow the Third Schools template and Alberta's TPGP expectations — SMART goals tied to the six TQS competencies, with objectives, strategies, measures, and resources.</p>
+
+  <div class="opt-grid">
+    <div class="opt-field">
+      <label>Number of Goals</label>
+      <select id="num-goals"><option value="2">2 goals</option><option value="3" selected>3 goals</option></select>
+    </div>
+    <div class="opt-field">
+      <label>Model</label>
+      <select id="model">
+        <option value="claude-sonnet-5" selected>Claude Sonnet 5 (recommended)</option>
+        <option value="claude-opus-4-8">Claude Opus 4.8 (highest quality)</option>
+        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (fastest)</option>
+      </select>
+    </div>
+  </div>
+  <div class="opt-field" style="margin-top:16px;">
+    <label>Anthropic API Key <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+    <input type="password" id="api-key" placeholder="sk-ant-…  — leave blank if ANTHROPIC_API_KEY is set on the server">
+    <div class="hint">Your key is never stored. It is used only for this generation and sent directly to Anthropic. If you set the ANTHROPIC_API_KEY environment variable before launching, leave this blank.</div>
+  </div>
+
+  <div class="callout">
+    <div class="ic">🍁</div>
+    <div><strong>Built to Alberta expectations</strong><p>Grounded in the Teaching Quality Standard (MO #001/2020, amended 2023) and the Teacher Growth, Supervision &amp; Evaluation Policy. The result is a <em>draft</em> for you to review, personalise, and discuss with your administrator.</p></div>
+  </div>
+
+  <div id="gen-status">
+    <div class="spinner"></div>
+    <div class="msg" id="gen-msg">Reading your inputs &amp; drafting your plan…</div>
+    <div class="sub">Parsing files, fetching links, and generating with Claude. This can take up to a minute.</div>
+  </div>
+  <div class="err-box" id="err-box"></div>
+
+  <!-- Result -->
+  <div id="result">
+    <div class="result-hero">
+      <div class="rh-check">✅</div>
+      <h2>Your Draft TPGP is Ready</h2>
+      <p>Review the preview below, then download it as a Word document to edit and finalise.</p>
+    </div>
+    <div style="text-align:center;margin-top:16px;">
+      <button class="btn btn-gold" id="download-btn">⬇ Download .docx</button>
+      <button class="btn btn-ghost" id="regen-btn" style="margin-left:10px;">↻ Regenerate</button>
+    </div>
+    <div class="preview" id="preview"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="navbar">
+  <button class="btn btn-ghost" id="back-btn" style="visibility:hidden;">← Back</button>
+  <button class="btn btn-primary" id="next-btn">Next: Files &amp; Notes →</button>
+</div>
+
+<div class="footer">
+  <div><strong>TPGP Generator</strong> · built on the Third Schools TQS Self-Reflection</div>
+  <div>Alberta <strong>Teaching Quality Standard</strong> — MO #001/2020 (Amended 2023)</div>
+</div>
+<div class="stripe"></div>
+</div>
+
+<script>
+// ── TQS INDICATOR DATA ──
+const indicators = {
+  1:[["1a","I act consistently with fairness, respect and integrity in all my interactions with students, families, colleagues, and community members"],["1b","I demonstrate empathy and genuine care for the students and families I work with, and this is visible in my day-to-day practice"],["1c","I provide culturally appropriate and meaningful opportunities for students and parents/guardians, as partners in education, to actively support student learning"],["1d","I invite and welcome First Nations, Métis and Inuit parents/guardians, Elders/knowledge keepers, cultural advisors and local community members into my school and classroom"],["1e","I collaborate effectively with community service professionals (mental health, social services, justice, health, law enforcement) to support students' overall well-being"],["1f","I honour cultural diversity in my classroom and actively promote intercultural understanding among my students"]],
+  2:[["2a","I engage in ongoing critical reflection on my own teaching practice to identify areas for professional growth"],["2b","I collaborate with colleagues to build personal and collective professional capacities, sharing expertise and learning from others"],["2c","I actively seek out feedback from students, families, peers, and supervisors to enhance my teaching practice"],["2d","I build and maintain my capacity to support student success in inclusive, welcoming, caring, respectful and safe learning environments"],["2e","I seek out, critically review, and apply current educational research to continuously improve my practice"],["2f","I continually enhance my understanding of First Nations, Métis and Inuit worldviews, cultural beliefs, languages and values"],["2g","I maintain awareness of emerging technologies — including AI tools — and consider how they can ethically and effectively enhance my teaching and student learning"]],
+  3:[["3a","I plan and design learning activities that address Alberta curriculum outcomes, reflect short/medium/long-range planning, and incorporate varied, engaging, and relevant instructional strategies"],["3b","I incorporate appropriate digital technology and resources in my planning to build student capacity for acquiring knowledge, communicating, thinking critically, and evaluating information"],["3c","I plan by thoughtfully considering student variables including age, prior knowledge, cultural and linguistic background, social-emotional needs, and cognitive and physical abilities"],["3d","I use instructional strategies that engage students in meaningful learning, drawing on my specialized subject knowledge, understanding of how students develop, and knowledge of their backgrounds"],["3e","I apply assessment and evaluation practices that accurately reflect curriculum outcomes, generate evidence of learning through balanced formative and summative experiences, and provide timely, constructive feedback"],["3f","I offer students a variety of methods to demonstrate their achievement of learning outcomes, and I use reasoned professional judgment in determining and reporting the level of student learning"],["3g","I consistently communicate high expectations for all students and foster their understanding of how each learning activity connects to the intended outcomes"],["3h","I ensure that all students continuously develop their skills in literacy and numeracy, and I build student capacity for collaboration in my instructional design"],["3i","I consider relevant local, provincial, national and international contexts and issues when planning and designing learning activities"]],
+  4:[["4a","I foster equality and respect in my classroom with regard to rights as provided for in the Alberta Human Rights Act and the Canadian Charter of Rights and Freedoms"],["4b","I use appropriate universal and targeted strategies and supports to address the diverse strengths, learning challenges and areas for growth of all students"],["4c","I communicate a clear philosophy of education that affirms every student can learn and be successful, and I make this visible in my practice"],["4d","I am aware of, and proactively respond to, the emotional and mental health needs of my students"],["4e","I recognize and respond to the specific learning needs of individual students and, when needed, collaborate with specialists and service providers to design targeted supports"],["4f","I employ classroom management strategies that promote positive, engaging, and welcoming learning environments where every student feels safe and valued"],["4g","I incorporate students' personal and cultural strengths, backgrounds, and experiences into my teaching and learning activities"],["4h","I provide regular, meaningful opportunities for student leadership and agency within my classroom"]],
+  5:[["5a","I understand the historical, social, economic and political implications of treaties and agreements with First Nations, legislation negotiated with Métis, and the legacy and ongoing impact of residential schools"],["5b","I support student achievement by engaging in collaborative, whole-school approaches to building capacity in First Nations, Métis and Inuit education"],["5c","I use programs of study to provide opportunities for all students to develop knowledge of, and respect for, the histories, cultures, languages, contributions, perspectives and contemporary contexts of First Nations, Métis and Inuit"],["5d","I use resources that accurately reflect and demonstrate the strength and diversity of First Nations, Métis and Inuit to support the learning experiences of all students"]],
+  6:[["6a","I maintain awareness of, and respond in accordance with, requirements authorized under the Alberta Education Act and other relevant legislation applicable to my teaching context"],["6b","I engage consistently in practices that align with the policies and procedures established by my school authority"],["6c","I recognize and uphold the standards of professional conduct expected of a caring, knowledgeable and reasonable adult who is entrusted with the custody, care and education of students"]]
+};
+const compMeta = {
+  1:{t:"Fostering Effective Relationships",s:"A teacher builds positive and productive relationships with students, parents/guardians, peers and others in the school and local community to support student learning."},
+  2:{t:"Engaging in Career-Long Learning",s:"A teacher engages in career-long professional learning and ongoing critical reflection to improve teaching and learning."},
+  3:{t:"Demonstrating a Professional Body of Knowledge",s:"A teacher applies a current and comprehensive repertoire of effective planning, instruction and assessment practices to meet the learning needs of every student."},
+  4:{t:"Establishing Inclusive Learning Environments",s:"A teacher establishes, promotes and sustains inclusive learning environments where diversity is embraced and every student is welcomed, cared for, respected and safe."},
+  5:{t:"Applying Foundational Knowledge about First Nations, Métis and Inuit",s:"A teacher develops and applies foundational knowledge about First Nations, Métis and Inuit for the benefit of all students."},
+  6:{t:"Adhering to Legal Frameworks and Policies",s:"A teacher demonstrates an understanding of and adherence to the legal frameworks and policies that provide the foundations for the Alberta education system."}
+};
+
+const ratings = {}, comments = {};
+function buildComp(comp){
+  ratings[comp] = new Array(indicators[comp].length).fill(0);
+  const sec = document.createElement('div');
+  sec.className = 'comp-section comp-'+comp;
+  sec.innerHTML = `<div class="comp-header"><div class="comp-badge">${comp}</div><div><div class="comp-title">${compMeta[comp].t}</div><div class="comp-statement">${compMeta[comp].s}</div></div></div>
+    <table class="cl"><thead><tr><th class="th-ind">Indicator — Reflecting on My Practice</th><th class="th-lk">1</th><th class="th-lk">2</th><th class="th-lk">3</th><th class="th-lk">4</th><th class="th-lk">5</th><th class="th-com">Evidence / Notes / Next Steps</th></tr></thead><tbody></tbody></table>`;
+  const tbody = sec.querySelector('tbody');
+  indicators[comp].forEach((item,i)=>{
+    const tr = document.createElement('tr');
+    const indTd = document.createElement('td');
+    indTd.innerHTML = `<div class="ind-cell"><span class="ind-code">${item[0]}</span><span class="ind-text">${item[1]}</span></div>`;
+    tr.appendChild(indTd);
+    const btns = [];
+    for(let v=1;v<=5;v++){
+      const td = document.createElement('td'); td.style.cssText='text-align:center;vertical-align:middle;';
+      const btn = document.createElement('div'); btn.className='lk-btn'; btn.textContent=v;
+      btn.addEventListener('click',()=>{
+        btns.forEach(b=>b.classList.remove('sel-1','sel-2','sel-3','sel-4','sel-5'));
+        btn.classList.add('sel-'+v); ratings[comp][i]=v;
+      });
+      td.appendChild(btn); btns.push(btn); tr.appendChild(td);
+    }
+    const cTd = document.createElement('td');
+    const ta = document.createElement('textarea'); ta.className='comment-ta'; ta.placeholder='Evidence, reflections, or ideas for growth…';
+    ta.addEventListener('input',()=>{comments[comp+'-'+i]=ta.value;});
+    cTd.appendChild(ta); tr.appendChild(cTd);
+    tbody.appendChild(tr);
+  });
+  document.getElementById('comp-container').appendChild(sec);
+}
+[1,2,3,4,5,6].forEach(buildComp);
+
+// Goals table
+const goalsBody = document.getElementById('goals-body');
+for(let i=1;i<=3;i++){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td style="text-align:center;font-weight:700;color:var(--ts-navy);">${i}</td>
+    <td><textarea class="goal-ta" data-g="competency" placeholder="e.g. Competency 3"></textarea></td>
+    <td><textarea class="goal-ta" data-g="action" placeholder="Intended change in practice…"></textarea></td>
+    <td><textarea class="goal-ta" data-g="when" placeholder="e.g. June 2026"></textarea></td>
+    <td><textarea class="goal-ta" data-g="support" placeholder="Support needed…"></textarea></td>`;
+  goalsBody.appendChild(tr);
+}
+
+// ── Files ──
+let files = [];
+const dz = document.getElementById('dropzone'), fi = document.getElementById('file-input');
+dz.addEventListener('click',()=>fi.click());
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');addFiles(e.dataTransfer.files);});
+fi.addEventListener('change',()=>addFiles(fi.files));
+function addFiles(list){ for(const f of list){ files.push(f); } renderFiles(); fi.value=''; }
+function renderFiles(){
+  const el = document.getElementById('filelist'); el.innerHTML='';
+  files.forEach((f,i)=>{
+    const row = document.createElement('div'); row.className='file-row';
+    row.innerHTML = `<span>📄</span><span class="fr-name">${f.name}</span><span class="fr-size">${(f.size/1024).toFixed(0)} KB</span><span class="fr-x" title="Remove">×</span>`;
+    row.querySelector('.fr-x').addEventListener('click',()=>{files.splice(i,1);renderFiles();});
+    el.appendChild(row);
+  });
+}
+
+// ── URLs ──
+const urlList = document.getElementById('url-list');
+function addUrlRow(val){
+  const row = document.createElement('div'); row.className='url-row';
+  row.innerHTML = `<input type="url" placeholder="https://…" value="${val||''}"><span class="u-x" title="Remove">×</span>`;
+  row.querySelector('.u-x').addEventListener('click',()=>row.remove());
+  urlList.appendChild(row);
+}
+addUrlRow(); addUrlRow();
+document.getElementById('add-url').addEventListener('click',()=>addUrlRow());
+
+// ── Wizard nav ──
+let step = 0; const LAST = 3;
+const nextLabels = ["Next: Files &amp; Notes →","Next: Web Links →","Next: Generate →",""];
+function showStep(n){
+  step = n;
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', +p.dataset.panel===n));
+  document.querySelectorAll('.step-chip').forEach(c=>{
+    const idx=+c.dataset.chip; c.classList.toggle('active',idx===n); c.classList.toggle('done',idx<n);
+  });
+  document.getElementById('back-btn').style.visibility = n===0 ? 'hidden':'visible';
+  const nb = document.getElementById('next-btn');
+  nb.style.display = n===LAST ? 'none':'inline-flex';
+  nb.innerHTML = nextLabels[n];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.step-chip').forEach(c=>c.addEventListener('click',()=>showStep(+c.dataset.chip)));
+document.getElementById('next-btn').addEventListener('click',()=>{ if(step<LAST) showStep(step+1); });
+document.getElementById('back-btn').addEventListener('click',()=>{ if(step>0) showStep(step-1); });
+
+// ── Collect payload ──
+function collectMeta(){
+  const goals = [];
+  document.querySelectorAll('#goals-body tr').forEach(tr=>{
+    const g={}; tr.querySelectorAll('textarea').forEach(t=>g[t.dataset.g]=t.value.trim());
+    if(Object.values(g).some(v=>v)) goals.push(g);
+  });
+  const urls = [...document.querySelectorAll('#url-list input')].map(i=>i.value.trim()).filter(Boolean);
+  return {
+    apiKey: document.getElementById('api-key').value.trim(),
+    model: document.getElementById('model').value,
+    numGoals: document.getElementById('num-goals').value,
+    schoolYear: document.getElementById('t-schoolyear').value.trim(),
+    notes: document.getElementById('notes').value,
+    urls,
+    reflection: {
+      teacherInfo:{
+        name:document.getElementById('t-name').value,
+        school:document.getElementById('t-school').value,
+        subjects:document.getElementById('t-subjects').value,
+        experience:document.getElementById('t-exp').value,
+        reviewType:document.getElementById('t-review').value,
+        date:document.getElementById('t-date').value
+      },
+      ratings, comments, goals,
+      reflections:{
+        strengths:document.getElementById('r-strengths').value,
+        strengthen:document.getElementById('r-strengthen').value,
+        newStrategy:document.getElementById('r-strategy').value,
+        support:document.getElementById('r-support').value,
+        additional:document.getElementById('r-additional').value
+      }
+    }
+  };
+}
+
+// ── Generate ──
+let lastDocx=null, lastFilename='TPGP.docx';
+const genStatus=document.getElementById('gen-status'), errBox=document.getElementById('err-box'), result=document.getElementById('result');
+async function generate(){
+  const meta = collectMeta();
+  if(!meta.reflection.teacherInfo.name.trim()){
+    if(!confirm('No teacher name entered. Generate anyway?')) { showStep(0); return; }
+  }
+  errBox.style.display='none'; result.style.display='none';
+  genStatus.style.display='flex';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('back-btn').style.visibility='hidden';
+  const fd = new FormData();
+  fd.append('meta', JSON.stringify(meta));
+  files.forEach(f=>fd.append('files', f));
+  try{
+    const resp = await fetch('/api/generate',{method:'POST',body:fd});
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.error || ('Server error '+resp.status));
+    lastDocx = data.docx_base64; lastFilename = data.filename;
+    renderPreview(data.plan, meta);
+    genStatus.style.display='none'; result.style.display='block';
+  }catch(err){
+    genStatus.style.display='none';
+    const m = (err && err.message) || String(err);
+    if(location.protocol==='file:' || /Failed to fetch|NetworkError|Load failed|ERR_/i.test(m)){
+      errBox.innerHTML = "⚠ <b>Couldn't reach the app's server.</b><br>Make sure you started the app with the launcher file (its name begins with “Start”) and that this page is open at <b>http://127.0.0.1:8200</b> — not opened directly from a folder. Then try again.";
+    } else {
+      errBox.textContent = '⚠ '+m;
+    }
+    errBox.style.display='block';
+    document.getElementById('back-btn').style.visibility='visible';
+  }
+}
+function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function renderPreview(plan, meta){
+  const p = document.getElementById('preview'); let h='';
+  if(plan.rationale) h+=`<div class="rationale">${esc(plan.rationale)}</div>`;
+  h+=`<h3>Teacher Professional Growth Plan — ${esc(plan.plan_month_year||'September 2025')}</h3>`;
+  h+=`<div><b>Name:</b> ${esc(meta.reflection.teacherInfo.name||'—')} &nbsp; <b>Position:</b> ${esc(meta.reflection.teacherInfo.subjects||'—')}</div>`;
+  (plan.goals||[]).forEach((g,i)=>{
+    h+=`<div class="goal-title">Goal ${i+1}${g.title?': '+esc(g.title):''}</div>`;
+    if(g.competencies_of_focus) h+=`<div class="lbl">Competencies of Focus:</div><div>${esc(g.competencies_of_focus)}</div>`;
+    if(g.timeframe) h+=`<div>${esc(g.timeframe)}</div>`;
+    const block=(lbl,arr)=>{ if(arr&&arr.length){ h+=`<div class="lbl">${lbl}</div><ul>`+arr.map(x=>`<li>${esc(x)}</li>`).join('')+`</ul>`; } };
+    block('Short-Term Objectives:',g.short_term_objectives);
+    block('Strategies:',g.strategies);
+    block('Measures / Indicators of Success:',g.measures);
+    block('Resources:',g.resources);
+  });
+  p.innerHTML=h;
+}
+function download(){
+  if(!lastDocx) return;
+  const bytes = atob(lastDocx); const arr = new Uint8Array(bytes.length);
+  for(let i=0;i<bytes.length;i++) arr[i]=bytes.charCodeAt(i);
+  const blob = new Blob([arr],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=lastFilename;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+// Wire the generate button: the "Next" on step 3 acts as generate via a dedicated button on the panel.
+// Add a Generate button dynamically in step 4 nav.
+const genBtn = document.createElement('button');
+genBtn.className='btn btn-primary'; genBtn.id='gen-btn'; genBtn.innerHTML='✨ Generate My TPGP';
+genBtn.addEventListener('click',generate);
+document.querySelector('.navbar').appendChild(genBtn);
+function syncGenBtn(){ genBtn.style.display = step===LAST ? 'inline-flex':'none'; }
+const _showStep = showStep;
+showStep = function(n){ _showStep(n); syncGenBtn(); };
+syncGenBtn();
+document.getElementById('download-btn').addEventListener('click',download);
+document.getElementById('regen-btn').addEventListener('click',generate);
+
+// Prefill the School Year (and Date) with the current Alberta school year.
+(function(){
+  const d=new Date(), y=d.getFullYear(), mo=d.getMonth()+1; // month 1–12
+  const start = (mo>=7) ? y : y-1;          // new school year is considered to start in summer
+  const end = start+1;
+  const sy = document.getElementById('t-schoolyear');
+  if(sy && !sy.value) sy.value = start + '-' + String(end).slice(-2);
+  const dt = document.getElementById('t-date');
+  if(dt && !dt.value){
+    const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    dt.value = months[mo-1] + ' ' + y;
+  }
+})();
+
+// Warn loudly if the page was opened as a file instead of through the server.
+if(location.protocol==='file:'){
+  const b=document.createElement('div');
+  b.style.cssText='background:#FDECEA;border-bottom:3px solid #C0392B;color:#8A1F14;padding:16px 24px;font-size:11pt;line-height:1.5;text-align:center;font-family:inherit;';
+  b.innerHTML='⚠ <b>This page was opened as a file, so it can’t work yet.</b><br>'+
+    'The generator needs its small server running. Please <b>close this tab</b>, then in the application folder double-click the launcher file '+
+    '(its name begins with <b>“Start”</b>). A window will open the app automatically at <b>http://127.0.0.1:8200</b> — use that one.';
+  document.body.insertBefore(b, document.body.firstChild);
+  const gb=document.getElementById('gen-btn'); if(gb){gb.disabled=true;}
+}
+</script>
+</body>
+</html>
