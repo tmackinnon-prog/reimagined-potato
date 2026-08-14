@@ -6,6 +6,18 @@ supporting files and web links, and the app writes a first-draft growth
 plan — grounded in Alberta's expectations — and hands it back as a
 **Word (.docx)** document in the Third Schools template.
 
+## Deploy your own copy (Render)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/tmackinnon-prog/reimagined-potato)
+
+This uses the `render.yaml` blueprint at the repo root. When Render asks which
+branch to deploy, pick the branch that has this app on it if it hasn't been
+merged to the default branch yet. During setup Render will prompt you for the
+`ANTHROPIC_API_KEY` environment variable (kept in Render's dashboard, never in
+the repo). The free plan spins the service down after inactivity, so the
+first request after a quiet spell takes ~30–60s to wake up — upgrade the plan
+in Render if you want it always warm.
+
 ## Workflow
 
 1. **Self-Reflection** – Rate yourself (1–5) on each indicator across the six
