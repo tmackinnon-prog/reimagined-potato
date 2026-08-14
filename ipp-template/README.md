@@ -6,6 +6,19 @@ Inclusive Education standards. Teachers complete one copy per student.
 
 - **`IPP_Template_2025-2026.docx`** — the deliverable. Open in Microsoft Word.
 - **`build_ipp.py`** — the generator (run `python3 build_ipp.py` to rebuild).
+- **`lynx.png`, `ursa.png`** — the LYNX and ursa logos used in the letterhead
+  (extracted from the original template; the generator embeds them at build time).
+
+## Formatting & branding
+
+The document matches the original LYNX/ursa template's look:
+
+- **Letterhead** with the real **LYNX** (shield) and **ursa** (bear) logos flanking
+  the title, over an orange rule.
+- **Brand palette sampled from the logos** — ursa teal `#003344` for section bars
+  and headings, LYNX orange `#D77B28` for accents, on a light-teal label tint.
+- **Calibri** body font (the template's font set) and the original section wording
+  and table structure.
 
 ## How it is filled in
 

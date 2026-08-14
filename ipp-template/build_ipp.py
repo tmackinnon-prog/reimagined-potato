@@ -12,6 +12,15 @@ import os, zipfile, html
 
 OUT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# ---- LYNX / ursa brand palette (sampled from the original logos) ------------
+C_TEAL   = "003344"   # ursa dark teal  -> section bars, headings
+C_ORANGE = "D77B28"   # LYNX orange     -> accent rules, goal band
+C_OLIVE  = "999735"   # LYNX olive green
+C_CREAM  = "F4D19F"   # LYNX cream
+C_LABEL  = "DCE6EA"   # light teal tint -> label / header cells
+C_GOAL   = "FBEAD9"   # light orange tint -> goal sentence band
+C_GREY   = "595959"
+
 # ----------------------------------------------------------------------------
 # small helpers
 # ----------------------------------------------------------------------------
@@ -61,14 +70,44 @@ def para(inner="", jc=None, shade=None, spacing_after=60, spacing_before=0,
 def section_bar(text):
     """Full-width shaded section header bar."""
     return para(run(text, bold=True, size=24, color="FFFFFF"),
-                shade="2E5A87", spacing_before=120, spacing_after=60)
+                shade=C_TEAL, spacing_before=140, spacing_after=60)
 
 def subheading(text):
-    return para(run(text, bold=True, size=22, color="2E5A87"),
+    return para(run(text, bold=True, size=22, color=C_TEAL),
                 spacing_before=80, spacing_after=40)
 
 def note(text):
-    return para(run(text, italic=True, size=18, color="595959"), spacing_after=60)
+    return para(run(text, italic=True, size=18, color=C_GREY), spacing_after=60)
+
+def orange_rule(after=120):
+    """Thin orange horizontal rule via a paragraph bottom border."""
+    return ('<w:p><w:pPr><w:pBdr>'
+            '<w:bottom w:val="single" w:sz="18" w:space="1" w:color="%s"/>'
+            '</w:pBdr><w:spacing w:before="0" w:after="%d"/></w:pPr></w:p>'
+            % (C_ORANGE, after))
+
+def image_run(rid, w_emu, h_emu, name):
+    did = uid()
+    return (
+        '<w:r><w:rPr><w:noProof/></w:rPr><w:drawing>'
+        '<wp:inline distT="0" distB="0" distL="0" distR="0" '
+        'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">'
+        '<wp:extent cx="%d" cy="%d"/>'
+        '<wp:effectExtent l="0" t="0" r="0" b="0"/>'
+        '<wp:docPr id="%d" name="%s"/>'
+        '<wp:cNvGraphicFramePr><a:graphicFrameLocks '
+        'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/>'
+        '</wp:cNvGraphicFramePr>'
+        '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+        '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+        '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+        '<pic:nvPicPr><pic:cNvPr id="%d" name="%s"/><pic:cNvPicPr/></pic:nvPicPr>'
+        '<pic:blipFill><a:blip r:embed="%s"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
+        '<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="%d" cy="%d"/></a:xfrm>'
+        '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>'
+        '</pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>'
+        % (w_emu, h_emu, did, name, did, name, rid, w_emu, h_emu)
+    )
 
 # ---- content controls -------------------------------------------------------
 def sdt_text(alias, width_hint=None, placeholder="Click or tap to enter text."):
@@ -164,8 +203,8 @@ def table(rows_xml, col_widths):
     return '<w:tbl>%s<w:tblGrid>%s</w:tblGrid>%s</w:tbl>%s' % (
         tblpr, grid, "".join(rows_xml), para("", spacing_after=40))
 
-def label_cell(text, w, shade="DCE6F1"):
-    return cell(para(run(text, bold=True, size=20), spacing_after=20), w, shade=shade)
+def label_cell(text, w, shade=C_LABEL):
+    return cell(para(run(text, bold=True, size=20, color=C_TEAL), spacing_after=20), w, shade=shade)
 
 # ----------------------------------------------------------------------------
 # option lists
@@ -250,21 +289,47 @@ URL_INCLUSIVE = "https://www.alberta.ca/inclusive-education"
 body = []
 A = body.append
 
-# ---- Title block ----
-A(para(run("Individualized Program Plan", bold=True, size=40, color="2E5A87"),
-        jc="center", spacing_after=40))
-A(para(run("LYNX / ursa", bold=True, size=26, color="595959") +
-        run("     •     2025–2026", size=24, color="595959"),
-        jc="center", spacing_after=40))
-A(para(run("Alberta Education – Special Education / Inclusive Education", italic=True,
-        size=18, color="595959"), jc="center", spacing_after=120))
+# ---- Title block (letterhead: LYNX logo | title | ursa logo) ----
+LYNX_CX, LYNX_CY = 531266, 640080     # 0.70" tall
+URSA_CX, URSA_CY = 797384, 548640     # 0.60" tall
+hc1, hc3 = 2200, 2200
+hc2 = CONTENT_W - hc1 - hc3
+title_center = (
+    para(run("Individualized Program Plan", bold=True, size=40, color=C_TEAL),
+         jc="center", spacing_after=20) +
+    para(run("LYNX / ursa", bold=True, size=24, color=C_ORANGE) +
+         run("     •     2025–2026", size=22, color=C_GREY), jc="center", spacing_after=20) +
+    para(run("Alberta Education – Special Education / Inclusive Education", italic=True,
+         size=18, color=C_GREY), jc="center", spacing_after=0))
+header_tbl = (
+    '<w:tbl><w:tblPr><w:tblW w:w="%d" w:type="dxa"/>'
+    '<w:tblBorders>'
+    '<w:top w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+    '<w:left w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+    '<w:bottom w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+    '<w:right w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+    '<w:insideH w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+    '<w:insideV w:val="none" w:sz="0" w:space="0" w:color="auto"/>'
+    '</w:tblBorders>'
+    '<w:tblLook w:val="0000" w:firstRow="0" w:lastRow="0" w:firstColumn="0" w:lastColumn="0" w:noHBand="1" w:noVBand="1"/>'
+    '</w:tblPr>'
+    '<w:tblGrid><w:gridCol w:w="%d"/><w:gridCol w:w="%d"/><w:gridCol w:w="%d"/></w:tblGrid>'
+    '<w:tr>%s%s%s</w:tr></w:tbl>' % (
+        CONTENT_W, hc1, hc2, hc3,
+        cell(para(image_run("rIdLynx", LYNX_CX, LYNX_CY, "LYNX logo"), jc="left", spacing_after=0), hc1, valign="center"),
+        cell(title_center, hc2, valign="center"),
+        cell(para(image_run("rIdUrsa", URSA_CX, URSA_CY, "ursa logo"), jc="right", spacing_after=0), hc3, valign="center"),
+    )
+)
+A(header_tbl)
+A(orange_rule(after=120))
 
 # ---- Reporting period ----
-rp_inner = (run("Reporting Period:   ", bold=True, size=22) +
+rp_inner = (run("Reporting Period:   ", bold=True, size=22, color=C_TEAL) +
             sdt_dropdown("Reporting Period", ["1", "2", "3"], "Select 1, 2 or 3") +
-            run("        Date Updated:  ", bold=True, size=22) +
+            run("        Date Updated:  ", bold=True, size=22, color=C_TEAL) +
             sdt_text("Date Updated", placeholder="M/D/Y"))
-A(para(rp_inner, shade="EEF3F9", spacing_before=60, spacing_after=60))
+A(para(rp_inner, shade=C_LABEL, spacing_before=60, spacing_after=60))
 A(note("Reporting Period 1 = fall (baseline)   •   Reporting Period 2 = winter/March review   •   "
        "Reporting Period 3 = spring/June review."))
 A(note("For Reporting Periods 2 and 3: open the student’s previous IPP, then copy each prior "
@@ -423,11 +488,11 @@ def goal_block(n):
         run(" ", size=22) + sdt_text("Goal %d - Detail" % n, placeholder="describe the observable behaviour") +
         run(" ", size=22) +
         run("out of five instances as observed by teacher.", size=22, bold=True))
-    out.append(para(goal_sentence, shade="EEF3F9", spacing_before=40, spacing_after=80))
+    out.append(para(goal_sentence, shade=C_GOAL, spacing_before=40, spacing_after=80))
 
     # per-goal strategies checklist (online synchronous) — two columns, once per goal
     out.append(para(run("Strategies (online synchronous – check all that apply):",
-                        bold=True, size=20, color="2E5A87"), spacing_before=40, spacing_after=20))
+                        bold=True, size=20, color=C_TEAL), spacing_before=40, spacing_after=20))
     scol = CONTENT_W // 2
     smid = (len(STRATEGIES) + 1) // 2
     sL, sR = STRATEGIES[:smid], STRATEGIES[smid:]
@@ -491,7 +556,7 @@ A(table([
 A(section_bar("Transition Plan"))
 def transition(lbl, default):
     return (para(run(lbl, bold=True, size=20), spacing_after=20) +
-            para(run(default, size=18, color="595959"), spacing_after=20) +
+            para(run(default, size=18, color=C_GREY), spacing_after=20) +
             para(sdt_text(lbl + " notes", placeholder="Add student-specific notes."), spacing_after=80))
 A(transition("Transition In:",
    "Registration process, review school file, interview parents, observe student in classroom, "
@@ -602,6 +667,7 @@ CONTENT_TYPES = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
 <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
 <Default Extension="xml" ContentType="application/xml"/>
+<Default Extension="png" ContentType="image/png"/>
 <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
 <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
 <Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/>
@@ -624,6 +690,8 @@ doc_rel_items = [
     '<Relationship Id="rIdSettings" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/>',
     '<Relationship Id="rIdHeader" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>',
     '<Relationship Id="rIdFooter" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>',
+    '<Relationship Id="rIdLynx" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/lynx.png"/>',
+    '<Relationship Id="rIdUrsa" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/ursa.png"/>',
 ]
 for rid, url in RELS:
     doc_rel_items.append(
@@ -663,11 +731,17 @@ parts = {
     "docProps/core.xml": CORE,
     "docProps/app.xml": APP,
 }
+media = {
+    "word/media/lynx.png": open(os.path.join(OUT_DIR, "lynx.png"), "rb").read(),
+    "word/media/ursa.png": open(os.path.join(OUT_DIR, "ursa.png"), "rb").read(),
+}
 if os.path.exists(out_path):
     os.remove(out_path)
 with zipfile.ZipFile(out_path, "w", zipfile.ZIP_DEFLATED) as z:
     # content types first
     z.writestr("[Content_Types].xml", parts.pop("[Content_Types].xml"))
     for name, data in parts.items():
+        z.writestr(name, data)
+    for name, data in media.items():
         z.writestr(name, data)
 print("wrote", out_path)
