@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Syllabus Generator - User Guide</title>
+  <style>
+    :root {
+      --primary: #1e3a5f;
+      --primary-light: #2563eb;
+      --success: #059669;
+      --warning: #f97316;
+      --danger: #dc2626;
+      --info: #0891b2;
+      --bg: #f8fafc;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      padding: 0;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: var(--white);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .header p { font-size: 1.1rem; opacity: 0.9; }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 2rem 1rem;
+      margin-top: 180px;
+    }
+
+    .sidebar h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin: 1.5rem 0 0.75rem;
+      font-weight: 700;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.25rem;
+      border-radius: 4px;
+      text-decoration: none;
+      color: var(--primary);
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar a:hover {
+      background: #e0f2fe;
+      color: var(--primary-light);
+    }
+
+    .main {
+      margin-left: 270px;
+      padding-top: 200px;
+    }
+
+    /* Content */
+    h2 { color: var(--primary); margin: 2.5rem 0 1rem; font-size: 1.8rem; padding-bottom: 0.75rem; border-bottom: 3px solid var(--primary-light); }
+    h3 { color: var(--primary); margin: 1.75rem 0 1rem; font-size: 1.3rem; }
+    h4 { color: var(--text); margin: 1.25rem 0 0.75rem; font-size: 1.05rem; font-weight: 600; }
+
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 2rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.5rem; }
+
+    /* Cards */
+    .card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-left: 5px solid var(--primary-light);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .card.info { border-left-color: var(--info); }
+    .card.warning { border-left-color: var(--warning); }
+    .card.success { border-left-color: var(--success); }
+    .card.danger { border-left-color: var(--danger); }
+
+    .card h4 { margin-top: 0; }
+
+    /* Alerts */
+    .alert {
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      border-left: 4px solid;
+    }
+
+    .alert-info { background: #e0f2fe; border-left-color: var(--info); color: #0c4a6e; }
+    .alert-success { background: #ecfdf5; border-left-color: var(--success); color: #065f46; }
+    .alert-warning { background: #fef3c7; border-left-color: var(--warning); color: #92400e; }
+    .alert-danger { background: #fee2e2; border-left-color: var(--danger); color: #7f1d1d; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: var(--white);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    th {
+      background: var(--primary);
+      color: var(--white);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+    tr:hover { background: #f9fafb; }
+
+    /* Code */
+    code {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1.5rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* Step-by-step */
+    .steps { counter-reset: step-counter; }
+    .step {
+      margin: 1.5rem 0;
+      padding-left: 3rem;
+      position: relative;
+    }
+
+    .step::before {
+      content: counter(step-counter);
+      counter-increment: step-counter;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--primary-light);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    /* FAQ */
+    .faq-item {
+      margin: 1.5rem 0;
+      background: var(--white);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .faq-question {
+      padding: 1rem 1.5rem;
+      background: #f0f9ff;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      transition: background 0.2s ease;
+    }
+
+    .faq-question:hover { background: #e0f2fe; }
+    .faq-question.active { background: var(--primary-light); color: white; }
+
+    .faq-answer {
+      padding: 1.5rem;
+      display: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .faq-answer.active { display: block; }
+
+    .faq-toggle { font-size: 1.5rem; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding-top: 20px; }
+    }
+
+    /* Print */
+    @media print {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .card { break-inside: avoid; }
+    }
+
+    /* Icons as emojis */
+    .icon { margin-right: 0.5rem; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📚 Advanced Syllabus Generator</h1>
+  <p>Complete User Guide: Setup, Usage, FAQ & Troubleshooting</p>
+</div>
+
+<!-- Sidebar Navigation -->
+<nav class="sidebar" id="sidebar">
+  <h3>Getting Started</h3>
+  <a href="#setup">Setup & Installation</a>
+  <a href="#requirements">System Requirements</a>
+  <a href="#first-time">First Time Opening</a>
+
+  <h3>Usage Guide</h3>
+  <a href="#phase1">Phase 1: Setup</a>
+  <a href="#phase2">Phase 2: Documents</a>
+  <a href="#phase3">Phase 3: Calendar</a>
+  <a href="#phase4">Phase 4: Curriculum</a>
+  <a href="#phase5">Phase 5: Review</a>
+  <a href="#phase6">Phase 6: Export</a>
+
+  <h3>Reference</h3>
+  <a href="#faq">FAQ</a>
+  <a href="#troubleshooting">Troubleshooting</a>
+  <a href="#best-practices">Best Practices</a>
+  <a href="#glossary">Glossary</a>
+</nav>
+
+<main class="main">
+  <div class="container">
+
+    <!-- SETUP SECTION -->
+    <section id="setup">
+      <h2><span class="icon">⚙️</span>Setup & Installation</h2>
+
+      <h3>Quick Start (30 seconds)</h3>
+      <div class="steps">
+        <div class="step">
+          <strong>Navigate to the folder:</strong> Desktop → Claude Projects → Teacher Tools → Advanced Syllabus Generator
+        </div>
+        <div class="step">
+          <strong>Find the file:</strong> Look for <code>index.html</code>
+        </div>
+        <div class="step">
+          <strong>Double-click:</strong> Opens in your default browser immediately
+        </div>
+        <div class="step">
+          <strong>Start creating:</strong> Begin filling in Phase 1
+        </div>
+      </div>
+
+      <div class="alert alert-success">
+        <strong>✅ That's it!</strong> No installation, no setup, no accounts needed. The application is ready to use immediately.
+      </div>
+
+      <h3 id="requirements">System Requirements</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Requirement</th>
+            <th>Details</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Operating System</strong></td>
+            <td>Windows, Mac, Linux</td>
+            <td>Any OS with a web browser</td>
+          </tr>
+          <tr>
+            <td><strong>Browser</strong></td>
+            <td>Chrome, Edge, Firefox</td>
+            <td>Safari works but with limitations</td>
+          </tr>
+          <tr>
+            <td><strong>Internet</strong></td>
+            <td>Required for initial load only</td>
+            <td>Works offline after page loads</td>
+          </tr>
+          <tr>
+            <td><strong>Hard Drive Space</strong></td>
+            <td>~5 MB</td>
+            <td>Browser cache (temporary)</td>
+          </tr>
+          <tr>
+            <td><strong>JavaScript</strong></td>
+            <td>Must be enabled</td>
+            <td>Enabled by default in modern browsers</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Browser Recommendations</h3>
+      <ul>
+        <li><strong>Best:</strong> Google Chrome or Microsoft Edge (full functionality, file uploads work smoothly)</li>
+        <li><strong>Good:</strong> Firefox (fully supported, identical functionality)</li>
+        <li><strong>Limited:</strong> Safari on Mac (may have issues with file downloads)</li>
+        <li><strong>Not Supported:</strong> Internet Explorer 11 (too old, use Chrome instead)</li>
+      </ul>
+
+      <h3 id="first-time">First Time Opening</h3>
+      <p>When you open the application for the first time:</p>
+      <ol>
+        <li><strong>Page loads:</strong> You see a blue header with "Advanced Syllabus Generator"</li>
+        <li><strong>Progress bar appears:</strong> Shows 6 numbered circles at the top (1-6)</li>
+        <li><strong>Phase 1 displays:</strong> "👤 Instructor & Course Information" form appears</li>
+        <li><strong>You're ready:</strong> Start filling in the required fields (marked with *)</li>
+      </ol>
+
+      <div class="alert alert-info">
+        <strong>💡 Tip:</strong> Your data is saved automatically to your browser's local storage. You don't need to click "Save" — the application remembers everything as you type.
+      </div>
+
+    </section>
+
+    <!-- USAGE GUIDE -->
+    <section id="phase1">
+      <h2><span class="icon">📖</span>Complete Usage Guide</h2>
+
+      <h3>Understanding the Workflow</h3>
+      <p>The application is divided into <strong>6 phases</strong>, each building on the previous one:</p>
+      <div class="card">
+        <strong>Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6</strong><br>
+        You progress forward with the <strong>Next →</strong> button, and can go back with <strong>← Back</strong> to edit previous sections.
+      </div>
+
+      <h3>Phase 1: Instructor & Course Information</h3>
+      <p>This phase collects the basic information about you and your course that appears on the syllabus cover.</p>
+
+      <h4>Required Fields (marked with *)</h4>
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Example</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Instructor Title</strong></td>
+            <td>Mr., Mrs., Ms., Dr., Prof.</td>
+            <td>Select from dropdown. Displayed as "Mr. Smith" on syllabus</td>
+          </tr>
+          <tr>
+            <td><strong>Instructor Name</strong></td>
+            <td>Smith</td>
+            <td>Last name or full name. Appears in contact section</td>
+          </tr>
+          <tr>
+            <td><strong>Course Title</strong></td>
+            <td>Biology 30, Chemistry 20, English 11</td>
+            <td>Official course name. Required to proceed</td>
+          </tr>
+          <tr>
+            <td><strong>School Year</strong></td>
+            <td>2025–2026</td>
+            <td>Use en-dash (–) or hyphen (-). Auto-filled with current year</td>
+          </tr>
+          <tr>
+            <td><strong>Course Start Date</strong></td>
+            <td>September 1, 2025</td>
+            <td>Click calendar icon to select. Must be before end date</td>
+          </tr>
+          <tr>
+            <td><strong>Course End Date</strong></td>
+            <td>June 15, 2026</td>
+            <td>Click calendar icon to select. Used for pacing calculations</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Optional Fields (but recommended)</h4>
+      <div class="card">
+        <strong>Course Code:</strong> BIO 30, CHEM 20 (helps with course identification)<br>
+        <strong>Course Emoji:</strong> 🧬, ⚗️, 📐 (adds visual appeal, single emoji only)<br>
+        <strong>Suggested Materials:</strong> Scientific calculator, graph paper, textbook (appears on syllabus)<br>
+        <strong>Course Overview:</strong> 1-2 sentence description of what the course covers<br>
+        <strong>Contact Info:</strong> Email and/or phone number<br>
+        <strong>Office Hours:</strong> When students can reach you (e.g., "Monday & Wednesday 3-4 PM")
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>⚠️ Validation Rule:</strong> All fields marked with * must be filled before you can advance to Phase 2. If you try to click "Next →" with missing fields, you'll see an error message telling you what's required.
+      </div>
+
+      <h4>Example Phase 1 Completion</h4>
+      <pre>
+Title:            Mr.
+Name:             Smith
+Course Title:     Biology 30
+Course Code:      BIO 30
+School Year:      2025–2026
+Start Date:       September 1, 2025
+End Date:         June 15, 2026
+Course Emoji:     🧬
+Materials:        Microscope, slides, biology textbook
+Overview:         Study of living organisms, cells, and ecosystems
+Contact:          james.smith@school.ca, ext. 2847
+Office Hours:     Monday & Wednesday 3:00-4:00 PM
+      </pre>
+    </section>
+
+    <section id="phase2">
+      <h3>Phase 2: Document Upload & Parsing</h3>
+      <p><strong>Status:</strong> Optional — You can skip this and proceed, or upload documents to auto-extract data</p>
+
+      <h4>Why Upload Documents?</h4>
+      <p>Uploading documents saves time by automatically extracting key information:</p>
+      <ul>
+        <li><strong>Program of Studies:</strong> Extracts units, learning outcomes, weight percentages</li>
+        <li><strong>School Calendar:</strong> Identifies holidays, breaks, PD days, instructional days</li>
+        <li><strong>Class Schedule:</strong> Detects which days your class meets and what times</li>
+      </ul>
+
+      <h4>What Documents Can You Upload?</h4>
+      <table>
+        <thead>
+          <tr><th>Document Type</th><th>Best Format</th><th>What It Extracts</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Program of Studies</strong></td>
+            <td>CSV or XLSX</td>
+            <td>Unit names, percentages, outcomes</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>PDF or DOCX</td>
+            <td>Unit names (less reliable)</td>
+          </tr>
+          <tr>
+            <td><strong>School Calendar</strong></td>
+            <td>CSV or XLSX</td>
+            <td>Dates, holiday/break status</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>PDF</td>
+            <td>Limited (try manual entry)</td>
+          </tr>
+          <tr>
+            <td><strong>Class Schedule</strong></td>
+            <td>CSV or XLSX</td>
+            <td>Meeting days and times</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>PDF</td>
+            <td>Limited (try manual entry)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>How to Upload (Drag & Drop)</h4>
+      <div class="steps">
+        <div class="step">
+          Locate your document (PDF, Word, Excel, or CSV file)
+        </div>
+        <div class="step">
+          Click the upload area (it says "Drag & drop your Program of Studies")
+        </div>
+        <div class="step">
+          Select your file from the file browser that opens
+        </div>
+        <div class="step">
+          OR: Drag your file from your computer directly onto the upload area
+        </div>
+        <div class="step">
+          You'll see a checkmark ✅ confirming the file was uploaded
+        </div>
+      </div>
+
+      <h4>Best File Formats for Reliable Extraction</h4>
+      <div class="card info">
+        <strong>CSV Format Example (Program of Studies):</strong><br>
+        <code>Unit,Weight,Description</code><br>
+        <code>Cell Biology,25,Structure and function of cells</code><br>
+        <code>Genetics,25,Heredity and DNA</code>
+      </div>
+
+      <div class="card info">
+        <strong>XLSX Format Example (School Calendar):</strong><br>
+        Column A: Date (2025-09-01)<br>
+        Column B: Status (Holiday, PD Day, Break, Instructional)<br>
+        Column C: Notes (Labour Day)
+      </div>
+
+      <div class="alert alert-info">
+        <strong>💡 If parsing doesn't work:</strong> Don't worry! You can manually enter all the information in Phases 3 and 4. Document upload is a time-saver, not a requirement.
+      </div>
+    </section>
+
+    <section id="phase3">
+      <h3>Phase 3: Calendar & Class Schedule</h3>
+      <p><strong>Status:</strong> Required validation — At least 1 meeting day must be selected</p>
+
+      <h4>Purpose</h4>
+      <p>This phase establishes your course calendar to calculate <strong>realistic pacing</strong> by excluding holidays, breaks, and non-instructional days.</p>
+
+      <h4>Step 1: Add Class Sessions</h4>
+      <p>Click the <strong>"+ Add Class Session"</strong> button to enter each class meeting. You can add multiple classes on the same day or different days.</p>
+
+      <p><strong>For each class session, enter:</strong></p>
+      <ul>
+        <li><strong>Day:</strong> Select from dropdown (Monday–Friday)</li>
+        <li><strong>Start Time:</strong> When class begins (e.g., 09:00)</li>
+        <li><strong>End Time:</strong> When class ends (e.g., 11:00)</li>
+        <li><strong>Duration:</strong> Automatically calculated and displayed</li>
+      </ul>
+
+      <h4>Examples: Different Scheduling Scenarios</h4>
+
+      <p><strong>Scenario 1: Traditional single daily class</strong></p>
+      <table>
+        <thead>
+          <tr><th>Day</th><th>Start Time</th><th>End Time</th><th>Duration</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Monday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
+          <tr><td>Tuesday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
+          <tr><td>Wednesday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
+          <tr><td>Thursday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
+          <tr><td>Friday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Scenario 2: Double block with lunch break</strong></p>
+      <table>
+        <thead>
+          <tr><th>Day</th><th>Start Time</th><th>End Time</th><th>Duration</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Monday</td><td>09:00</td><td>11:30</td><td>2h 30m</td><td>Main class</td></tr>
+          <tr><td>Tuesday</td><td>09:00</td><td>11:30</td><td>2h 30m</td><td>Main class</td></tr>
+          <tr><td>Wednesday</td><td>09:00</td><td>11:30</td><td>2h 30m</td><td>Main class</td></tr>
+          <tr><td>Wednesday</td><td>13:00</td><td>14:00</td><td>1h</td><td>Lab/Practical</td></tr>
+          <tr><td>Thursday</td><td>09:00</td><td>11:30</td><td>2h 30m</td><td>Main class</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Scenario 3: Multiple sections of same course</strong></p>
+      <table>
+        <thead>
+          <tr><th>Day</th><th>Start Time</th><th>End Time</th><th>Duration</th><th>Section</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Monday</td><td>08:00</td><td>09:30</td><td>1h 30m</td><td>Section A</td></tr>
+          <tr><td>Monday</td><td>10:00</td><td>11:30</td><td>1h 30m</td><td>Section B</td></tr>
+          <tr><td>Tuesday</td><td>08:00</td><td>09:30</td><td>1h 30m</td><td>Section A</td></tr>
+          <tr><td>Tuesday</td><td>10:00</td><td>11:30</td><td>1h 30m</td><td>Section B</td></tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-info">
+        <strong>💡 Tip:</strong> The duration is calculated automatically as you enter times. If start and end times are on different days, add them as separate sessions. The app will list them all in your syllabus.
+      </div>
+
+      <div class="alert alert-success">
+        <strong>✅ Validation:</strong> You must add at least one class session with complete Day, Start Time, and End Time information to proceed.
+      </div>
+
+      <h4>Step 2: Review & Edit Holidays</h4>
+      <p>Alberta statutory holidays are <strong>automatically included</strong>. You can:</p>
+      <ul>
+        <li><strong>View pre-added holidays:</strong> Labour Day, Thanksgiving, Christmas, New Year's, etc.</li>
+        <li><strong>Edit dates:</strong> If a holiday falls on a weekend in your district, you can adjust the observed date</li>
+        <li><strong>Add custom holidays:</strong> Click "+ Add Holiday" to add school-specific closures or PD days</li>
+      </ul>
+
+      <h4>Step 4: Add Custom Holidays (Optional)</h4>
+      <div class="steps">
+        <div class="step">
+          Click the <strong>"+ Add Holiday"</strong> button
+        </div>
+        <div class="step">
+          A new row appears with fields for Date, Name, and Type
+        </div>
+        <div class="step">
+          Fill in:
+          <ul style="margin-top: 0.5rem;">
+            <li><strong>Date:</strong> Click the calendar to select (e.g., February 14, 2026)</li>
+            <li><strong>Holiday Name:</strong> "Pupil-Free Day", "Staff PD", "Flex Friday"</li>
+            <li><strong>Type:</strong> Holiday, PD Day, Break, or Other</li>
+          </ul>
+        </div>
+        <div class="step">
+          Click "Next →" to save and proceed
+        </div>
+      </div>
+
+      <div class="alert alert-success">
+        <strong>✅ Result:</strong> The app now knows exactly which days your class actually meets. This feeds into the pacing engine to distribute your units realistically across available instructional weeks.
+      </div>
+    </section>
+
+    <section id="phase4">
+      <h3>Phase 4: Curriculum & Grading</h3>
+      <p><strong>Status:</strong> Required validation — Units and grade categories must total 100%</p>
+
+      <h4>Part A: Units of Study</h4>
+      <p>This section defines the major topics/units students will study, their importance, and estimated time.</p>
+
+      <div class="steps">
+        <div class="step">
+          Click <strong>"+ Add Unit"</strong> button
+        </div>
+        <div class="step">
+          A new row appears with three fields:
+          <ul style="margin-top: 0.5rem;">
+            <li><strong>Unit Name:</strong> "Cell Biology", "Genetics", "Evolution"</li>
+            <li><strong>% of Grade:</strong> 25 (unit weight in course)</li>
+            <li><strong>Weeks (Est.):</strong> 3 (approximate duration)</li>
+          </ul>
+        </div>
+        <div class="step">
+          Fill in all units you'll teach
+        </div>
+        <div class="step">
+          <strong>IMPORTANT:</strong> All percentages must total exactly 100%
+        </div>
+      </div>
+
+      <h4>Example Units Breakdown</h4>
+      <table>
+        <thead>
+          <tr><th>Unit</th><th>% of Grade</th><th>Weeks</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Cell Biology</td><td>25%</td><td>3</td></tr>
+          <tr><td>Genetics</td><td>25%</td><td>3</td></tr>
+          <tr><td>Evolution</td><td>25%</td><td>3</td></tr>
+          <tr><td>Ecology</td><td>25%</td><td>3</td></tr>
+          <tr><td style="font-weight:bold;">TOTAL</td><td style="font-weight:bold;color:var(--success);">100%</td><td style="font-weight:bold;">12</td></tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-warning">
+        <strong>⚠️ Validation:</strong> If percentages don't equal 100%, you'll see an error when trying to advance. Adjust values until they total exactly 100%.
+      </div>
+
+      <h4>Part B: Grade Categories</h4>
+      <p>Define how students' grades are calculated. Example:</p>
+
+      <table>
+        <thead>
+          <tr><th>Category</th><th>% of Final Grade</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Participation & Attendance</td><td>10%</td></tr>
+          <tr><td>Assignments & Homework</td><td>25%</td></tr>
+          <tr><td>Quizzes</td><td>25%</td></tr>
+          <tr><td>Unit Tests</td><td>25%</td></tr>
+          <tr><td>Final Exam</td><td>15%</td></tr>
+          <tr style="font-weight:bold;"><td>TOTAL</td><td style="color:var(--success);">100%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="steps">
+        <div class="step">
+          Click <strong>"+ Add Category"</strong>
+        </div>
+        <div class="step">
+          Enter category name (e.g., "Participation")
+        </div>
+        <div class="step">
+          Enter percentage of final grade (e.g., 10)
+        </div>
+        <div class="step">
+          Add all categories until they total 100%
+        </div>
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>⚠️ Validation:</strong> Grade categories must also total 100%. The app will not let you proceed until this is correct.
+      </div>
+
+      <h4>Part C: Letter Grade Scale</h4>
+      <p>Set the percentage thresholds for each letter grade. Default values are provided:</p>
+
+      <table>
+        <thead>
+          <tr><th>Letter</th><th>Default %</th><th>Customizable?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A+</td><td>95%+</td><td>✅ Yes</td></tr>
+          <tr><td>A</td><td>90-94%</td><td>✅ Yes</td></tr>
+          <tr><td>B+</td><td>85-89%</td><td>✅ Yes</td></tr>
+          <tr><td>B</td><td>80-84%</td><td>✅ Yes</td></tr>
+          <tr><td>C+</td><td>75-79%</td><td>✅ Yes</td></tr>
+          <tr><td>C</td><td>70-74%</td><td>✅ Yes</td></tr>
+          <tr><td>D</td><td>60-69%</td><td>✅ Yes</td></tr>
+          <tr><td>F</td><td>Below 60%</td><td>✅ Yes</td></tr>
+        </tbody>
+      </table>
+
+      <p>You can change any of these thresholds to match your school or district standards.</p>
+
+      <h4>Part D: Course Policies</h4>
+      <p>Add detailed policies that students need to know. For each field, write a clear paragraph (2-3 sentences):</p>
+
+      <ul>
+        <li><strong>Late Work Policy:</strong> When work is considered late, what penalties apply, if any</li>
+        <li><strong>Attendance & Absences:</strong> Expectations for attendance, how absences affect grades</li>
+        <li><strong>Academic Integrity & Cheating:</strong> What constitutes cheating, consequences</li>
+        <li><strong>Classroom Conduct:</strong> Rules, expectations, consequences for disruption</li>
+        <li><strong>AI Use Policy:</strong> Your stance on generative AI (ChatGPT, etc.) in your course</li>
+      </ul>
+
+      <div class="alert alert-info">
+        <strong>💡 Tip:</strong> Be specific. Instead of "No cheating," write: "Cheating on quizzes or exams will result in a zero on that assessment and a meeting with the principal. Repeated violations may result in suspension."
+      </div>
+    </section>
+
+    <section id="phase5">
+      <h3>Phase 5: Review & Customize</h3>
+      <p><strong>Status:</strong> No validation gates. Fully optional.</p>
+
+      <h4>What Happens in This Phase</h4>
+      <p>A <strong>live preview</strong> of your syllabus is automatically generated showing all the information you've entered so far. You can:</p>
+      <ul>
+        <li>Review everything at a glance</li>
+        <li>Make sure all information is correct</li>
+        <li>Add optional sections to enhance your syllabus</li>
+      </ul>
+
+      <h4>Optional Sections You Can Add</h4>
+      <table>
+        <thead>
+          <tr><th>Section</th><th>Purpose</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Learning Outcomes</strong></td>
+            <td>What students will be able to do by end of course</td>
+            <td>"Students will understand cell structure, function, and division"</td>
+          </tr>
+          <tr>
+            <td><strong>Expectations for Success</strong></td>
+            <td>What students should do to succeed</td>
+            <td>"Come to class prepared, complete assignments on time, ask questions"</td>
+          </tr>
+          <tr>
+            <td><strong>Big Idea / Essential Question</strong></td>
+            <td>Overarching theme of the course</td>
+            <td>"How do living things adapt to their environments?"</td>
+          </tr>
+          <tr>
+            <td><strong>Required Technology</strong></td>
+            <td>Software, devices, platforms needed</td>
+            <td>"Google Classroom, Desmos, Zoom"</td>
+          </tr>
+          <tr>
+            <td><strong>Accessibility & Accommodations</strong></td>
+            <td>How you support diverse learners</td>
+            <td>"I work with Special Education to provide accommodations"</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="alert alert-success">
+        <strong>✅ No pressure:</strong> All of these sections are optional. Your syllabus is complete without them. Add them only if they add value to your course.
+      </div>
+    </section>
+
+    <section id="phase6">
+      <h3>Phase 6: Export Your Syllabus</h3>
+      <p><strong>Status:</strong> Final phase. Choose and download your preferred format(s).</p>
+
+      <h4>Export Options</h4>
+
+      <div class="card info">
+        <h4 style="margin-top: 0;">🌐 HTML (Canvas-Ready)</h4>
+        <strong>Best for:</strong> Pasting directly into Canvas<br>
+        <strong>What you get:</strong> Professional HTML file with inline styling<br>
+        <strong>How to use:</strong>
+        <ol>
+          <li>Download the HTML file to your computer</li>
+          <li>Open the file in any browser to preview</li>
+          <li>Copy all the content (Ctrl+A, Ctrl+C)</li>
+          <li>In Canvas: Course → Pages → Create New Page</li>
+          <li>Click HTML Editor button</li>
+          <li>Paste the content (Ctrl+V)</li>
+          <li>Click Save</li>
+        </ol>
+      </div>
+
+      <div class="card info">
+        <h4 style="margin-top: 0;">📄 DOCX (Word Document)</h4>
+        <strong>Best for:</strong> Professional editing and printing<br>
+        <strong>What you get:</strong> Professionally formatted Word document with color-coded sections<br>
+        <strong>How to use:</strong>
+        <ol>
+          <li>Download the DOCX file</li>
+          <li>Open in Microsoft Word, Google Docs, or LibreOffice</li>
+          <li>Edit as needed (add images, change fonts, customize)</li>
+          <li>Print or share with colleagues/students</li>
+        </ol>
+      </div>
+
+      <div class="card info">
+        <h4 style="margin-top: 0;">📊 CSV (Spreadsheet)</h4>
+        <strong>Best for:</strong> Pacing guide and lesson planning<br>
+        <strong>What you get:</strong> Spreadsheet with unit names, percentages, estimated weeks, start/end weeks<br>
+        <strong>How to use:</strong>
+        <ol>
+          <li>Download the CSV file</li>
+          <li>Open in Excel or Google Sheets</li>
+          <li>Use as a planning document</li>
+          <li>Share with colleagues for curriculum coordination</li>
+        </ol>
+      </div>
+
+      <div class="card info">
+        <h4 style="margin-top: 0;">📦 ZIP (All Formats)</h4>
+        <strong>Best for:</strong> Complete backup and flexible use<br>
+        <strong>What you get:</strong> Single ZIP file containing HTML, DOCX, and CSV<br>
+        <strong>How to use:</strong>
+        <ol>
+          <li>Download the ZIP file</li>
+          <li>Right-click → Extract All</li>
+          <li>All three formats appear in a folder</li>
+          <li>Use whichever format you need</li>
+        </ol>
+      </div>
+
+      <h4>What's Included in Every Export?</h4>
+      <ul>
+        <li>✅ Complete syllabus with all course information</li>
+        <li>✅ Instructor details and contact information</li>
+        <li>✅ Grade categories and letter grade scale</li>
+        <li>✅ Units of study and course pacing</li>
+        <li>✅ All course policies</li>
+        <li>✅ Learning outcomes and expectations (if you added them)</li>
+        <li>✅ Course overview and required materials</li>
+      </ul>
+
+      <h4>Can I Export Multiple Times?</h4>
+      <p><strong>Yes!</strong> You can:</p>
+      <ul>
+        <li>Export one format, then come back and export another</li>
+        <li>Make changes in Phase 5 and re-export</li>
+        <li>Export as many times as you want</li>
+        <li>Keep different versions for different purposes</li>
+      </ul>
+
+      <div class="alert alert-success">
+        <strong>✅ You're done!</strong> Click "Start Over" to create another syllabus, or close your browser. Your data is saved in your browser, so you can come back and make changes anytime.
+      </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="faq">
+      <h2><span class="icon">❓</span>Frequently Asked Questions</h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Where is my data saved?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          Your data is saved in your browser's local storage. This means:
+          <ul style="margin-top: 0.75rem;">
+            <li><strong>You don't need to click "Save"</strong> — it saves automatically as you type</li>
+            <li><strong>Your data stays on your computer</strong> — never sent to any server</li>
+            <li><strong>If you close your browser</strong> — your data is still there when you reopen the page</li>
+            <li><strong>If you clear browser cache</strong> — your data will be deleted (so export before clearing cache)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Can I use this on multiple computers?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Yes, but with a caveat:</strong> The app works on any computer, but your data is local to each browser. So:
+          <ul style="margin-top: 0.75rem;">
+            <li>If you use it on Computer A, your data is stored on Computer A only</li>
+            <li>On Computer B, you'd start fresh (or import the exported file)</li>
+            <li><strong>Solution:</strong> Export your syllabus (ZIP file) and keep it backed up. You can import it later if needed</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What happens if my browser crashes?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Don't panic!</strong> Your data is saved in browser storage automatically. When you reopen the app:
+          <ul style="margin-top: 0.75rem;">
+            <li>All your data will still be there (assuming you didn't clear the cache)</li>
+            <li>You can continue from where you left off</li>
+            <li><strong>Best practice:</strong> Export your syllabus every few phases as a backup</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Can I edit the exported syllabus?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Yes, absolutely!</strong>
+          <ul style="margin-top: 0.75rem;">
+            <li><strong>DOCX:</strong> Open in Word/Docs and edit freely</li>
+            <li><strong>HTML:</strong> Open in Word and edit, or paste into Canvas and edit there</li>
+            <li><strong>CSV:</strong> Open in Excel and modify as needed</li>
+          </ul>
+          <p style="margin-top: 0.75rem;">The exports are just starting points. Feel free to customize them after download.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Do I have to use all 6 phases?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Mostly yes, but with flexibility:</strong>
+          <ul style="margin-top: 0.75rem;">
+            <li><strong>Phase 1 (Setup):</strong> Required — forms the foundation</li>
+            <li><strong>Phase 2 (Documents):</strong> Optional — skip if you prefer manual entry</li>
+            <li><strong>Phase 3 (Calendar):</strong> Required — needed for accurate pacing</li>
+            <li><strong>Phase 4 (Curriculum):</strong> Required — defines your course structure</li>
+            <li><strong>Phase 5 (Review):</strong> Optional — but useful to review before export</li>
+            <li><strong>Phase 6 (Export):</strong> Required — how you get your syllabus</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Can I go back and edit earlier phases?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Yes!</strong> Use the <strong>"← Back"</strong> button to return to any previous phase. You can:
+          <ul style="margin-top: 0.75rem;">
+            <li>Edit any information you've entered</li>
+            <li>Add or remove units and grade categories</li>
+            <li>Change dates, policies, etc.</li>
+            <li>Then click "Next →" to proceed forward again</li>
+          </ul>
+          <p style="margin-top: 0.75rem;"><strong>Your changes are saved automatically.</strong></p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>What if I don't have Alberta statutory holidays?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>No problem!</strong> In Phase 3, you can edit or delete any holidays that don't apply:
+          <ul style="margin-top: 0.75rem;">
+            <li>Click the "Remove" button next to any holiday you don't observe</li>
+            <li>Or edit the date if your school observes it on a different day</li>
+            <li>The pacing calculations adjust automatically</li>
+          </ul>
+          <p style="margin-top: 0.75rem;"><em>Note: This version includes Alberta holidays. Future versions may offer other provinces/regions.</em></p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Can I have multiple classes on the same day?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Yes!</strong> You can add as many class sessions as needed on the same day or different days:
+          <ul style="margin-top: 0.75rem;">
+            <li><strong>Multiple sections:</strong> Morning Section A at 9:00–10:30, Afternoon Section B at 1:00–2:30 on the same day</li>
+            <li><strong>Lab + lecture:</strong> Main class M–F at 9:00–11:00, plus Wednesday lab at 1:00–2:00</li>
+            <li><strong>Irregular schedules:</strong> Monday/Tuesday/Thursday mornings and Wednesday afternoons</li>
+          </ul>
+          <p style="margin-top: 0.75rem;">Each session is added separately in Phase 3 using the "+ Add Class Session" button. All sessions appear in your final syllabus.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>How do I share my syllabus with students?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Multiple options:</strong>
+          <ul style="margin-top: 0.75rem;">
+            <li><strong>Canvas:</strong> Upload HTML version to a Canvas page</li>
+            <li><strong>Email:</strong> Send DOCX file via email</li>
+            <li><strong>PDF:</strong> Print DOCX to PDF and email/share</li>
+            <li><strong>Google Classroom:</strong> Upload file to assignment</li>
+            <li><strong>School website:</strong> Post HTML version on your teacher page</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>Is my data private?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Yes, completely.</strong>
+          <ul style="margin-top: 0.75rem;">
+            <li><strong>No servers:</strong> Your data never leaves your computer</li>
+            <li><strong>No accounts:</strong> You don't create an account or log in</li>
+            <li><strong>No tracking:</strong> No analytics, no cookies, no data collection</li>
+            <li><strong>No internet required:</strong> Works 100% offline after initial load</li>
+            <li><strong>Local only:</strong> Data stored in your browser's local storage</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span>How do I start over with a new syllabus?</span>
+          <span class="faq-toggle">▼</span>
+        </div>
+        <div class="faq-answer">
+          <strong>Two options:</strong>
+          <ul style="margin-top: 0.75rem;">
+            <li><strong>Option 1:</strong> At the end of Phase 6, click "Start Over" button</li>
+            <li><strong>Option 2:</strong> Close the browser tab and reopen the application (creates new session)</li>
+          </ul>
+          <p style="margin-top: 0.75rem;"><strong>Warning:</strong> Starting over will erase your current work unless you export first!</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TROUBLESHOOTING SECTION -->
+    <section id="troubleshooting">
+      <h2><span class="icon">🔧</span>Troubleshooting Guide</h2>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ Application won't open / blank page</h4>
+        <strong>Problem:</strong> Click index.html but page doesn't load, or shows blank white screen<br>
+        <strong>Solutions:</strong>
+        <ol>
+          <li>Wait 3-5 seconds — sometimes it takes a moment to load</li>
+          <li>Refresh the page (F5 or Ctrl+R)</li>
+          <li>Try a different browser (Chrome or Edge recommended)</li>
+          <li>Clear browser cache and reload</li>
+          <li>Disable browser extensions that might block JavaScript</li>
+          <li>Try opening in incognito/private window</li>
+        </ol>
+        <strong>If still not working:</strong> The file may be corrupted. Re-download the application.
+      </div>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ File upload not working</h4>
+        <problem>Problem:</strong> Can't upload PDF, Excel, or CSV files in Phase 2<br>
+        <strong>Solutions:</strong>
+        <ol>
+          <li><strong>Use a local server:</strong> Direct file access (file://) has security restrictions
+            <pre>python -m http.server 8080
+# Then open http://localhost:8080</pre>
+          </li>
+          <li>Try dragging the file instead of clicking "Select File"</li>
+          <li>Check file format — only PDF, DOCX, CSV, XLSX are supported</li>
+          <li>Try a different browser (Chrome works best)</li>
+          <li>Check file size — very large files may fail (stay under 10 MB)</li>
+          <li>If a PDF, make sure it's not password-protected</li>
+        </ol>
+        <strong>If uploads aren't critical:</strong> Just skip Phase 2 and enter data manually in Phase 3 & 4
+      </div>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ Can't advance to next phase</h4>
+        <strong>Problem:</strong> "Next →" button is disabled or shows error message<br>
+        <strong>Solutions:</strong>
+        <ol>
+          <li><strong>Check for error message:</strong> It tells you what's required (read it carefully!)</li>
+          <li><strong>Phase 1:</strong> Make sure all fields marked with * are filled in</li>
+          <li><strong>Phase 3:</strong> Add at least one class session with Day, Start Time, and End Time filled in</li>
+          <li><strong>Phase 4:</strong>
+            <ul>
+              <li>Units must total exactly 100%</li>
+              <li>Grade categories must total exactly 100%</li>
+              <li>You must have at least 1 unit and 1 grade category</li>
+            </ul>
+          </li>
+          <li>Try refreshing the page (F5)</li>
+          <li>Go back to the previous phase and then forward again</li>
+        </ol>
+      </div>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ Data disappeared / lost all my work</h4>
+        <strong>Problem:</strong> You had filled in Phase 1-3, but now everything is gone<br>
+        <strong>Likely Cause:</strong> Browser cache was cleared<br>
+        <strong>Solutions:</strong>
+        <ol>
+          <li><strong>Check if it's a different browser:</strong> Each browser has separate storage. If you use Chrome at home and Edge at school, data won't sync</li>
+          <li><strong>Export more frequently:</strong> After completing Phase 3, 4, and 5, export your work as a backup ZIP file</li>
+          <li><strong>If you exported before losing data:</strong> You can manually re-enter from the exported file (it's slower but better than starting over)</li>
+          <li><strong>In the future:</strong> Use the same browser and don't clear cache while working</li>
+        </ol>
+        <strong>Recovery tip:</strong> Check your Downloads folder — the ZIP file you exported is a complete backup!
+      </div>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ Export button not working / file won't download</h4>
+        <strong>Problem:</strong> Click export option but nothing happens or download fails<br>
+        <strong>Solutions:</strong>
+        <ol>
+          <li>Check your browser's download settings — downloads may be blocked</li>
+          <li>Look for a yellow notification bar at the top of browser (download blocked)</li>
+          <li>Allow downloads for this website in browser settings</li>
+          <li>Try a different browser</li>
+          <li>Try a different export format (HTML instead of DOCX)</li>
+          <li>Make sure you have enough disk space</li>
+          <li>Check if a popup blocker is preventing download dialog</li>
+        </ol>
+        <strong>Safari users:</strong> Safari has more restrictions on downloads. Try Chrome if this is the issue.
+      </div>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ DOCX file won't open / corrupted</h4>
+        <strong>Problem:</strong> Downloaded DOCX file, but Word says it's corrupted<br>
+        <strong>Solutions:</strong>
+        <ol>
+          <li>Try opening in Google Docs instead (usually more forgiving)</li>
+          <li>Try HTML export instead — save as PDF from browser</li>
+          <li>Re-export the DOCX file (may have been incomplete download)</li>
+          <li>Check Downloads folder — file may not have downloaded completely</li>
+          <li>Try different browser to export (Chrome or Edge)</li>
+        </ol>
+      </div>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ Canvas paste not working</h4>
+        <strong>Problem:</strong> Exported HTML and tried to paste into Canvas, but formatting is broken<br>
+        <strong>Solutions:</strong>
+        <ol>
+          <li><strong>Use Canvas HTML editor:</strong> Click "Edit Page" → HTML Editor (not Rich Content Editor)</li>
+          <li><strong>Clear formatting:</strong> In Canvas, use "Remove Formatting" before pasting</li>
+          <li><strong>Copy whole HTML:</strong> Make sure you copied the entire HTML file content</li>
+          <li><strong>Try as link instead:</strong> Save HTML file to Google Drive and link to it</li>
+          <li><strong>Use DOCX instead:</strong> Export as DOCX, open in Word, copy section by section into Canvas</li>
+        </ol>
+      </div>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ Dates not calculating correctly for pacing</h4>
+        <strong>Problem:</strong> Course dates seem wrong or instructional weeks calculation is off<br>
+        <strong>Solutions:</strong>
+        <ol>
+          <li>Check your start and end dates in Phase 1 — make sure they're correct</li>
+          <li>In Phase 3, verify all class sessions are correctly entered and all holidays are marked</li>
+          <li>Check that you added the right number of class sessions (if you only added M/W/F sessions, you won't have 5 days of instruction per week)</li>
+          <li>Remember: The app counts ONLY actual instructional days (excludes holidays, weekends, breaks)</li>
+          <li>Manual adjustment: You can manually adjust "Est. Weeks" in Phase 4 if the calculation is off</li>
+        </ol>
+      </div>
+
+      <div class="card danger">
+        <h4 style="margin-top: 0;">❌ Browser back button goes away from app</h4>
+        <strong>Problem:</strong> Clicking browser back button (← arrow) closes the app instead of going back a phase<br>
+        <strong>Solution:</strong> <strong>Always use the app's "← Back" button inside the form, not your browser's back button.</strong> The app has its own back button that works correctly.
+      </div>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">✅ Still having issues?</h4>
+        <strong>Next steps:</strong>
+        <ol>
+          <li>Try a completely fresh start: Clear browser cache → close browser → reopen</li>
+          <li>Try a different browser (Chrome is most reliable)</li>
+          <li>Use a local server instead of direct file open</li>
+          <li>Check that JavaScript is enabled in your browser</li>
+          <li>Update your browser to the latest version</li>
+        </ol>
+        <p style="margin-top: 1rem;"><em>If issues persist after these steps, there may be a browser compatibility problem. Contact your IT department or try on a different computer.</em></p>
+      </div>
+
+    </section>
+
+    <!-- BEST PRACTICES -->
+    <section id="best-practices">
+      <h2><span class="icon">⭐</span>Best Practices & Tips</h2>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">💡 Tip 1: Start with your planning documents</h4>
+        <p>Before opening the app, gather:</p>
+        <ul>
+          <li>Your program of studies (PDF or curriculum document)</li>
+          <li>School calendar (dates of holidays, breaks, PD days)</li>
+          <li>Your class schedule (which days/times you teach)</li>
+          <li>Your grading rubric or existing syllabus</li>
+        </ul>
+        <p><strong>Why:</strong> You can upload these to auto-populate data, saving time.</p>
+      </div>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">💡 Tip 2: Export early and often</h4>
+        <p>Don't wait until the very end to export. Instead:</p>
+        <ul>
+          <li>After Phase 3 → Export a backup</li>
+          <li>After Phase 4 → Export another backup</li>
+          <li>Final export → Get all formats (ZIP)</li>
+        </ul>
+        <p><strong>Why:</strong> If something goes wrong, you have backups to recover from.</p>
+      </div>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">💡 Tip 3: Use the CSV pacing export for planning</h4>
+        <p>After you finish, export as CSV and open in Excel. You now have:</p>
+        <ul>
+          <li>A clear breakdown of each unit and its timing</li>
+          <li>Start and end weeks for each unit</li>
+          <li>A document to share with department colleagues</li>
+        </ul>
+        <p><strong>Why:</strong> Helps with lesson planning and coordinating with other teachers.</p>
+      </div>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">💡 Tip 4: Be specific with policies</h4>
+        <p>Instead of generic policies like "No cheating," be specific:</p>
+        <table style="margin-top: 1rem;">
+          <tr>
+            <td style="padding: 0.5rem;"><strong>❌ Vague:</strong></td>
+            <td style="padding: 0.5rem;">Students must be respectful</td>
+          </tr>
+          <tr>
+            <td style="padding: 0.5rem;"><strong>✅ Specific:</strong></td>
+            <td style="padding: 0.5rem;">Raise hand before speaking, use respectful tone, listen to classmates without interrupting</td>
+          </tr>
+        </table>
+        <p style="margin-top: 1rem;"><strong>Why:</strong> Students know exactly what you expect, reducing misunderstandings.</p>
+      </div>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">💡 Tip 5: Customize the exported DOCX</h4>
+        <p>The DOCX file is a starting point. You can:</p>
+        <ul>
+          <li>Add your school logo</li>
+          <li>Change colors and fonts to match school branding</li>
+          <li>Insert images or graphics</li>
+          <li>Add a course schedule table</li>
+          <li>Include required textbook information</li>
+        </ul>
+        <p><strong>Why:</strong> Makes your syllabus more professional and visually appealing to students.</p>
+      </div>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">💡 Tip 6: Keep percentages realistic</h4>
+        <p>When distributing percentages across units:</p>
+        <ul>
+          <li>Don't make all units equal if some are more important</li>
+          <li>Consider difficulty: Complex units might get 30%, simpler ones 20%</li>
+          <li>Early units (review): 10-15%</li>
+          <li>Core units: 20-30% each</li>
+          <li>Final unit (application): 15-25%</li>
+        </ul>
+        <p><strong>Why:</strong> Signals to students what's most important and helps with time allocation.</p>
+      </div>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">💡 Tip 7: Update your syllabus each year</h4>
+        <p>Use the exported files as templates for next year:</p>
+        <ul>
+          <li>Save a copy named "Bio30_2026-2027_Draft.docx"</li>
+          <li>Update dates and student cohort info</li>
+          <li>Re-export and you're done</li>
+        </ul>
+        <p><strong>Why:</strong> Saves time in future years; you're not starting from scratch.</p>
+      </div>
+
+      <div class="card success">
+        <h4 style="margin-top: 0;">💡 Tip 8: Share a copy with colleagues</h4>
+        <p>After creating your syllabus, share the DOCX or HTML with department colleagues. They can:</p>
+        <ul>
+          <li>Use it as a template for their courses</li>
+          <li>Ensure consistency across the department</li>
+          <li>Adapt policies and structures to fit their courses</li>
+        </ul>
+        <p><strong>Why:</strong> Speeds up syllabus creation for your whole department.</p>
+      </div>
+
+    </section>
+
+    <!-- GLOSSARY -->
+    <section id="glossary">
+      <h2><span class="icon">📖</span>Glossary of Terms</h2>
+
+      <table>
+        <thead>
+          <tr><th>Term</th><th>Definition</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Local Storage</strong></td>
+            <td>Browser feature that saves data on your computer. Your syllabus data is stored here automatically.</td>
+          </tr>
+          <tr>
+            <td><strong>Phase</strong></td>
+            <td>One of the 6 steps in the workflow (Setup, Documents, Calendar, Curriculum, Review, Export)</td>
+          </tr>
+          <tr>
+            <td><strong>Validation Gate</strong></td>
+            <td>A rule that must be satisfied to advance. Example: "Units must total 100%"</td>
+          </tr>
+          <tr>
+            <td><strong>Instructional Days</strong></td>
+            <td>Days when school is actually in session (excludes weekends, holidays, breaks)</td>
+          </tr>
+          <tr>
+            <td><strong>Pacing</strong></td>
+            <td>The schedule for when you'll teach each unit, based on available instructional days</td>
+          </tr>
+          <tr>
+            <td><strong>Learning Outcomes</strong></td>
+            <td>Specific, measurable statements of what students will know or be able to do by end of course</td>
+          </tr>
+          <tr>
+            <td><strong>Grade Category</strong></td>
+            <td>A component of the final grade (e.g., "Participation" = 10% of grade)</td>
+          </tr>
+          <tr>
+            <td><strong>Letter Grade Scale</strong></td>
+            <td>The percentage ranges for each letter grade (A+, A, B+, B, etc.)</td>
+          </tr>
+          <tr>
+            <td><strong>Canvas</strong></td>
+            <td>Learning management system (LMS) commonly used in schools to deliver online/blended courses</td>
+          </tr>
+          <tr>
+            <td><strong>HTML</strong></td>
+            <td>Markup language for web pages. Canvas pages use HTML.</td>
+          </tr>
+          <tr>
+            <td><strong>DOCX</strong></td>
+            <td>Microsoft Word file format (.docx). Professional, editable document format.</td>
+          </tr>
+          <tr>
+            <td><strong>CSV</strong></td>
+            <td>Comma-Separated Values — spreadsheet format that works with Excel and Google Sheets</td>
+          </tr>
+          <tr>
+            <td><strong>ZIP</strong></td>
+            <td>Compressed folder format containing multiple files. Like a folder you can download.</td>
+          </tr>
+          <tr>
+            <td><strong>Browser Cache</strong></td>
+            <td>Temporary storage of website data on your computer. Clearing it removes saved data.</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <!-- FOOTER -->
+    <div style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border); text-align: center; color: var(--text-muted);">
+      <p><strong>Advanced Syllabus Generator</strong> v1.0 — User Guide</p>
+      <p>For issues or questions, refer to the Troubleshooting section or try a different browser.</p>
+      <p style="font-size: 0.9rem; margin-top: 1rem;">© 2024 • Created by Claude (Teacher Tools Suite)</p>
+    </div>
+
+  </div>
+</main>
+
+<script>
+function toggleFAQ(element) {
+  const parent = element.parentElement;
+  const answer = parent.querySelector('.faq-answer');
+
+  // Close all other FAQs
+  document.querySelectorAll('.faq-item').forEach(item => {
+    if (item !== parent) {
+      item.querySelector('.faq-question').classList.remove('active');
+      item.querySelector('.faq-answer').classList.remove('active');
+    }
+  });
+
+  // Toggle this FAQ
+  element.classList.toggle('active');
+  answer.classList.toggle('active');
+}
+
+// Smooth scroll for navigation links
+document.querySelectorAll('.sidebar a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>

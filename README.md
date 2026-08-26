@@ -15,3 +15,10 @@ just practicing
   Plan with Claude and hands it back as a Word document. Needs a Python
   backend (to call the Claude API and fill the Word template) — see
   `tpgp-generator/README.md` to run it.
+- `advanced-syllabus-generator/` — **Advanced Syllabus Generator**, a guided
+  6-phase wizard for building Canvas-ready course syllabi (instructor info,
+  document upload/parsing, calendar & Alberta statutory holidays,
+  curriculum & grading, review, and export to HTML/DOCX/CSV/ZIP). Fully
+  offline and client-side — open `advanced-syllabus-generator/index.html` in
+  any browser. See `advanced-syllabus-generator/README.md` and
+  `User_Guide.html` for details.

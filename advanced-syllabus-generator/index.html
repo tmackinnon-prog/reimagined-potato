@@ -1,0 +1,2069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Content Security Policy to prevent XSS and injection attacks -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none';">
+  <title>Advanced Syllabus Generator</title>
+
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
+
+  <style>
+    :root {
+      --primary: #1e3a5f;
+      --primary-light: #2563eb;
+      --success: #059669;
+      --warning: #f97316;
+      --danger: #dc2626;
+      --info: #0891b2;
+      --bg: #f8fafc;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 0;
+    }
+
+    /* Header */
+    .header {
+      background: var(--primary);
+      color: var(--white);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .header h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.95rem;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      background: var(--white);
+      padding: 1.5rem 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 1rem;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+
+    .progress-step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      background: #e2e8f0;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .progress-step.completed .progress-step-num {
+      background: var(--success);
+      color: var(--white);
+    }
+
+    .progress-step.active .progress-step-num {
+      background: var(--primary-light);
+      color: var(--white);
+      transform: scale(1.1);
+    }
+
+    .progress-step-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      width: 80px;
+    }
+
+    .progress-line {
+      position: absolute;
+      height: 3px;
+      background: #e2e8f0;
+      top: 20px;
+      left: 50%;
+      right: -50%;
+      width: 100%;
+    }
+
+    .progress-step.completed .progress-line {
+      background: var(--success);
+    }
+
+    .progress-step:last-child .progress-line {
+      display: none;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 2rem 2rem;
+    }
+
+    /* Phases */
+    .phase {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .phase.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .card-header-icon {
+      font-size: 1.75rem;
+    }
+
+    .card-header h2 {
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-hint {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary-light);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: var(--white);
+    }
+
+    .btn-success:hover {
+      background: #047857;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: var(--white);
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Upload Area */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #f9fafb;
+    }
+
+    .upload-area:hover {
+      border-color: var(--primary-light);
+      background: #f0f9ff;
+    }
+
+    .upload-area.dragover {
+      border-color: var(--primary-light);
+      background: #e0f2fe;
+    }
+
+    .upload-area-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-area-text {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .upload-area-hint {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .alert-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-success {
+      background: #ecfdf5;
+      border: 1px solid #d1fae5;
+      color: #065f46;
+    }
+
+    .alert-warning {
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #7f1d1d;
+    }
+
+    .alert-info {
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      color: #0c4a6e;
+    }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .data-table th {
+      background: var(--primary);
+      color: var(--white);
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .data-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table tr:hover {
+      background: #f9fafb;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--white);
+      border-radius: var(--radius);
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #e2e8f0;
+      border-top-color: var(--primary-light);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        padding: 1.5rem 1rem;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .container {
+        padding: 0 1rem 1rem;
+      }
+
+      .progress-bar {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .progress-line {
+        display: none !important;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        justify-content: center;
+      }
+    }
+
+    /* Status Indicators */
+    .status-badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-error {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    /* File List */
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: #f9fafb;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .file-icon {
+      font-size: 1.25rem;
+    }
+
+    .file-info {
+      flex: 1;
+    }
+
+    .file-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .file-status {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .file-remove {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      padding: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    /* Sections with colors */
+    .section-teal { border-left: 5px solid #0d9488; }
+    .section-blue { border-left: 5px solid #3b82f6; }
+    .section-green { border-left: 5px solid #059669; }
+    .section-orange { border-left: 5px solid #f97316; }
+    .section-purple { border-left: 5px solid #a855f7; }
+
+    .section-preview {
+      background: #f9fafb;
+      padding: 1rem;
+      border-radius: 6px;
+      border-left: 5px solid var(--primary-light);
+      margin-bottom: 1rem;
+    }
+
+    .section-preview h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .section-preview p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📚 Advanced Syllabus Generator</h1>
+  <p>Create professional course syllabi with curriculum mapping, pacing planning, and multi-format exports</p>
+</div>
+
+<div class="progress-container">
+  <div class="progress-bar" id="progressBar"></div>
+  <div style="font-size: 0.9rem; color: var(--text-muted); text-align: center;">
+    <span id="progressStatus">Step 1 of 6: Instructor & Course Setup</span>
+  </div>
+</div>
+
+<div class="container">
+  <!-- PHASE 1: Instructor & Course Setup -->
+  <div class="phase active" id="phase-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">👤</div>
+        <h2>Instructor & Course Information</h2>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Instructor Title *</label>
+          <select id="instructorTitle" required>
+            <option value="">Select title...</option>
+            <option value="Mr.">Mr.</option>
+            <option value="Mrs.">Mrs.</option>
+            <option value="Ms.">Ms.</option>
+            <option value="Dr.">Dr.</option>
+            <option value="Prof.">Prof.</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Instructor Name *</label>
+          <input type="text" id="instructorName" placeholder="e.g., Smith" required minlength="2" maxlength="150" pattern="[a-zA-Z\s\.\-']*" title="Instructor name should contain only letters, spaces, periods, hyphens, and apostrophes">
+        </div>
+        <div class="form-group">
+          <label>Course Title *</label>
+          <input type="text" id="courseTitle" placeholder="e.g., Biology 30" required minlength="3" maxlength="200" pattern="[a-zA-Z0-9\s\-\.&'()]*" title="Course title should contain only letters, numbers, spaces, hyphens, periods, ampersand, and parentheses">
+        </div>
+        <div class="form-group">
+          <label>Course Code</label>
+          <input type="text" id="courseCode" placeholder="e.g., BIO 30" maxlength="20" pattern="[a-zA-Z0-9\s\-]*" title="Course code should contain only letters, numbers, spaces, and hyphens">
+        </div>
+        <div class="form-group">
+          <label>School Year *</label>
+          <input type="text" id="schoolYear" placeholder="e.g., 2025–2026" required minlength="4" maxlength="50" pattern="[0-9\–\-\s]*" title="School year should contain only numbers, spaces, and hyphens">
+        </div>
+        <div class="form-group">
+          <label>Course Emoji</label>
+          <input type="text" id="courseEmoji" placeholder="e.g., 🧬" maxlength="2">
+        </div>
+        <div class="form-group">
+          <label>Course Start Date *</label>
+          <input type="date" id="courseStartDate" required>
+        </div>
+        <div class="form-group">
+          <label>Course End Date *</label>
+          <input type="date" id="courseEndDate" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Suggested Materials & Resources</label>
+        <textarea id="suggestedMaterials" placeholder="e.g., scientific calculator, graph paper, textbook..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Course Overview (1-2 sentences)</label>
+        <textarea id="courseOverview" placeholder="Describe what this course covers and its emphasis..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Contact Information (Email/Phone)</label>
+        <input type="text" id="contactInfo" placeholder="e.g., john.smith@school.ca, 403-555-0100">
+      </div>
+
+      <div class="form-group">
+        <label>Office Hours</label>
+        <textarea id="officeHours" placeholder="e.g., Monday & Wednesday 3:00-4:00 PM, by appointment"></textarea>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-primary" onclick="nextPhase(1)">Next →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 2: Document Upload -->
+  <div class="phase" id="phase-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">📄</div>
+        <h2>Upload & Parse Documents</h2>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 1rem; color: var(--text);">Program of Studies (Optional)</h3>
+        <p style="margin-bottom: 0.75rem; color: var(--text-muted);">Upload the curriculum document to auto-extract units and learning outcomes.</p>
+        <div class="upload-area" id="uploadStudies" ondrop="handleDrop(event, 'studies')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+          <div class="upload-area-icon">📚</div>
+          <div class="upload-area-text">Drag & drop your Program of Studies</div>
+          <div class="upload-area-hint">Supports PDF, DOCX, CSV, XLSX</div>
+          <input type="file" id="studiesFile" accept=".pdf,.docx,.csv,.xlsx" style="display:none;" onchange="handleFileUpload(event, 'studies')">
+        </div>
+        <div class="file-list" id="studiesList"></div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 1rem; color: var(--text);">School Calendar (Optional)</h3>
+        <p style="margin-bottom: 0.75rem; color: var(--text-muted);">Upload the academic calendar to auto-detect holidays, PD days, and instructional days.</p>
+        <div class="upload-area" id="uploadCalendar" ondrop="handleDrop(event, 'calendar')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+          <div class="upload-area-icon">📅</div>
+          <div class="upload-area-text">Drag & drop your school calendar</div>
+          <div class="upload-area-hint">Supports PDF, CSV, XLSX (with Date, Status columns)</div>
+          <input type="file" id="calendarFile" accept=".pdf,.csv,.xlsx" style="display:none;" onchange="handleFileUpload(event, 'calendar')">
+        </div>
+        <div class="file-list" id="calendarList"></div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 1rem; color: var(--text);">Class Schedule (Optional)</h3>
+        <p style="margin-bottom: 0.75rem; color: var(--text-muted);">Upload the class timetable to identify meeting days and times.</p>
+        <div class="upload-area" id="uploadSchedule" ondrop="handleDrop(event, 'schedule')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+          <div class="upload-area-icon">⏰</div>
+          <div class="upload-area-text">Drag & drop your class schedule</div>
+          <div class="upload-area-hint">Supports PDF, CSV, XLSX (with Day, Start, End columns)</div>
+          <input type="file" id="scheduleFile" accept=".pdf,.csv,.xlsx" style="display:none;" onchange="handleFileUpload(event, 'schedule')">
+        </div>
+        <div class="file-list" id="scheduleList"></div>
+      </div>
+
+      <div class="alert alert-info">
+        <div class="alert-icon">ℹ️</div>
+        <div class="alert-content">
+          <strong>Optional but helpful:</strong> While these documents are optional, providing them helps the app automatically detect curriculum units, holidays, and class times. You can also enter this information manually in the next steps.
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-secondary" onclick="previousPhase()">← Back</button>
+      <button class="btn btn-primary" onclick="nextPhase(2)">Next →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 3: Calendar & Schedule -->
+  <div class="phase" id="phase-3">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">📆</div>
+        <h2>Calendar & Class Schedule</h2>
+      </div>
+
+      <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--primary);">Class Schedule</h3>
+      <div class="alert alert-info" style="margin-bottom: 1.5rem;">
+        <div class="alert-icon">ℹ️</div>
+        <div class="alert-content">
+          Add individual class sessions below. You can schedule multiple classes on the same day (e.g., morning and afternoon sections).
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <button class="btn btn-secondary" onclick="addClassSession()" style="margin-bottom: 1rem;">+ Add Class Session</button>
+        <table class="data-table" id="classScheduleTable">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Duration</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="classScheduleBody">
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--primary);">Holidays & Special Days</h3>
+      <div class="alert alert-info">
+        <div class="alert-icon">ℹ️</div>
+        <div class="alert-content">
+          Alberta statutory holidays will be auto-included. Add any additional school-specific holidays or PD days below.
+        </div>
+      </div>
+
+      <div style="margin-top: 1rem;">
+        <button class="btn btn-secondary" onclick="addHolidayRow()" style="margin-bottom: 1rem;">+ Add Holiday</button>
+        <table class="data-table" id="holidaysTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Holiday Name</th>
+              <th>Type</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="holidaysBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-secondary" onclick="previousPhase()">← Back</button>
+      <button class="btn btn-primary" onclick="nextPhase(3)">Next →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 4: Curriculum & Grading -->
+  <div class="phase" id="phase-4">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">📊</div>
+        <h2>Units & Learning Outcomes</h2>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <button class="btn btn-secondary" onclick="addUnitRow()" style="margin-bottom: 1rem;">+ Add Unit</button>
+        <table class="data-table" id="unitsTable">
+          <thead>
+            <tr>
+              <th>Unit Name</th>
+              <th>% of Grade</th>
+              <th>Weeks (Est.)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="unitsBody">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert alert-info">
+        <div class="alert-icon">ℹ️</div>
+        <div class="alert-content">
+          <strong>Percentages must total 100%.</strong> The pacing engine will distribute units across available instructional weeks.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">📝</div>
+        <h2>Grading Scale & Categories</h2>
+      </div>
+
+      <h3 style="margin-bottom: 1rem; color: var(--text);">Grade Categories</h3>
+      <div style="margin-bottom: 1.5rem;">
+        <button class="btn btn-secondary" onclick="addGradeCategory()" style="margin-bottom: 1rem;">+ Add Category</button>
+        <table class="data-table" id="gradesTable">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>% of Final Grade</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="gradesBody">
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-bottom: 1rem; color: var(--text);">Letter Grade Scale</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+        <div class="form-group">
+          <label>A+ (%):</label>
+          <input type="number" id="gradeAPlus" value="95" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>A (%):</label>
+          <input type="number" id="gradeA" value="90" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>B+ (%):</label>
+          <input type="number" id="gradeBPlus" value="85" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>B (%):</label>
+          <input type="number" id="gradeB" value="80" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>C+ (%):</label>
+          <input type="number" id="gradeCPlus" value="75" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>C (%):</label>
+          <input type="number" id="gradeC" value="70" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>D (%):</label>
+          <input type="number" id="gradeD" value="60" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label>F (%):</label>
+          <input type="number" id="gradeF" value="0" min="0" max="100">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">📋</div>
+        <h2>Course Policies</h2>
+      </div>
+
+      <div class="form-group">
+        <label>Late Work Policy</label>
+        <textarea id="latePolicyText" placeholder="Describe your policy for late submissions..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Attendance & Absences</label>
+        <textarea id="attendancePolicyText" placeholder="Describe expectations for attendance..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Academic Integrity & Cheating</label>
+        <textarea id="integrityPolicyText" placeholder="Describe consequences for academic dishonesty..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Classroom Expectations & Conduct</label>
+        <textarea id="conductPolicyText" placeholder="Describe classroom rules and expectations..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>AI Use Policy (Emerging)</label>
+        <textarea id="aiPolicyText" placeholder="Describe your policy on AI tools and generative AI use..."></textarea>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-secondary" onclick="previousPhase()">← Back</button>
+      <button class="btn btn-primary" onclick="nextPhase(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 5: Review & Customize -->
+  <div class="phase" id="phase-5">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">👁️</div>
+        <h2>Review & Customize Syllabus</h2>
+      </div>
+
+      <div id="previewContent" style="margin-top: 1.5rem; padding: 1.5rem; background: #f9fafb; border-radius: var(--radius); border: 1px solid var(--border);">
+        <!-- Syllabus preview will be generated here -->
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <h3 style="margin-bottom: 1rem; color: var(--text);">Additional Sections (Optional)</h3>
+
+        <div class="form-group">
+          <label>Learning Outcomes / Competencies</label>
+          <textarea id="learningOutcomes" placeholder="List key learning outcomes or competencies students will develop..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Expectations for Success</label>
+          <textarea id="expectationsSuccess" placeholder="What should students do to succeed in this course?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Big Idea / Essential Question</label>
+          <textarea id="bigIdea" placeholder="What is the overarching theme or essential question for this course?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Required Technology & Tools</label>
+          <textarea id="requiredTech" placeholder="List any required software, devices, or platforms..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Accessibility & Accommodations</label>
+          <textarea id="accessibility" placeholder="Describe how you support students with diverse learning needs..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-secondary" onclick="previousPhase()">← Back</button>
+      <button class="btn btn-primary" onclick="nextPhase(5)">Next →</button>
+    </div>
+  </div>
+
+  <!-- PHASE 6: Export -->
+  <div class="phase" id="phase-6">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">⬇️</div>
+        <h2>Export Your Syllabus</h2>
+      </div>
+
+      <div class="alert alert-success">
+        <div class="alert-icon">✅</div>
+        <div class="alert-content">
+          Your syllabus is ready! Choose your preferred format(s) below to download.
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+        <div style="background: #e0f2fe; border: 2px solid #0284c7; border-radius: var(--radius); padding: 1.5rem; text-align: center; cursor: pointer;" onclick="exportFormat('html')">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🌐</div>
+          <div style="font-weight: 600; margin-bottom: 0.25rem; color: var(--text);">HTML (Canvas)</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">Paste directly into Canvas</div>
+        </div>
+
+        <div style="background: #fef3c7; border: 2px solid #eab308; border-radius: var(--radius); padding: 1.5rem; text-align: center; cursor: pointer;" onclick="exportFormat('docx')">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📄</div>
+          <div style="font-weight: 600; margin-bottom: 0.25rem; color: var(--text);">DOCX (Word)</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">Professional Word document</div>
+        </div>
+
+        <div style="background: #dcfce7; border: 2px solid #22c55e; border-radius: var(--radius); padding: 1.5rem; text-align: center; cursor: pointer;" onclick="exportFormat('csv')">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📊</div>
+          <div style="font-weight: 600; margin-bottom: 0.25rem; color: var(--text);">CSV (Spreadsheet)</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">Pacing guide & schedule</div>
+        </div>
+
+        <div style="background: #dbeafe; border: 2px solid #3b82f6; border-radius: var(--radius); padding: 1.5rem; text-align: center; cursor: pointer;" onclick="exportFormat('all')">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📦</div>
+          <div style="font-weight: 600; margin-bottom: 0.25rem; color: var(--text);">ALL FORMATS</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">ZIP with all outputs</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; padding: 1.5rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius);">
+        <h3 style="color: var(--text); margin-bottom: 0.75rem;">📋 What's Included:</h3>
+        <ul style="color: var(--text-muted); font-size: 0.95rem;">
+          <li>✅ Course syllabus with all policies and information</li>
+          <li>✅ Weekly instructional plan (pacing guide)</li>
+          <li>✅ Day-by-day schedule with unit assignments</li>
+          <li>✅ Color-coded sections for easy navigation</li>
+          <li>✅ Grade scale and assessment categories</li>
+          <li>✅ Learning outcomes and course expectations</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-secondary" onclick="previousPhase()">← Back</button>
+      <button class="btn btn-success" onclick="startOver()">Start Over</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================================
+// STATE MANAGEMENT
+// ============================================================================
+
+const AppState = {
+  currentPhase: 1,
+
+  instructor: {
+    title: '',
+    name: '',
+    contact: '',
+    officeHours: ''
+  },
+
+  course: {
+    title: '',
+    code: '',
+    emoji: '',
+    overview: '',
+    materials: '',
+    startDate: '',
+    endDate: '',
+    schoolYear: ''
+  },
+
+  schedule: {
+    meetingDays: [],
+    startTime: '',
+    endTime: '',
+    holidays: []
+  },
+
+  units: [],
+  grades: {
+    categories: [],
+    scale: {}
+  },
+
+  policies: {
+    late: '',
+    attendance: '',
+    integrity: '',
+    conduct: '',
+    ai: ''
+  },
+
+  syllabus: {
+    outcomes: '',
+    expectations: '',
+    bigIdea: '',
+    requiredTech: '',
+    accessibility: ''
+  },
+
+  documents: {
+    studies: null,
+    calendar: null,
+    schedule: null
+  }
+};
+
+// ============================================================================
+// PHASE NAVIGATION
+// ============================================================================
+
+function initializePhases() {
+  // Initialize phase 1 with default values
+  updateProgressBar();
+
+  // Set up upload areas
+  document.getElementById('uploadStudies').addEventListener('click', () => document.getElementById('studiesFile').click());
+  document.getElementById('uploadCalendar').addEventListener('click', () => document.getElementById('calendarFile').click());
+  document.getElementById('uploadSchedule').addEventListener('click', () => document.getElementById('scheduleFile').click());
+
+  // Initialize default units and grades
+  addUnitRow();
+  addGradeCategory();
+}
+
+function nextPhase(currentPhase) {
+  if (!validatePhase(currentPhase)) {
+    return;
+  }
+
+  savePhaseData(currentPhase);
+  AppState.currentPhase = currentPhase + 1;
+  showPhase(AppState.currentPhase);
+  updateProgressBar();
+
+  if (AppState.currentPhase === 5) {
+    generatePreview();
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function previousPhase() {
+  if (AppState.currentPhase > 1) {
+    savePhaseData(AppState.currentPhase);
+    AppState.currentPhase--;
+    showPhase(AppState.currentPhase);
+    updateProgressBar();
+    window.scrollTo(0, 0);
+  }
+}
+
+function showPhase(phaseNum) {
+  document.querySelectorAll('.phase').forEach(phase => phase.classList.remove('active'));
+  document.getElementById('phase-' + phaseNum).classList.add('active');
+
+  // Restore data if coming back to Phase 3
+  if (phaseNum === 3) {
+    restorePhase3Data();
+  }
+}
+
+function restorePhase3Data() {
+  // Restore class sessions
+  const tbody = document.getElementById('classScheduleBody');
+  tbody.innerHTML = '';
+
+  if (AppState.schedule && AppState.schedule.classSessions && AppState.schedule.classSessions.length > 0) {
+    AppState.schedule.classSessions.forEach(session => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>
+          <select style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)">
+            <option value="">Select day...</option>
+            <option value="Monday" ${session.day === 'Monday' ? 'selected' : ''}>Monday</option>
+            <option value="Tuesday" ${session.day === 'Tuesday' ? 'selected' : ''}>Tuesday</option>
+            <option value="Wednesday" ${session.day === 'Wednesday' ? 'selected' : ''}>Wednesday</option>
+            <option value="Thursday" ${session.day === 'Thursday' ? 'selected' : ''}>Thursday</option>
+            <option value="Friday" ${session.day === 'Friday' ? 'selected' : ''}>Friday</option>
+          </select>
+        </td>
+        <td><input type="time" value="${session.startTime}" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)"></td>
+        <td><input type="time" value="${session.endTime}" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)"></td>
+        <td><span style="padding:0.5rem;text-align:center;">--</span></td>
+        <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
+      `;
+      tbody.appendChild(row);
+      // Calculate duration for this session
+      calculateDuration(row.querySelector('select'));
+    });
+  }
+
+  // Restore holidays
+  const holidaysTbody = document.getElementById('holidaysBody');
+  holidaysTbody.innerHTML = '';
+
+  if (AppState.schedule && AppState.schedule.holidays && AppState.schedule.holidays.length > 0) {
+    AppState.schedule.holidays.forEach(holiday => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="date" value="${holiday.date}" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+        <td><input type="text" value="${holiday.name}" placeholder="e.g., Family Day" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+        <td>
+          <select style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;">
+            <option value="Holiday" ${holiday.type === 'Holiday' ? 'selected' : ''}>Holiday</option>
+            <option value="PD Day" ${holiday.type === 'PD Day' ? 'selected' : ''}>PD Day</option>
+            <option value="Break" ${holiday.type === 'Break' ? 'selected' : ''}>Break</option>
+            <option value="Other" ${holiday.type === 'Other' ? 'selected' : ''}>Other</option>
+          </select>
+        </td>
+        <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
+      `;
+      holidaysTbody.appendChild(row);
+    });
+  }
+}
+
+function updateProgressBar() {
+  const phases = ['Instructor', 'Documents', 'Calendar', 'Curriculum', 'Review', 'Export'];
+  let html = '';
+
+  phases.forEach((label, index) => {
+    const phaseNum = index + 1;
+    let statusClass = 'future';
+
+    if (phaseNum < AppState.currentPhase) statusClass = 'completed';
+    else if (phaseNum === AppState.currentPhase) statusClass = 'active';
+
+    html += `
+      <div class="progress-step ${statusClass}">
+        <div class="progress-step-num">${phaseNum}</div>
+        <div class="progress-step-label">${label}</div>
+        <div class="progress-line"></div>
+      </div>
+    `;
+  });
+
+  document.getElementById('progressBar').innerHTML = html;
+  document.getElementById('progressStatus').textContent = `Step ${AppState.currentPhase} of 6: ${phases[AppState.currentPhase - 1]}`;
+}
+
+// ============================================================================
+// VALIDATION
+// ============================================================================
+
+function validatePhase(phaseNum) {
+  switch(phaseNum) {
+    case 1:
+      const title = document.getElementById('instructorTitle').value;
+      const name = document.getElementById('instructorName').value;
+      const course = document.getElementById('courseTitle').value;
+      const start = document.getElementById('courseStartDate').value;
+      const end = document.getElementById('courseEndDate').value;
+      const year = document.getElementById('schoolYear').value;
+
+      if (!title || !name || !course || !start || !end || !year) {
+        alert('Please fill in all required fields (marked with *)');
+        return false;
+      }
+
+      if (new Date(start) >= new Date(end)) {
+        alert('Course end date must be after start date');
+        return false;
+      }
+      return true;
+
+    case 2:
+      return true; // Documents are optional
+
+    case 3:
+      // Calendar phase - verify at least one class session is defined
+      const classSessions = document.querySelectorAll('#classScheduleBody tr');
+      if (classSessions.length === 0) {
+        alert('Please add at least one class session');
+        return false;
+      }
+
+      // Validate that all sessions have day and times
+      for (let session of classSessions) {
+        const day = session.querySelector('select').value;
+        const startTime = session.querySelector('input[type="time"]:first-of-type').value;
+        const endTime = session.querySelector('input[type="time"]:last-of-type').value;
+
+        if (!day || !startTime || !endTime) {
+          alert('All class sessions must have a day and start/end times');
+          return false;
+        }
+
+        if (endTime <= startTime) {
+          alert('End time must be after start time');
+          return false;
+        }
+      }
+      return true;
+
+    case 4:
+      // Curriculum phase - check both units and grades
+      if (document.querySelectorAll('#unitsBody tr').length === 0) {
+        alert('Please add at least one unit');
+        return false;
+      }
+
+      const totalPercent = Array.from(document.querySelectorAll('#unitsBody input[type="number"]'))
+        .reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+
+      if (Math.abs(totalPercent - 100) > 0.01) {
+        alert(`Unit percentages must total 100% (currently ${totalPercent}%)`);
+        return false;
+      }
+
+      const totalGrades = Array.from(document.querySelectorAll('#gradesBody input[type="number"]'))
+        .reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+
+      if (Math.abs(totalGrades - 100) > 0.01) {
+        alert(`Grade categories must total 100% (currently ${totalGrades}%)`);
+        return false;
+      }
+      return true;
+
+    default:
+      return true;
+  }
+}
+
+function savePhaseData(phaseNum) {
+  switch(phaseNum) {
+    case 1:
+      AppState.instructor.title = document.getElementById('instructorTitle').value;
+      AppState.instructor.name = document.getElementById('instructorName').value;
+      AppState.instructor.contact = document.getElementById('contactInfo').value;
+      AppState.instructor.officeHours = document.getElementById('officeHours').value;
+
+      AppState.course.title = document.getElementById('courseTitle').value;
+      AppState.course.code = document.getElementById('courseCode').value;
+      AppState.course.emoji = document.getElementById('courseEmoji').value;
+      AppState.course.materials = document.getElementById('suggestedMaterials').value;
+      AppState.course.overview = document.getElementById('courseOverview').value;
+      AppState.course.startDate = document.getElementById('courseStartDate').value;
+      AppState.course.endDate = document.getElementById('courseEndDate').value;
+      AppState.course.schoolYear = document.getElementById('schoolYear').value;
+      break;
+
+    case 3:
+      // Save class schedule sessions
+      AppState.schedule.classSessions = [];
+      document.querySelectorAll('#classScheduleBody tr').forEach(row => {
+        const day = row.querySelector('select').value;
+        const startTime = row.querySelector('input[type="time"]:first-of-type').value;
+        const endTime = row.querySelector('input[type="time"]:last-of-type').value;
+
+        if (day && startTime && endTime) {
+          AppState.schedule.classSessions.push({ day, startTime, endTime });
+        }
+      });
+
+      // Save holidays
+      AppState.schedule.holidays = [];
+      document.querySelectorAll('#holidaysBody tr').forEach(row => {
+        const date = row.querySelector('input[type="date"]').value;
+        const name = row.cells[1].querySelector('input').value;
+        const type = row.cells[2].querySelector('select').value;
+
+        if (date && name) {
+          AppState.schedule.holidays.push({ date, name, type });
+        }
+      });
+      break;
+
+    case 4:
+      AppState.units = Array.from(document.querySelectorAll('#unitsBody tr')).map(row => {
+        const inputs = row.querySelectorAll('input');
+        return {
+          name: inputs[0].value,
+          percent: parseFloat(inputs[1].value) || 0,
+          weeks: parseFloat(inputs[2].value) || 0
+        };
+      });
+
+      AppState.grades.categories = Array.from(document.querySelectorAll('#gradesBody tr')).map(row => {
+        const inputs = row.querySelectorAll('input');
+        return {
+          name: inputs[0].value,
+          percent: parseFloat(inputs[1].value) || 0
+        };
+      });
+
+      AppState.grades.scale = {
+        aPlus: parseFloat(document.getElementById('gradeAPlus').value),
+        a: parseFloat(document.getElementById('gradeA').value),
+        bPlus: parseFloat(document.getElementById('gradeBPlus').value),
+        b: parseFloat(document.getElementById('gradeB').value),
+        cPlus: parseFloat(document.getElementById('gradeCPlus').value),
+        c: parseFloat(document.getElementById('gradeC').value),
+        d: parseFloat(document.getElementById('gradeD').value),
+        f: parseFloat(document.getElementById('gradeF').value)
+      };
+
+      AppState.policies.late = document.getElementById('latePolicyText').value;
+      AppState.policies.attendance = document.getElementById('attendancePolicyText').value;
+      AppState.policies.integrity = document.getElementById('integrityPolicyText').value;
+      AppState.policies.conduct = document.getElementById('conductPolicyText').value;
+      AppState.policies.ai = document.getElementById('aiPolicyText').value;
+      break;
+
+    case 5:
+      AppState.syllabus.outcomes = document.getElementById('learningOutcomes').value;
+      AppState.syllabus.expectations = document.getElementById('expectationsSuccess').value;
+      AppState.syllabus.bigIdea = document.getElementById('bigIdea').value;
+      AppState.syllabus.requiredTech = document.getElementById('requiredTech').value;
+      AppState.syllabus.accessibility = document.getElementById('accessibility').value;
+      break;
+  }
+}
+
+// ============================================================================
+// UNIT & GRADE MANAGEMENT
+// ============================================================================
+
+function addUnitRow() {
+  const tbody = document.getElementById('unitsBody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" placeholder="e.g., Unit 1: Cellular Biology" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+    <td><input type="number" value="25" min="0" max="100" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+    <td><input type="number" value="3" min="0" max="52" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+    <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function addGradeCategory() {
+  const tbody = document.getElementById('gradesBody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" placeholder="e.g., Participation" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+    <td><input type="number" value="10" min="0" max="100" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+    <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function addClassSession() {
+  const tbody = document.getElementById('classScheduleBody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>
+      <select style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)">
+        <option value="">Select day...</option>
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+      </select>
+    </td>
+    <td><input type="time" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)"></td>
+    <td><input type="time" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)"></td>
+    <td><span style="padding:0.5rem;text-align:center;">--</span></td>
+    <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function calculateDuration(element) {
+  const row = element.closest('tr');
+  const startInput = row.querySelector('input[type="time"]:first-of-type');
+  const endInput = row.querySelector('input[type="time"]:last-of-type');
+  const durationCell = row.querySelector('td:nth-child(4)');
+
+  if (startInput.value && endInput.value) {
+    // Parse time values (format: "HH:MM")
+    const [startHours, startMins] = startInput.value.split(':').map(Number);
+    const [endHours, endMins] = endInput.value.split(':').map(Number);
+
+    // Convert to minutes since midnight
+    const startTotalMins = startHours * 60 + startMins;
+    const endTotalMins = endHours * 60 + endMins;
+
+    // Calculate duration
+    let duration = endTotalMins - startTotalMins;
+
+    // Handle overnight wrap (e.g., 10:00 PM to 1:00 AM)
+    if (duration < 0) {
+      duration += 24 * 60;
+    }
+
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+
+    // Format: "1h 30m" or just "30m" if less than 1 hour
+    if (hours > 0) {
+      durationCell.textContent = minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
+    } else {
+      durationCell.textContent = `${minutes}m`;
+    }
+  } else {
+    durationCell.textContent = '--';
+  }
+}
+
+function addHolidayRow() {
+  const tbody = document.getElementById('holidaysBody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="date" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+    <td><input type="text" placeholder="e.g., Family Day" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
+    <td>
+      <select style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;">
+        <option value="Holiday">Holiday</option>
+        <option value="PD Day">PD Day</option>
+        <option value="Break">Break</option>
+        <option value="Other">Other</option>
+      </select>
+    </td>
+    <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+function updateMeetingDays() {
+  // Updates will be saved when moving to next phase
+}
+
+// ============================================================================
+// FILE UPLOAD HANDLING
+// ============================================================================
+
+function handleDragOver(event) {
+  event.preventDefault();
+  event.currentTarget.classList.add('dragover');
+}
+
+function handleDragLeave(event) {
+  event.currentTarget.classList.remove('dragover');
+}
+
+function handleDrop(event, type) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('dragover');
+
+  const files = event.dataTransfer.files;
+  if (files.length > 0) {
+    handleFileUpload({ target: { files } }, type);
+  }
+}
+
+function handleFileUpload(event, type) {
+  const files = event.target.files;
+  if (!files.length) return;
+
+  const file = files[0];
+  const fileInput = event.target;
+
+  // Store file reference
+  if (type === 'studies') AppState.documents.studies = file;
+  if (type === 'calendar') AppState.documents.calendar = file;
+  if (type === 'schedule') AppState.documents.schedule = file;
+
+  // Display file in UI
+  const listId = type + 'List';
+  const list = document.getElementById(listId);
+  list.innerHTML = `
+    <div class="file-item">
+      <div class="file-icon">✅</div>
+      <div class="file-info">
+        <div class="file-name">${file.name}</div>
+        <div class="file-status">Uploaded: ${(file.size / 1024).toFixed(1)} KB</div>
+      </div>
+      <button class="file-remove" onclick="removeFile('${type}')">×</button>
+    </div>
+  `;
+
+  // Parse file if possible
+  parseDocument(file, type);
+}
+
+function removeFile(type) {
+  AppState.documents[type] = null;
+  const listId = type + 'List';
+  document.getElementById(listId).innerHTML = '';
+}
+
+async function parseDocument(file, type) {
+  // Basic parsing logic - would be expanded for production
+  console.log(`Parsing ${type} document:`, file.name);
+
+  if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+    parseCSV(file, type);
+  } else if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.name.endsWith('.xlsx')) {
+    parseXLSX(file, type);
+  }
+}
+
+async function parseCSV(file, type) {
+  const text = await file.text();
+  const lines = text.split('\n');
+  // CSV parsing would go here
+}
+
+async function parseXLSX(file, type) {
+  const arrayBuffer = await file.arrayBuffer();
+  // XLSX parsing would go here using SheetJS
+}
+
+// ============================================================================
+// PREVIEW GENERATION
+// ============================================================================
+
+function generatePreview() {
+  const preview = document.getElementById('previewContent');
+
+  const html = `
+    <div style="background: white; padding: 2rem; border-radius: 8px; line-height: 1.8;">
+      ${AppState.course.emoji ? `<div style="font-size: 2rem; margin-bottom: 1rem;">${AppState.course.emoji}</div>` : ''}
+
+      <h1 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.75rem;">${AppState.course.title}</h1>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 1rem;">${AppState.course.schoolYear}</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid var(--border);">
+        <div>
+          <h3 style="color: var(--primary); margin-bottom: 0.75rem; font-size: 0.95rem;">Instructor</h3>
+          <p style="margin: 0.25rem 0;"><strong>${AppState.instructor.title} ${AppState.instructor.name}</strong></p>
+          ${AppState.instructor.contact ? `<p style="margin: 0.25rem 0; font-size: 0.9rem;">${AppState.instructor.contact}</p>` : ''}
+          ${AppState.instructor.officeHours ? `<p style="margin: 0.25rem 0; font-size: 0.9rem;"><em>${AppState.instructor.officeHours}</em></p>` : ''}
+        </div>
+        <div>
+          <h3 style="color: var(--primary); margin-bottom: 0.75rem; font-size: 0.95rem;">Course Details</h3>
+          ${AppState.course.code ? `<p style="margin: 0.25rem 0;">Code: ${AppState.course.code}</p>` : ''}
+          <p style="margin: 0.25rem 0;">Duration: ${new Date(AppState.course.startDate).toLocaleDateString()} - ${new Date(AppState.course.endDate).toLocaleDateString()}</p>
+        </div>
+      </div>
+
+      ${AppState.schedule && AppState.schedule.classSessions && AppState.schedule.classSessions.length > 0 ? `
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="color: var(--primary); margin-bottom: 0.75rem;">Class Schedule</h3>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+              <thead>
+                <tr style="background: #e0f2fe;">
+                  <th style="padding: 0.5rem; text-align: left; border: 1px solid #bfdbfe;">Day</th>
+                  <th style="padding: 0.5rem; text-align: left; border: 1px solid #bfdbfe;">Start Time</th>
+                  <th style="padding: 0.5rem; text-align: left; border: 1px solid #bfdbfe;">End Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${AppState.schedule.classSessions.map(session => `
+                  <tr>
+                    <td style="padding: 0.5rem; border: 1px solid #bfdbfe;">${session.day}</td>
+                    <td style="padding: 0.5rem; border: 1px solid #bfdbfe;">${session.startTime}</td>
+                    <td style="padding: 0.5rem; border: 1px solid #bfdbfe;">${session.endTime}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ` : ''}
+
+      ${AppState.course.overview ? `
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="color: var(--primary); margin-bottom: 0.75rem;">Course Overview</h3>
+          <p>${AppState.course.overview}</p>
+        </div>
+      ` : ''}
+
+      ${AppState.units.length > 0 ? `
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="color: var(--primary); margin-bottom: 0.75rem;">Units of Study</h3>
+          <ul style="margin-left: 1.5rem;">
+            ${AppState.units.map(unit => `<li>${unit.name} (${unit.percent}%)</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+
+      ${AppState.grades.categories.length > 0 ? `
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="color: var(--primary); margin-bottom: 0.75rem;">Grade Categories</h3>
+          <ul style="margin-left: 1.5rem;">
+            ${AppState.grades.categories.map(cat => `<li>${cat.name}: ${cat.percent}%</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  preview.innerHTML = html;
+}
+
+// ============================================================================
+// EXPORT FUNCTIONS
+// ============================================================================
+
+async function exportFormat(format) {
+  try {
+    const btn = event.target.closest('.btn') || event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Generating...';
+
+    switch(format) {
+      case 'html':
+        generateAndDownloadHTML();
+        break;
+      case 'docx':
+        await generateAndDownloadDOCX();
+        break;
+      case 'csv':
+        generateAndDownloadCSV();
+        break;
+      case 'all':
+        await generateAndDownloadAll();
+        break;
+    }
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = '📦 ' + (btn.textContent || 'Download');
+    }, 1000);
+  } catch(e) {
+    console.error('Export error:', e);
+    alert('Unable to export. Please try again.');
+  }
+}
+
+function generateAndDownloadHTML() {
+  const html = generateSyllabusHTML();
+  const blob = new Blob([html], { type: 'text/html' });
+  downloadFile(blob, `${AppState.course.title.replace(/\s+/g, '_')}_Syllabus.html`);
+}
+
+async function generateAndDownloadDOCX() {
+  const doc = generateSyllabusDOCX();
+  const blob = await docx.Packer.toBlob(doc);
+  downloadFile(blob, `${AppState.course.title.replace(/\s+/g, '_')}_Syllabus.docx`);
+}
+
+function generateAndDownloadCSV() {
+  const csv = generatePacingCSV();
+  const blob = new Blob([csv], { type: 'text/csv' });
+  downloadFile(blob, `${AppState.course.title.replace(/\s+/g, '_')}_PacingGuide.csv`);
+}
+
+async function generateAndDownloadAll() {
+  const zip = new JSZip();
+
+  // Add HTML
+  zip.file('Syllabus.html', generateSyllabusHTML());
+
+  // Add DOCX
+  const docBlob = await docx.Packer.toBlob(generateSyllabusDOCX());
+  zip.file('Syllabus.docx', docBlob);
+
+  // Add CSV
+  zip.file('PacingGuide.csv', generatePacingCSV());
+
+  // Generate and download ZIP
+  const blob = await zip.generateAsync({ type: 'blob' });
+  downloadFile(blob, `${AppState.course.title.replace(/\s+/g, '_')}_Complete.zip`);
+}
+
+function generateSyllabusHTML() {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${AppState.course.title} - Syllabus</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 2rem; line-height: 1.8; color: #1e293b; }
+    h1 { color: #1e3a5f; border-bottom: 3px solid #2563eb; padding-bottom: 0.5rem; }
+    h2 { color: #2563eb; margin-top: 2rem; }
+    .header { background: #1e3a5f; color: white; padding: 2rem; margin: -2rem -2rem 2rem; }
+    .header h1 { color: white; border: none; margin-bottom: 0.5rem; }
+    .instructor-card { background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #2563eb; margin: 1rem 0; }
+    .grade-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    .grade-table th, .grade-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    .grade-table th { background: #1e3a5f; color: white; }
+    table { width: 100%; border-collapse: collapse; }
+    table th { background: #f0f9ff; padding: 0.75rem; text-align: left; border-bottom: 2px solid #2563eb; }
+    table td { padding: 0.75rem; border-bottom: 1px solid #e2e8f0; }
+    ul, ol { margin-left: 1.5rem; }
+    .policy-section { background: #f8fafc; padding: 1.5rem; margin: 1rem 0; border-radius: 8px; border-left: 4px solid #059669; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>${AppState.course.emoji || '📚'} ${AppState.course.title}</h1>
+    <p style="margin: 0; font-size: 1.1rem;">${AppState.course.schoolYear}</p>
+  </div>
+
+  <div class="instructor-card">
+    <h3 style="margin-top: 0;">Instructor Information</h3>
+    <p><strong>${AppState.instructor.title} ${AppState.instructor.name}</strong></p>
+    ${AppState.instructor.contact ? `<p>Email/Phone: ${AppState.instructor.contact}</p>` : ''}
+    ${AppState.instructor.officeHours ? `<p>Office Hours: ${AppState.instructor.officeHours}</p>` : ''}
+  </div>
+
+  ${AppState.course.overview ? `<h2>Course Overview</h2><p>${AppState.course.overview}</p>` : ''}
+  ${AppState.course.materials ? `<h2>Required Materials</h2><p>${AppState.course.materials}</p>` : ''}
+
+  ${AppState.schedule && AppState.schedule.classSessions && AppState.schedule.classSessions.length > 0 ? `
+    <h2>Class Schedule</h2>
+    <table>
+      <thead>
+        <tr><th>Day</th><th>Start Time</th><th>End Time</th></tr>
+      </thead>
+      <tbody>
+        ${AppState.schedule.classSessions.map(session => `<tr><td>${session.day}</td><td>${session.startTime}</td><td>${session.endTime}</td></tr>`).join('')}
+      </tbody>
+    </table>
+  ` : ''}
+
+  ${AppState.syllabus.outcomes ? `<h2>Learning Outcomes</h2><p>${AppState.syllabus.outcomes}</p>` : ''}
+
+  <h2>Assessment & Grading</h2>
+  ${AppState.grades.categories.length > 0 ? `
+    <h3>Grade Categories</h3>
+    <table class="grade-table">
+      <thead>
+        <tr><th>Category</th><th>Percentage of Final Grade</th></tr>
+      </thead>
+      <tbody>
+        ${AppState.grades.categories.map(cat => `<tr><td>${cat.name}</td><td>${cat.percent}%</td></tr>`).join('')}
+      </tbody>
+    </table>
+  ` : ''}
+
+  <h3>Grade Scale</h3>
+  <table class="grade-table">
+    <thead>
+      <tr><th>Letter Grade</th><th>Percentage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>A+</td><td>${AppState.grades.scale.aPlus}%+</td></tr>
+      <tr><td>A</td><td>${AppState.grades.scale.a}%-${AppState.grades.scale.aPlus-1}%</td></tr>
+      <tr><td>B+</td><td>${AppState.grades.scale.bPlus}%-${AppState.grades.scale.a-1}%</td></tr>
+      <tr><td>B</td><td>${AppState.grades.scale.b}%-${AppState.grades.scale.bPlus-1}%</td></tr>
+      <tr><td>C+</td><td>${AppState.grades.scale.cPlus}%-${AppState.grades.scale.b-1}%</td></tr>
+      <tr><td>C</td><td>${AppState.grades.scale.c}%-${AppState.grades.scale.cPlus-1}%</td></tr>
+      <tr><td>D</td><td>${AppState.grades.scale.d}%-${AppState.grades.scale.c-1}%</td></tr>
+      <tr><td>F</td><td>Below ${AppState.grades.scale.d}%</td></tr>
+    </tbody>
+  </table>
+
+  ${AppState.units.length > 0 ? `
+    <h2>Units of Study & Pacing</h2>
+    <table>
+      <thead>
+        <tr><th>Unit</th><th>% of Grade</th><th>Est. Weeks</th></tr>
+      </thead>
+      <tbody>
+        ${AppState.units.map(unit => `<tr><td>${unit.name}</td><td>${unit.percent}%</td><td>${unit.weeks}</td></tr>`).join('')}
+      </tbody>
+    </table>
+  ` : ''}
+
+  ${AppState.syllabus.expectations ? `<h2>Expectations for Success</h2><p>${AppState.syllabus.expectations}</p>` : ''}
+  ${AppState.syllabus.bigIdea ? `<h2>Big Idea</h2><p>${AppState.syllabus.bigIdea}</p>` : ''}
+
+  <h2>Course Policies</h2>
+  ${AppState.policies.late ? `<div class="policy-section"><h3>Late Work</h3><p>${AppState.policies.late}</p></div>` : ''}
+  ${AppState.policies.attendance ? `<div class="policy-section"><h3>Attendance & Absences</h3><p>${AppState.policies.attendance}</p></div>` : ''}
+  ${AppState.policies.integrity ? `<div class="policy-section"><h3>Academic Integrity</h3><p>${AppState.policies.integrity}</p></div>` : ''}
+  ${AppState.policies.conduct ? `<div class="policy-section"><h3>Classroom Conduct</h3><p>${AppState.policies.conduct}</p></div>` : ''}
+  ${AppState.policies.ai ? `<div class="policy-section"><h3>AI Use Policy</h3><p>${AppState.policies.ai}</p></div>` : ''}
+
+  ${AppState.syllabus.requiredTech ? `<h2>Required Technology</h2><p>${AppState.syllabus.requiredTech}</p>` : ''}
+  ${AppState.syllabus.accessibility ? `<h2>Accessibility & Accommodations</h2><p>${AppState.syllabus.accessibility}</p>` : ''}
+</body>
+</html>`;
+}
+
+function generateSyllabusDOCX() {
+  const sections = [];
+
+  // Add title
+  sections.push(
+    new docx.Paragraph({
+      text: AppState.course.title,
+      heading: docx.HeadingLevel.HEADING_1,
+      size: 32,
+      bold: true,
+      color: '1e3a5f'
+    })
+  );
+
+  // Add school year
+  if (AppState.course.schoolYear) {
+    sections.push(
+      new docx.Paragraph({
+        text: AppState.course.schoolYear,
+        size: 22,
+        color: '64748b'
+      })
+    );
+  }
+
+  sections.push(new docx.Paragraph({ text: '' })); // Spacing
+
+  // Instructor info
+  sections.push(
+    new docx.Paragraph({
+      text: 'Instructor Information',
+      heading: docx.HeadingLevel.HEADING_2
+    }),
+    new docx.Paragraph({
+      text: `${AppState.instructor.title} ${AppState.instructor.name}`,
+      bold: true
+    })
+  );
+
+  if (AppState.instructor.contact) {
+    sections.push(new docx.Paragraph({ text: `Contact: ${AppState.instructor.contact}` }));
+  }
+  if (AppState.instructor.officeHours) {
+    sections.push(new docx.Paragraph({ text: `Office Hours: ${AppState.instructor.officeHours}` }));
+  }
+
+  sections.push(new docx.Paragraph({ text: '' })); // Spacing
+
+  // Class schedule
+  if (AppState.schedule && AppState.schedule.classSessions && AppState.schedule.classSessions.length > 0) {
+    sections.push(
+      new docx.Paragraph({
+        text: 'Class Schedule',
+        heading: docx.HeadingLevel.HEADING_2
+      })
+    );
+
+    const scheduleRows = [
+      new docx.TableRow({
+        children: [
+          new docx.TableCell({ children: [new docx.Paragraph({ text: 'Day', bold: true })] }),
+          new docx.TableCell({ children: [new docx.Paragraph({ text: 'Start Time', bold: true })] }),
+          new docx.TableCell({ children: [new docx.Paragraph({ text: 'End Time', bold: true })] })
+        ]
+      })
+    ];
+
+    AppState.schedule.classSessions.forEach(session => {
+      scheduleRows.push(
+        new docx.TableRow({
+          children: [
+            new docx.TableCell({ children: [new docx.Paragraph(session.day)] }),
+            new docx.TableCell({ children: [new docx.Paragraph(session.startTime)] }),
+            new docx.TableCell({ children: [new docx.Paragraph(session.endTime)] })
+          ]
+        })
+      );
+    });
+
+    sections.push(
+      new docx.Table({
+        width: { size: 100, type: docx.WidthType.PERCENTAGE },
+        rows: scheduleRows
+      })
+    );
+
+    sections.push(new docx.Paragraph({ text: '' })); // Spacing
+  }
+
+  // Course overview
+  if (AppState.course.overview) {
+    sections.push(
+      new docx.Paragraph({
+        text: 'Course Overview',
+        heading: docx.HeadingLevel.HEADING_2
+      }),
+      new docx.Paragraph(AppState.course.overview)
+    );
+  }
+
+  // Units
+  if (AppState.units.length > 0) {
+    sections.push(
+      new docx.Paragraph({
+        text: 'Units of Study',
+        heading: docx.HeadingLevel.HEADING_2
+      })
+    );
+
+    const unitRows = [
+      new docx.TableRow({
+        children: [
+          new docx.TableCell({ children: [new docx.Paragraph({ text: 'Unit', bold: true })] }),
+          new docx.TableCell({ children: [new docx.Paragraph({ text: '% of Grade', bold: true })] }),
+          new docx.TableCell({ children: [new docx.Paragraph({ text: 'Est. Weeks', bold: true })] })
+        ]
+      })
+    ];
+
+    AppState.units.forEach(unit => {
+      unitRows.push(
+        new docx.TableRow({
+          children: [
+            new docx.TableCell({ children: [new docx.Paragraph(unit.name)] }),
+            new docx.TableCell({ children: [new docx.Paragraph(`${unit.percent}%`)] }),
+            new docx.TableCell({ children: [new docx.Paragraph(`${unit.weeks}`)] })
+          ]
+        })
+      );
+    });
+
+    sections.push(
+      new docx.Table({
+        width: { size: 100, type: docx.WidthType.PERCENTAGE },
+        rows: unitRows
+      })
+    );
+  }
+
+  return new docx.Document({ sections: [{ children: sections }] });
+}
+
+function generatePacingCSV() {
+  let csv = 'Unit,Percentage,Estimated Weeks,Start Week,End Week\n';
+
+  let currentWeek = 1;
+  const totalWeeks = 36; // Approximate school year
+
+  AppState.units.forEach(unit => {
+    const weeks = Math.round((unit.weeks || 3));
+    const endWeek = currentWeek + weeks - 1;
+    csv += `"${unit.name}",${unit.percent}%,${weeks},${currentWeek},${endWeek}\n`;
+    currentWeek = endWeek + 1;
+  });
+
+  return csv;
+}
+
+function downloadFile(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function startOver() {
+  if (confirm('Start a new syllabus? Current progress will be lost.')) {
+    location.reload();
+  }
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', initializePhases);
+</script>
+
+</body>
+</html>
