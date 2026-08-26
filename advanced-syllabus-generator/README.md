@@ -8,11 +8,10 @@ Creates complete, Canvas-ready course syllabi with:
 - ✅ Gated workflow with validation (ensures data integrity)
 - ✅ Multi-document support (PDF, DOCX, CSV, XLSX)
 - ✅ Automatic curriculum extraction (units, outcomes, weights)
-- ✅ Intelligent pacing calculation (based on real instructional days)
-- ✅ Alberta-specific statutory holidays (auto-included)
+- ✅ Weekly pacing guide distributed across your units
 - ✅ Professional color-coded formatting
 - ✅ Multi-format exports (HTML, DOCX, CSV, ZIP)
-- ✅ Week-by-week + day-by-day instructional plans
+- ✅ Designed for asynchronous / self-paced courses (no fixed meeting calendar required)
 - ✅ Complete offline capability (no internet required)
 - ✅ No installation needed (single HTML file)
 
@@ -42,7 +41,9 @@ Then open `http://localhost:8080` in your browser.
 
 ## 📋 Workflow Overview
 
-The application guides you through **6 phases**:
+The application guides you through **5 phases**. There is no calendar or
+class-schedule step — this generator is built for asynchronous / self-paced
+courses that don't meet at fixed times.
 
 ### Phase 1: Instructor & Course Information
 - Instructor name and contact details
@@ -53,17 +54,9 @@ The application guides you through **6 phases**:
 
 ### Phase 2: Document Upload & Parsing
 - **Program of Studies** (PDF, DOCX, CSV, XLSX) — extracts units and outcomes
-- **School Calendar** (PDF, CSV, XLSX) — detects holidays, breaks, PD days
-- **Class Schedule** (PDF, CSV, XLSX) — identifies meeting days and times
-- *All uploads are optional* — manual entry fallback available
+- *Upload is optional* — manual entry fallback available
 
-### Phase 3: Calendar & Class Schedule
-- Select meeting days (Monday–Friday)
-- Set class start/end times
-- Add custom holidays and PD days
-- Alberta statutory holidays auto-included
-
-### Phase 4: Curriculum & Grading
+### Phase 3: Curriculum & Grading
 - Define course units with percentages and estimated weeks
 - Create grade categories
 - Set up letter grade scale (A+ through F)
@@ -74,7 +67,7 @@ The application guides you through **6 phases**:
   - Classroom conduct rules
   - AI use policy
 
-### Phase 5: Review & Customize
+### Phase 4: Review & Customize
 - Preview your syllabus
 - Add optional sections:
   - Learning outcomes & competencies
@@ -83,7 +76,7 @@ The application guides you through **6 phases**:
   - Required technology
   - Accessibility & accommodations
 
-### Phase 6: Export
+### Phase 5: Export
 - **HTML** — Canvas-ready (paste directly into Canvas pages)
 - **DOCX** — Professional Word document with color-coding
 - **CSV** — Pacing guide for spreadsheet planning
@@ -95,15 +88,11 @@ The application guides you through **6 phases**:
 - ✅ Gated workflow with hard-stop validation
 - ✅ Advanced document parsing (PDF, XLSX, CSV)
 - ✅ Curriculum unit extraction
-- ✅ Pacing calculation based on real instructional days
-- ✅ CSV exports (pacing + weekly schedule)
-- ✅ Weekly instructional plan generation
+- ✅ CSV pacing guide export
 
 ### From *HTML Syllabus Generator*
-- ✅ Simple 5-step guided workflow
+- ✅ Simple guided workflow
 - ✅ Professional DOCX export with color-coding
-- ✅ Alberta-specific statutory holidays
-- ✅ Day-by-day lesson plan support
 - ✅ No installation required
 - ✅ Fully offline capable
 - ✅ Emoji support
@@ -132,36 +121,6 @@ Cell Biology,25,Structure and function of cells
 Genetics,25,Heredity and DNA
 Evolution,25,Natural selection and adaptation
 Ecology,25,Organisms and their environments
-```
-
-### School Calendar (Optional)
-**Best format:** CSV or XLSX
-- Columns should include: `Date`, `Status`, `Notes`
-- Status values: Holiday, PD Day, Break, Instructional
-- Alternative format: PDF (with date-based calendar)
-
-**Example CSV:**
-```
-Date,Status,Notes
-2025-09-01,Instructional,
-2025-09-02,Holiday,Labor Day
-2025-10-13,PD Day,Professional Development
-```
-
-### Class Schedule (Optional)
-**Best format:** CSV or XLSX
-- Columns should include: `Day`, `Start`, `End`
-- Days: Monday, Tuesday, Wednesday, Thursday, Friday
-- Time format: HH:MM (24-hour)
-
-**Example CSV:**
-```
-Day,Start,End
-Monday,08:00,16:00
-Tuesday,08:00,16:00
-Wednesday,08:00,16:00
-Thursday,08:00,16:00
-Friday,08:00,16:00
 ```
 
 ## 💾 Export Formats Explained
@@ -243,14 +202,13 @@ Friday,08:00,16:00
 ## 🔄 Workflow Rules
 
 - **Phase 1:** All marked fields (*) must be filled before advancing
-- **Phase 2:** All uploads are optional
-- **Phase 3:** At least one meeting day must be selected
-- **Phase 4:** 
+- **Phase 2:** Upload is optional
+- **Phase 3:**
   - At least one unit required
   - Unit percentages must total 100%
   - Grade categories must total 100%
-- **Phase 5:** Preview generates automatically
-- **Phase 6:** Export any or all formats
+- **Phase 4:** Preview generates automatically
+- **Phase 5:** Export any or all formats
 
 ## 📚 Advanced Tips
 

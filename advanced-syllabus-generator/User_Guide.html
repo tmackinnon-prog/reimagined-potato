@@ -262,10 +262,9 @@
   <h3>Usage Guide</h3>
   <a href="#phase1">Phase 1: Setup</a>
   <a href="#phase2">Phase 2: Documents</a>
-  <a href="#phase3">Phase 3: Calendar</a>
-  <a href="#phase4">Phase 4: Curriculum</a>
-  <a href="#phase5">Phase 5: Review</a>
-  <a href="#phase6">Phase 6: Export</a>
+  <a href="#phase3">Phase 3: Curriculum</a>
+  <a href="#phase4">Phase 4: Review</a>
+  <a href="#phase5">Phase 5: Export</a>
 
   <h3>Reference</h3>
   <a href="#faq">FAQ</a>
@@ -367,9 +366,9 @@
       <h2><span class="icon">📖</span>Complete Usage Guide</h2>
 
       <h3>Understanding the Workflow</h3>
-      <p>The application is divided into <strong>6 phases</strong>, each building on the previous one:</p>
+      <p>The application is divided into <strong>5 phases</strong>, each building on the previous one. There is no calendar or class-schedule step — this generator is built for asynchronous / self-paced courses that don't meet at fixed times.</p>
       <div class="card">
-        <strong>Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6</strong><br>
+        <strong>Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5</strong><br>
         You progress forward with the <strong>Next →</strong> button, and can go back with <strong>← Back</strong> to edit previous sections.
       </div>
 
@@ -451,11 +450,9 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
       <p><strong>Status:</strong> Optional — You can skip this and proceed, or upload documents to auto-extract data</p>
 
       <h4>Why Upload Documents?</h4>
-      <p>Uploading documents saves time by automatically extracting key information:</p>
+      <p>Uploading your Program of Studies saves time by automatically extracting key information:</p>
       <ul>
         <li><strong>Program of Studies:</strong> Extracts units, learning outcomes, weight percentages</li>
-        <li><strong>School Calendar:</strong> Identifies holidays, breaks, PD days, instructional days</li>
-        <li><strong>Class Schedule:</strong> Detects which days your class meets and what times</li>
       </ul>
 
       <h4>What Documents Can You Upload?</h4>
@@ -473,26 +470,6 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
             <td></td>
             <td>PDF or DOCX</td>
             <td>Unit names (less reliable)</td>
-          </tr>
-          <tr>
-            <td><strong>School Calendar</strong></td>
-            <td>CSV or XLSX</td>
-            <td>Dates, holiday/break status</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>PDF</td>
-            <td>Limited (try manual entry)</td>
-          </tr>
-          <tr>
-            <td><strong>Class Schedule</strong></td>
-            <td>CSV or XLSX</td>
-            <td>Meeting days and times</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>PDF</td>
-            <td>Limited (try manual entry)</td>
           </tr>
         </tbody>
       </table>
@@ -524,123 +501,13 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
         <code>Genetics,25,Heredity and DNA</code>
       </div>
 
-      <div class="card info">
-        <strong>XLSX Format Example (School Calendar):</strong><br>
-        Column A: Date (2025-09-01)<br>
-        Column B: Status (Holiday, PD Day, Break, Instructional)<br>
-        Column C: Notes (Labour Day)
-      </div>
-
       <div class="alert alert-info">
-        <strong>💡 If parsing doesn't work:</strong> Don't worry! You can manually enter all the information in Phases 3 and 4. Document upload is a time-saver, not a requirement.
+        <strong>💡 If parsing doesn't work:</strong> Don't worry! You can manually enter all the information in Phase 3. Document upload is a time-saver, not a requirement.
       </div>
     </section>
 
     <section id="phase3">
-      <h3>Phase 3: Calendar & Class Schedule</h3>
-      <p><strong>Status:</strong> Required validation — At least 1 meeting day must be selected</p>
-
-      <h4>Purpose</h4>
-      <p>This phase establishes your course calendar to calculate <strong>realistic pacing</strong> by excluding holidays, breaks, and non-instructional days.</p>
-
-      <h4>Step 1: Add Class Sessions</h4>
-      <p>Click the <strong>"+ Add Class Session"</strong> button to enter each class meeting. You can add multiple classes on the same day or different days.</p>
-
-      <p><strong>For each class session, enter:</strong></p>
-      <ul>
-        <li><strong>Day:</strong> Select from dropdown (Monday–Friday)</li>
-        <li><strong>Start Time:</strong> When class begins (e.g., 09:00)</li>
-        <li><strong>End Time:</strong> When class ends (e.g., 11:00)</li>
-        <li><strong>Duration:</strong> Automatically calculated and displayed</li>
-      </ul>
-
-      <h4>Examples: Different Scheduling Scenarios</h4>
-
-      <p><strong>Scenario 1: Traditional single daily class</strong></p>
-      <table>
-        <thead>
-          <tr><th>Day</th><th>Start Time</th><th>End Time</th><th>Duration</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Monday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
-          <tr><td>Tuesday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
-          <tr><td>Wednesday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
-          <tr><td>Thursday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
-          <tr><td>Friday</td><td>09:00</td><td>11:00</td><td>2h</td></tr>
-        </tbody>
-      </table>
-
-      <p><strong>Scenario 2: Double block with lunch break</strong></p>
-      <table>
-        <thead>
-          <tr><th>Day</th><th>Start Time</th><th>End Time</th><th>Duration</th><th>Purpose</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Monday</td><td>09:00</td><td>11:30</td><td>2h 30m</td><td>Main class</td></tr>
-          <tr><td>Tuesday</td><td>09:00</td><td>11:30</td><td>2h 30m</td><td>Main class</td></tr>
-          <tr><td>Wednesday</td><td>09:00</td><td>11:30</td><td>2h 30m</td><td>Main class</td></tr>
-          <tr><td>Wednesday</td><td>13:00</td><td>14:00</td><td>1h</td><td>Lab/Practical</td></tr>
-          <tr><td>Thursday</td><td>09:00</td><td>11:30</td><td>2h 30m</td><td>Main class</td></tr>
-        </tbody>
-      </table>
-
-      <p><strong>Scenario 3: Multiple sections of same course</strong></p>
-      <table>
-        <thead>
-          <tr><th>Day</th><th>Start Time</th><th>End Time</th><th>Duration</th><th>Section</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Monday</td><td>08:00</td><td>09:30</td><td>1h 30m</td><td>Section A</td></tr>
-          <tr><td>Monday</td><td>10:00</td><td>11:30</td><td>1h 30m</td><td>Section B</td></tr>
-          <tr><td>Tuesday</td><td>08:00</td><td>09:30</td><td>1h 30m</td><td>Section A</td></tr>
-          <tr><td>Tuesday</td><td>10:00</td><td>11:30</td><td>1h 30m</td><td>Section B</td></tr>
-        </tbody>
-      </table>
-
-      <div class="alert alert-info">
-        <strong>💡 Tip:</strong> The duration is calculated automatically as you enter times. If start and end times are on different days, add them as separate sessions. The app will list them all in your syllabus.
-      </div>
-
-      <div class="alert alert-success">
-        <strong>✅ Validation:</strong> You must add at least one class session with complete Day, Start Time, and End Time information to proceed.
-      </div>
-
-      <h4>Step 2: Review & Edit Holidays</h4>
-      <p>Alberta statutory holidays are <strong>automatically included</strong>. You can:</p>
-      <ul>
-        <li><strong>View pre-added holidays:</strong> Labour Day, Thanksgiving, Christmas, New Year's, etc.</li>
-        <li><strong>Edit dates:</strong> If a holiday falls on a weekend in your district, you can adjust the observed date</li>
-        <li><strong>Add custom holidays:</strong> Click "+ Add Holiday" to add school-specific closures or PD days</li>
-      </ul>
-
-      <h4>Step 4: Add Custom Holidays (Optional)</h4>
-      <div class="steps">
-        <div class="step">
-          Click the <strong>"+ Add Holiday"</strong> button
-        </div>
-        <div class="step">
-          A new row appears with fields for Date, Name, and Type
-        </div>
-        <div class="step">
-          Fill in:
-          <ul style="margin-top: 0.5rem;">
-            <li><strong>Date:</strong> Click the calendar to select (e.g., February 14, 2026)</li>
-            <li><strong>Holiday Name:</strong> "Pupil-Free Day", "Staff PD", "Flex Friday"</li>
-            <li><strong>Type:</strong> Holiday, PD Day, Break, or Other</li>
-          </ul>
-        </div>
-        <div class="step">
-          Click "Next →" to save and proceed
-        </div>
-      </div>
-
-      <div class="alert alert-success">
-        <strong>✅ Result:</strong> The app now knows exactly which days your class actually meets. This feeds into the pacing engine to distribute your units realistically across available instructional weeks.
-      </div>
-    </section>
-
-    <section id="phase4">
-      <h3>Phase 4: Curriculum & Grading</h3>
+      <h3>Phase 3: Curriculum & Grading</h3>
       <p><strong>Status:</strong> Required validation — Units and grade categories must total 100%</p>
 
       <h4>Part A: Units of Study</h4>
@@ -757,8 +624,8 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
       </div>
     </section>
 
-    <section id="phase5">
-      <h3>Phase 5: Review & Customize</h3>
+    <section id="phase4">
+      <h3>Phase 4: Review & Customize</h3>
       <p><strong>Status:</strong> No validation gates. Fully optional.</p>
 
       <h4>What Happens in This Phase</h4>
@@ -808,8 +675,8 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
       </div>
     </section>
 
-    <section id="phase6">
-      <h3>Phase 6: Export Your Syllabus</h3>
+    <section id="phase5">
+      <h3>Phase 5: Export Your Syllabus</h3>
       <p><strong>Status:</strong> Final phase. Choose and download your preferred format(s).</p>
 
       <h4>Export Options</h4>
@@ -884,7 +751,7 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
       <p><strong>Yes!</strong> You can:</p>
       <ul>
         <li>Export one format, then come back and export another</li>
-        <li>Make changes in Phase 5 and re-export</li>
+        <li>Make changes in Phase 4 and re-export</li>
         <li>Export as many times as you want</li>
         <li>Keep different versions for different purposes</li>
       </ul>
@@ -962,7 +829,7 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
 
       <div class="faq-item">
         <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>Do I have to use all 6 phases?</span>
+          <span>Do I have to use all 5 phases?</span>
           <span class="faq-toggle">▼</span>
         </div>
         <div class="faq-answer">
@@ -970,10 +837,9 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
           <ul style="margin-top: 0.75rem;">
             <li><strong>Phase 1 (Setup):</strong> Required — forms the foundation</li>
             <li><strong>Phase 2 (Documents):</strong> Optional — skip if you prefer manual entry</li>
-            <li><strong>Phase 3 (Calendar):</strong> Required — needed for accurate pacing</li>
-            <li><strong>Phase 4 (Curriculum):</strong> Required — defines your course structure</li>
-            <li><strong>Phase 5 (Review):</strong> Optional — but useful to review before export</li>
-            <li><strong>Phase 6 (Export):</strong> Required — how you get your syllabus</li>
+            <li><strong>Phase 3 (Curriculum):</strong> Required — defines your course structure</li>
+            <li><strong>Phase 4 (Review):</strong> Optional — but useful to review before export</li>
+            <li><strong>Phase 5 (Export):</strong> Required — how you get your syllabus</li>
           </ul>
         </div>
       </div>
@@ -992,38 +858,6 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
             <li>Then click "Next →" to proceed forward again</li>
           </ul>
           <p style="margin-top: 0.75rem;"><strong>Your changes are saved automatically.</strong></p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>What if I don't have Alberta statutory holidays?</span>
-          <span class="faq-toggle">▼</span>
-        </div>
-        <div class="faq-answer">
-          <strong>No problem!</strong> In Phase 3, you can edit or delete any holidays that don't apply:
-          <ul style="margin-top: 0.75rem;">
-            <li>Click the "Remove" button next to any holiday you don't observe</li>
-            <li>Or edit the date if your school observes it on a different day</li>
-            <li>The pacing calculations adjust automatically</li>
-          </ul>
-          <p style="margin-top: 0.75rem;"><em>Note: This version includes Alberta holidays. Future versions may offer other provinces/regions.</em></p>
-        </div>
-      </div>
-
-      <div class="faq-item">
-        <div class="faq-question" onclick="toggleFAQ(this)">
-          <span>Can I have multiple classes on the same day?</span>
-          <span class="faq-toggle">▼</span>
-        </div>
-        <div class="faq-answer">
-          <strong>Yes!</strong> You can add as many class sessions as needed on the same day or different days:
-          <ul style="margin-top: 0.75rem;">
-            <li><strong>Multiple sections:</strong> Morning Section A at 9:00–10:30, Afternoon Section B at 1:00–2:30 on the same day</li>
-            <li><strong>Lab + lecture:</strong> Main class M–F at 9:00–11:00, plus Wednesday lab at 1:00–2:00</li>
-            <li><strong>Irregular schedules:</strong> Monday/Tuesday/Thursday mornings and Wednesday afternoons</li>
-          </ul>
-          <p style="margin-top: 0.75rem;">Each session is added separately in Phase 3 using the "+ Add Class Session" button. All sessions appear in your final syllabus.</p>
         </div>
       </div>
 
@@ -1069,7 +903,7 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
         <div class="faq-answer">
           <strong>Two options:</strong>
           <ul style="margin-top: 0.75rem;">
-            <li><strong>Option 1:</strong> At the end of Phase 6, click "Start Over" button</li>
+            <li><strong>Option 1:</strong> At the end of Phase 5, click "Start Over" button</li>
             <li><strong>Option 2:</strong> Close the browser tab and reopen the application (creates new session)</li>
           </ul>
           <p style="margin-top: 0.75rem;"><strong>Warning:</strong> Starting over will erase your current work unless you export first!</p>
@@ -1112,7 +946,7 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
           <li>Check file size — very large files may fail (stay under 10 MB)</li>
           <li>If a PDF, make sure it's not password-protected</li>
         </ol>
-        <strong>If uploads aren't critical:</strong> Just skip Phase 2 and enter data manually in Phase 3 & 4
+        <strong>If uploads aren't critical:</strong> Just skip Phase 2 and enter data manually in Phase 3
       </div>
 
       <div class="card danger">
@@ -1122,8 +956,7 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
         <ol>
           <li><strong>Check for error message:</strong> It tells you what's required (read it carefully!)</li>
           <li><strong>Phase 1:</strong> Make sure all fields marked with * are filled in</li>
-          <li><strong>Phase 3:</strong> Add at least one class session with Day, Start Time, and End Time filled in</li>
-          <li><strong>Phase 4:</strong>
+          <li><strong>Phase 3:</strong>
             <ul>
               <li>Units must total exactly 100%</li>
               <li>Grade categories must total exactly 100%</li>
@@ -1142,7 +975,7 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
         <strong>Solutions:</strong>
         <ol>
           <li><strong>Check if it's a different browser:</strong> Each browser has separate storage. If you use Chrome at home and Edge at school, data won't sync</li>
-          <li><strong>Export more frequently:</strong> After completing Phase 3, 4, and 5, export your work as a backup ZIP file</li>
+          <li><strong>Export more frequently:</strong> After completing Phase 3 and 4, export your work as a backup ZIP file</li>
           <li><strong>If you exported before losing data:</strong> You can manually re-enter from the exported file (it's slower but better than starting over)</li>
           <li><strong>In the future:</strong> Use the same browser and don't clear cache while working</li>
         </ol>
@@ -1192,15 +1025,13 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
       </div>
 
       <div class="card danger">
-        <h4 style="margin-top: 0;">❌ Dates not calculating correctly for pacing</h4>
-        <strong>Problem:</strong> Course dates seem wrong or instructional weeks calculation is off<br>
+        <h4 style="margin-top: 0;">❌ Pacing guide weeks look wrong</h4>
+        <strong>Problem:</strong> The CSV pacing guide's start/end weeks don't match your actual calendar<br>
         <strong>Solutions:</strong>
         <ol>
           <li>Check your start and end dates in Phase 1 — make sure they're correct</li>
-          <li>In Phase 3, verify all class sessions are correctly entered and all holidays are marked</li>
-          <li>Check that you added the right number of class sessions (if you only added M/W/F sessions, you won't have 5 days of instruction per week)</li>
-          <li>Remember: The app counts ONLY actual instructional days (excludes holidays, weekends, breaks)</li>
-          <li>Manual adjustment: You can manually adjust "Est. Weeks" in Phase 4 if the calculation is off</li>
+          <li>Pacing is based on the <strong>"Weeks (Est.)"</strong> value you set for each unit in Phase 3 — adjust it there if a unit needs more or less time</li>
+          <li>Since this generator doesn't track a class calendar or holidays, you're responsible for accounting for breaks and non-instructional time when estimating each unit's weeks</li>
         </ol>
       </div>
 
@@ -1234,11 +1065,9 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
         <p>Before opening the app, gather:</p>
         <ul>
           <li>Your program of studies (PDF or curriculum document)</li>
-          <li>School calendar (dates of holidays, breaks, PD days)</li>
-          <li>Your class schedule (which days/times you teach)</li>
           <li>Your grading rubric or existing syllabus</li>
         </ul>
-        <p><strong>Why:</strong> You can upload these to auto-populate data, saving time.</p>
+        <p><strong>Why:</strong> You can upload your program of studies to auto-populate unit data, saving time.</p>
       </div>
 
       <div class="card success">
@@ -1344,19 +1173,15 @@ Office Hours:     Monday & Wednesday 3:00-4:00 PM
           </tr>
           <tr>
             <td><strong>Phase</strong></td>
-            <td>One of the 6 steps in the workflow (Setup, Documents, Calendar, Curriculum, Review, Export)</td>
+            <td>One of the 5 steps in the workflow (Setup, Documents, Curriculum, Review, Export)</td>
           </tr>
           <tr>
             <td><strong>Validation Gate</strong></td>
             <td>A rule that must be satisfied to advance. Example: "Units must total 100%"</td>
           </tr>
           <tr>
-            <td><strong>Instructional Days</strong></td>
-            <td>Days when school is actually in session (excludes weekends, holidays, breaks)</td>
-          </tr>
-          <tr>
             <td><strong>Pacing</strong></td>
-            <td>The schedule for when you'll teach each unit, based on available instructional days</td>
+            <td>The schedule for when you'll teach each unit, based on the "Weeks (Est.)" you set for each unit</td>
           </tr>
           <tr>
             <td><strong>Learning Outcomes</strong></td>

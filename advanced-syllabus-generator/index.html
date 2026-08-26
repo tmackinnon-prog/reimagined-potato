@@ -616,7 +616,7 @@
 <div class="progress-container">
   <div class="progress-bar" id="progressBar"></div>
   <div style="font-size: 0.9rem; color: var(--text-muted); text-align: center;">
-    <span id="progressStatus">Step 1 of 6: Instructor & Course Setup</span>
+    <span id="progressStatus">Step 1 of 5: Instructor & Course Setup</span>
   </div>
 </div>
 
@@ -717,34 +717,10 @@
         <div class="file-list" id="studiesList"></div>
       </div>
 
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="margin-bottom: 1rem; color: var(--text);">School Calendar (Optional)</h3>
-        <p style="margin-bottom: 0.75rem; color: var(--text-muted);">Upload the academic calendar to auto-detect holidays, PD days, and instructional days.</p>
-        <div class="upload-area" id="uploadCalendar" ondrop="handleDrop(event, 'calendar')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-          <div class="upload-area-icon">📅</div>
-          <div class="upload-area-text">Drag & drop your school calendar</div>
-          <div class="upload-area-hint">Supports PDF, CSV, XLSX (with Date, Status columns)</div>
-          <input type="file" id="calendarFile" accept=".pdf,.csv,.xlsx" style="display:none;" onchange="handleFileUpload(event, 'calendar')">
-        </div>
-        <div class="file-list" id="calendarList"></div>
-      </div>
-
-      <div style="margin-bottom: 1.5rem;">
-        <h3 style="margin-bottom: 1rem; color: var(--text);">Class Schedule (Optional)</h3>
-        <p style="margin-bottom: 0.75rem; color: var(--text-muted);">Upload the class timetable to identify meeting days and times.</p>
-        <div class="upload-area" id="uploadSchedule" ondrop="handleDrop(event, 'schedule')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-          <div class="upload-area-icon">⏰</div>
-          <div class="upload-area-text">Drag & drop your class schedule</div>
-          <div class="upload-area-hint">Supports PDF, CSV, XLSX (with Day, Start, End columns)</div>
-          <input type="file" id="scheduleFile" accept=".pdf,.csv,.xlsx" style="display:none;" onchange="handleFileUpload(event, 'schedule')">
-        </div>
-        <div class="file-list" id="scheduleList"></div>
-      </div>
-
       <div class="alert alert-info">
         <div class="alert-icon">ℹ️</div>
         <div class="alert-content">
-          <strong>Optional but helpful:</strong> While these documents are optional, providing them helps the app automatically detect curriculum units, holidays, and class times. You can also enter this information manually in the next steps.
+          <strong>Optional but helpful:</strong> While this document is optional, providing it helps the app automatically detect curriculum units. You can also enter this information manually in the next steps.
         </div>
       </div>
     </div>
@@ -755,72 +731,8 @@
     </div>
   </div>
 
-  <!-- PHASE 3: Calendar & Schedule -->
+  <!-- PHASE 3: Curriculum & Grading -->
   <div class="phase" id="phase-3">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-header-icon">📆</div>
-        <h2>Calendar & Class Schedule</h2>
-      </div>
-
-      <h3 style="margin-top: 1.5rem; margin-bottom: 1rem; color: var(--primary);">Class Schedule</h3>
-      <div class="alert alert-info" style="margin-bottom: 1.5rem;">
-        <div class="alert-icon">ℹ️</div>
-        <div class="alert-content">
-          Add individual class sessions below. You can schedule multiple classes on the same day (e.g., morning and afternoon sections).
-        </div>
-      </div>
-
-      <div style="margin-bottom: 1.5rem;">
-        <button class="btn btn-secondary" onclick="addClassSession()" style="margin-bottom: 1rem;">+ Add Class Session</button>
-        <table class="data-table" id="classScheduleTable">
-          <thead>
-            <tr>
-              <th>Day</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Duration</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="classScheduleBody">
-          </tbody>
-        </table>
-      </div>
-
-      <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--primary);">Holidays & Special Days</h3>
-      <div class="alert alert-info">
-        <div class="alert-icon">ℹ️</div>
-        <div class="alert-content">
-          Alberta statutory holidays will be auto-included. Add any additional school-specific holidays or PD days below.
-        </div>
-      </div>
-
-      <div style="margin-top: 1rem;">
-        <button class="btn btn-secondary" onclick="addHolidayRow()" style="margin-bottom: 1rem;">+ Add Holiday</button>
-        <table class="data-table" id="holidaysTable">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Holiday Name</th>
-              <th>Type</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="holidaysBody">
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="button-group">
-      <button class="btn btn-secondary" onclick="previousPhase()">← Back</button>
-      <button class="btn btn-primary" onclick="nextPhase(3)">Next →</button>
-    </div>
-  </div>
-
-  <!-- PHASE 4: Curriculum & Grading -->
-  <div class="phase" id="phase-4">
     <div class="card">
       <div class="card-header">
         <div class="card-header-icon">📊</div>
@@ -944,12 +856,12 @@
 
     <div class="button-group">
       <button class="btn btn-secondary" onclick="previousPhase()">← Back</button>
-      <button class="btn btn-primary" onclick="nextPhase(4)">Next →</button>
+      <button class="btn btn-primary" onclick="nextPhase(3)">Next →</button>
     </div>
   </div>
 
-  <!-- PHASE 5: Review & Customize -->
-  <div class="phase" id="phase-5">
+  <!-- PHASE 4: Review & Customize -->
+  <div class="phase" id="phase-4">
     <div class="card">
       <div class="card-header">
         <div class="card-header-icon">👁️</div>
@@ -992,12 +904,12 @@
 
     <div class="button-group">
       <button class="btn btn-secondary" onclick="previousPhase()">← Back</button>
-      <button class="btn btn-primary" onclick="nextPhase(5)">Next →</button>
+      <button class="btn btn-primary" onclick="nextPhase(4)">Next →</button>
     </div>
   </div>
 
-  <!-- PHASE 6: Export -->
-  <div class="phase" id="phase-6">
+  <!-- PHASE 5: Export -->
+  <div class="phase" id="phase-5">
     <div class="card">
       <div class="card-header">
         <div class="card-header-icon">⬇️</div>
@@ -1083,13 +995,6 @@ const AppState = {
     schoolYear: ''
   },
 
-  schedule: {
-    meetingDays: [],
-    startTime: '',
-    endTime: '',
-    holidays: []
-  },
-
   units: [],
   grades: {
     categories: [],
@@ -1113,9 +1018,7 @@ const AppState = {
   },
 
   documents: {
-    studies: null,
-    calendar: null,
-    schedule: null
+    studies: null
   }
 };
 
@@ -1129,8 +1032,6 @@ function initializePhases() {
 
   // Set up upload areas
   document.getElementById('uploadStudies').addEventListener('click', () => document.getElementById('studiesFile').click());
-  document.getElementById('uploadCalendar').addEventListener('click', () => document.getElementById('calendarFile').click());
-  document.getElementById('uploadSchedule').addEventListener('click', () => document.getElementById('scheduleFile').click());
 
   // Initialize default units and grades
   addUnitRow();
@@ -1147,7 +1048,7 @@ function nextPhase(currentPhase) {
   showPhase(AppState.currentPhase);
   updateProgressBar();
 
-  if (AppState.currentPhase === 5) {
+  if (AppState.currentPhase === 4) {
     generatePreview();
   }
 
@@ -1167,70 +1068,10 @@ function previousPhase() {
 function showPhase(phaseNum) {
   document.querySelectorAll('.phase').forEach(phase => phase.classList.remove('active'));
   document.getElementById('phase-' + phaseNum).classList.add('active');
-
-  // Restore data if coming back to Phase 3
-  if (phaseNum === 3) {
-    restorePhase3Data();
-  }
-}
-
-function restorePhase3Data() {
-  // Restore class sessions
-  const tbody = document.getElementById('classScheduleBody');
-  tbody.innerHTML = '';
-
-  if (AppState.schedule && AppState.schedule.classSessions && AppState.schedule.classSessions.length > 0) {
-    AppState.schedule.classSessions.forEach(session => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>
-          <select style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)">
-            <option value="">Select day...</option>
-            <option value="Monday" ${session.day === 'Monday' ? 'selected' : ''}>Monday</option>
-            <option value="Tuesday" ${session.day === 'Tuesday' ? 'selected' : ''}>Tuesday</option>
-            <option value="Wednesday" ${session.day === 'Wednesday' ? 'selected' : ''}>Wednesday</option>
-            <option value="Thursday" ${session.day === 'Thursday' ? 'selected' : ''}>Thursday</option>
-            <option value="Friday" ${session.day === 'Friday' ? 'selected' : ''}>Friday</option>
-          </select>
-        </td>
-        <td><input type="time" value="${session.startTime}" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)"></td>
-        <td><input type="time" value="${session.endTime}" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)"></td>
-        <td><span style="padding:0.5rem;text-align:center;">--</span></td>
-        <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
-      `;
-      tbody.appendChild(row);
-      // Calculate duration for this session
-      calculateDuration(row.querySelector('select'));
-    });
-  }
-
-  // Restore holidays
-  const holidaysTbody = document.getElementById('holidaysBody');
-  holidaysTbody.innerHTML = '';
-
-  if (AppState.schedule && AppState.schedule.holidays && AppState.schedule.holidays.length > 0) {
-    AppState.schedule.holidays.forEach(holiday => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="date" value="${holiday.date}" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
-        <td><input type="text" value="${holiday.name}" placeholder="e.g., Family Day" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
-        <td>
-          <select style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;">
-            <option value="Holiday" ${holiday.type === 'Holiday' ? 'selected' : ''}>Holiday</option>
-            <option value="PD Day" ${holiday.type === 'PD Day' ? 'selected' : ''}>PD Day</option>
-            <option value="Break" ${holiday.type === 'Break' ? 'selected' : ''}>Break</option>
-            <option value="Other" ${holiday.type === 'Other' ? 'selected' : ''}>Other</option>
-          </select>
-        </td>
-        <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
-      `;
-      holidaysTbody.appendChild(row);
-    });
-  }
 }
 
 function updateProgressBar() {
-  const phases = ['Instructor', 'Documents', 'Calendar', 'Curriculum', 'Review', 'Export'];
+  const phases = ['Instructor', 'Documents', 'Curriculum', 'Review', 'Export'];
   let html = '';
 
   phases.forEach((label, index) => {
@@ -1250,7 +1091,7 @@ function updateProgressBar() {
   });
 
   document.getElementById('progressBar').innerHTML = html;
-  document.getElementById('progressStatus').textContent = `Step ${AppState.currentPhase} of 6: ${phases[AppState.currentPhase - 1]}`;
+  document.getElementById('progressStatus').textContent = `Step ${AppState.currentPhase} of 5: ${phases[AppState.currentPhase - 1]}`;
 }
 
 // ============================================================================
@@ -1282,32 +1123,6 @@ function validatePhase(phaseNum) {
       return true; // Documents are optional
 
     case 3:
-      // Calendar phase - verify at least one class session is defined
-      const classSessions = document.querySelectorAll('#classScheduleBody tr');
-      if (classSessions.length === 0) {
-        alert('Please add at least one class session');
-        return false;
-      }
-
-      // Validate that all sessions have day and times
-      for (let session of classSessions) {
-        const day = session.querySelector('select').value;
-        const startTime = session.querySelector('input[type="time"]:first-of-type').value;
-        const endTime = session.querySelector('input[type="time"]:last-of-type').value;
-
-        if (!day || !startTime || !endTime) {
-          alert('All class sessions must have a day and start/end times');
-          return false;
-        }
-
-        if (endTime <= startTime) {
-          alert('End time must be after start time');
-          return false;
-        }
-      }
-      return true;
-
-    case 4:
       // Curriculum phase - check both units and grades
       if (document.querySelectorAll('#unitsBody tr').length === 0) {
         alert('Please add at least one unit');
@@ -1355,32 +1170,6 @@ function savePhaseData(phaseNum) {
       break;
 
     case 3:
-      // Save class schedule sessions
-      AppState.schedule.classSessions = [];
-      document.querySelectorAll('#classScheduleBody tr').forEach(row => {
-        const day = row.querySelector('select').value;
-        const startTime = row.querySelector('input[type="time"]:first-of-type').value;
-        const endTime = row.querySelector('input[type="time"]:last-of-type').value;
-
-        if (day && startTime && endTime) {
-          AppState.schedule.classSessions.push({ day, startTime, endTime });
-        }
-      });
-
-      // Save holidays
-      AppState.schedule.holidays = [];
-      document.querySelectorAll('#holidaysBody tr').forEach(row => {
-        const date = row.querySelector('input[type="date"]').value;
-        const name = row.cells[1].querySelector('input').value;
-        const type = row.cells[2].querySelector('select').value;
-
-        if (date && name) {
-          AppState.schedule.holidays.push({ date, name, type });
-        }
-      });
-      break;
-
-    case 4:
       AppState.units = Array.from(document.querySelectorAll('#unitsBody tr')).map(row => {
         const inputs = row.querySelectorAll('input');
         return {
@@ -1416,7 +1205,7 @@ function savePhaseData(phaseNum) {
       AppState.policies.ai = document.getElementById('aiPolicyText').value;
       break;
 
-    case 5:
+    case 4:
       AppState.syllabus.outcomes = document.getElementById('learningOutcomes').value;
       AppState.syllabus.expectations = document.getElementById('expectationsSuccess').value;
       AppState.syllabus.bigIdea = document.getElementById('bigIdea').value;
@@ -1453,88 +1242,6 @@ function addGradeCategory() {
   tbody.appendChild(row);
 }
 
-function addClassSession() {
-  const tbody = document.getElementById('classScheduleBody');
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>
-      <select style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)">
-        <option value="">Select day...</option>
-        <option value="Monday">Monday</option>
-        <option value="Tuesday">Tuesday</option>
-        <option value="Wednesday">Wednesday</option>
-        <option value="Thursday">Thursday</option>
-        <option value="Friday">Friday</option>
-      </select>
-    </td>
-    <td><input type="time" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)"></td>
-    <td><input type="time" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;" onchange="calculateDuration(this)"></td>
-    <td><span style="padding:0.5rem;text-align:center;">--</span></td>
-    <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
-  `;
-  tbody.appendChild(row);
-}
-
-function calculateDuration(element) {
-  const row = element.closest('tr');
-  const startInput = row.querySelector('input[type="time"]:first-of-type');
-  const endInput = row.querySelector('input[type="time"]:last-of-type');
-  const durationCell = row.querySelector('td:nth-child(4)');
-
-  if (startInput.value && endInput.value) {
-    // Parse time values (format: "HH:MM")
-    const [startHours, startMins] = startInput.value.split(':').map(Number);
-    const [endHours, endMins] = endInput.value.split(':').map(Number);
-
-    // Convert to minutes since midnight
-    const startTotalMins = startHours * 60 + startMins;
-    const endTotalMins = endHours * 60 + endMins;
-
-    // Calculate duration
-    let duration = endTotalMins - startTotalMins;
-
-    // Handle overnight wrap (e.g., 10:00 PM to 1:00 AM)
-    if (duration < 0) {
-      duration += 24 * 60;
-    }
-
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-
-    // Format: "1h 30m" or just "30m" if less than 1 hour
-    if (hours > 0) {
-      durationCell.textContent = minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`;
-    } else {
-      durationCell.textContent = `${minutes}m`;
-    }
-  } else {
-    durationCell.textContent = '--';
-  }
-}
-
-function addHolidayRow() {
-  const tbody = document.getElementById('holidaysBody');
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td><input type="date" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
-    <td><input type="text" placeholder="e.g., Family Day" style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;"></td>
-    <td>
-      <select style="width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:4px;">
-        <option value="Holiday">Holiday</option>
-        <option value="PD Day">PD Day</option>
-        <option value="Break">Break</option>
-        <option value="Other">Other</option>
-      </select>
-    </td>
-    <td><button class="btn btn-danger" style="padding:0.4rem 0.8rem;font-size:0.85rem;" onclick="this.parentElement.parentElement.remove()">Remove</button></td>
-  `;
-  tbody.appendChild(row);
-}
-
-function updateMeetingDays() {
-  // Updates will be saved when moving to next phase
-}
-
 // ============================================================================
 // FILE UPLOAD HANDLING
 // ============================================================================
@@ -1567,8 +1274,6 @@ function handleFileUpload(event, type) {
 
   // Store file reference
   if (type === 'studies') AppState.documents.studies = file;
-  if (type === 'calendar') AppState.documents.calendar = file;
-  if (type === 'schedule') AppState.documents.schedule = file;
 
   // Display file in UI
   const listId = type + 'List';
@@ -1643,32 +1348,6 @@ function generatePreview() {
           <p style="margin: 0.25rem 0;">Duration: ${new Date(AppState.course.startDate).toLocaleDateString()} - ${new Date(AppState.course.endDate).toLocaleDateString()}</p>
         </div>
       </div>
-
-      ${AppState.schedule && AppState.schedule.classSessions && AppState.schedule.classSessions.length > 0 ? `
-        <div style="margin-bottom: 1.5rem;">
-          <h3 style="color: var(--primary); margin-bottom: 0.75rem;">Class Schedule</h3>
-          <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-              <thead>
-                <tr style="background: #e0f2fe;">
-                  <th style="padding: 0.5rem; text-align: left; border: 1px solid #bfdbfe;">Day</th>
-                  <th style="padding: 0.5rem; text-align: left; border: 1px solid #bfdbfe;">Start Time</th>
-                  <th style="padding: 0.5rem; text-align: left; border: 1px solid #bfdbfe;">End Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${AppState.schedule.classSessions.map(session => `
-                  <tr>
-                    <td style="padding: 0.5rem; border: 1px solid #bfdbfe;">${session.day}</td>
-                    <td style="padding: 0.5rem; border: 1px solid #bfdbfe;">${session.startTime}</td>
-                    <td style="padding: 0.5rem; border: 1px solid #bfdbfe;">${session.endTime}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      ` : ''}
 
       ${AppState.course.overview ? `
         <div style="margin-bottom: 1.5rem;">
@@ -1811,18 +1490,6 @@ function generateSyllabusHTML() {
   ${AppState.course.overview ? `<h2>Course Overview</h2><p>${AppState.course.overview}</p>` : ''}
   ${AppState.course.materials ? `<h2>Required Materials</h2><p>${AppState.course.materials}</p>` : ''}
 
-  ${AppState.schedule && AppState.schedule.classSessions && AppState.schedule.classSessions.length > 0 ? `
-    <h2>Class Schedule</h2>
-    <table>
-      <thead>
-        <tr><th>Day</th><th>Start Time</th><th>End Time</th></tr>
-      </thead>
-      <tbody>
-        ${AppState.schedule.classSessions.map(session => `<tr><td>${session.day}</td><td>${session.startTime}</td><td>${session.endTime}</td></tr>`).join('')}
-      </tbody>
-    </table>
-  ` : ''}
-
   ${AppState.syllabus.outcomes ? `<h2>Learning Outcomes</h2><p>${AppState.syllabus.outcomes}</p>` : ''}
 
   <h2>Assessment & Grading</h2>
@@ -1930,47 +1597,6 @@ function generateSyllabusDOCX() {
   }
 
   sections.push(new docx.Paragraph({ text: '' })); // Spacing
-
-  // Class schedule
-  if (AppState.schedule && AppState.schedule.classSessions && AppState.schedule.classSessions.length > 0) {
-    sections.push(
-      new docx.Paragraph({
-        text: 'Class Schedule',
-        heading: docx.HeadingLevel.HEADING_2
-      })
-    );
-
-    const scheduleRows = [
-      new docx.TableRow({
-        children: [
-          new docx.TableCell({ children: [new docx.Paragraph({ text: 'Day', bold: true })] }),
-          new docx.TableCell({ children: [new docx.Paragraph({ text: 'Start Time', bold: true })] }),
-          new docx.TableCell({ children: [new docx.Paragraph({ text: 'End Time', bold: true })] })
-        ]
-      })
-    ];
-
-    AppState.schedule.classSessions.forEach(session => {
-      scheduleRows.push(
-        new docx.TableRow({
-          children: [
-            new docx.TableCell({ children: [new docx.Paragraph(session.day)] }),
-            new docx.TableCell({ children: [new docx.Paragraph(session.startTime)] }),
-            new docx.TableCell({ children: [new docx.Paragraph(session.endTime)] })
-          ]
-        })
-      );
-    });
-
-    sections.push(
-      new docx.Table({
-        width: { size: 100, type: docx.WidthType.PERCENTAGE },
-        rows: scheduleRows
-      })
-    );
-
-    sections.push(new docx.Paragraph({ text: '' })); // Spacing
-  }
 
   // Course overview
   if (AppState.course.overview) {
