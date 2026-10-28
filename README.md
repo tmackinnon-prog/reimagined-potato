@@ -4,6 +4,12 @@ just practicing
 ## Apps
 
 - `index.html` — student matching card game
+- `tempest-guess-who/` — **Guess Who? The Tempest**, a timed character-matching
+  race for Grade 10 ELA. Each round shows a quote or a behaviour clue, and students
+  click the matching character on a Guess Who-style board. The faces and suspects
+  change every round. Wrong guesses (+3s) and yes/no questions (+2s) knock cards
+  down. Scores go on a leaderboard saved on that computer. Open
+  `tempest-guess-who/index.html` in any browser. No install needed.
 - `essay-feedback/` — **Essay Feedback Builder** for Alberta ELA and Social Studies
   (10/20/30, -1 and -2 streams). Pick subject → course → assignment, score each
   rubric criterion with descriptor dropdowns, choose matched feedback comments,
