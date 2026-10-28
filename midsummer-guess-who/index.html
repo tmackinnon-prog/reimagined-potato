@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Midsummer Guess Who</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sea-1: #120a2a;
+      --sea-2: #2c1b55;
+      --board: #2f7d4f;
+      --board-dark: #1a4a2e;
+      --board-blue: #6a3fa0;
+      --tile: #f7e7b4;
+      --gold: #f2c14e;
+      --ink: #1c1c28;
+      --good: #2bb673;
+      --bad: #e5484d;
+      --card-w: 120px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background:
+        radial-gradient(1.5px 1.5px at 12% 14%, #fff 99%, transparent),
+        radial-gradient(1.5px 1.5px at 30% 8%, #fff 99%, transparent),
+        radial-gradient(1px 1px at 52% 18%, #fff 99%, transparent),
+        radial-gradient(1.5px 1.5px at 70% 12%, #fff 99%, transparent),
+        radial-gradient(1px 1px at 22% 30%, #fff 99%, transparent),
+        radial-gradient(1px 1px at 64% 32%, #fff 99%, transparent),
+        radial-gradient(ellipse at top, var(--sea-2), var(--sea-1) 70%);
+      background-attachment: fixed;
+      background-color: var(--sea-1);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px 16px 40px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 22px; right: 5%;
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: #fff6d6;
+      box-shadow: 0 0 40px 14px rgba(255,246,214,0.3);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @media (max-width: 720px) {
+      body::before { width: 44px; height: 44px; top: 10px; right: 10px; opacity: 0.4; }
+    }
+
+    .wrap { max-width: 980px; margin: 0 auto; }
+
+    header.title {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    header.title h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.7rem, 5vw, 2.6rem);
+      letter-spacing: 0.02em;
+      text-shadow: 0 3px 0 var(--board-dark), 0 6px 18px rgba(0,0,0,0.4);
+    }
+
+    header.title h1 span { color: var(--gold); font-style: italic; }
+
+    header.title p { color: #c8bde6; margin-top: 4px; font-size: 0.95rem; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .panel {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .panel h2 {
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    /* ---------- Start screen ---------- */
+
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 720px) {
+      .setup-grid { grid-template-columns: 1fr; }
+    }
+
+    label.field { display: block; font-size: 0.85rem; color: #c8bde6; margin-bottom: 6px; }
+
+    input[type=text] {
+      width: 100%;
+      font-size: 1.05rem;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.25);
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    input[type=text]:focus { outline: none; border-color: var(--gold); }
+
+    .choice-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+
+    .choice {
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.18);
+      color: #fff;
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .choice:hover { border-color: var(--gold); }
+    .choice.active { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 600; }
+
+    .how li { margin: 0 0 8px 20px; color: #e4ddf5; line-height: 1.45; font-size: 0.95rem; }
+
+    .big-btn {
+      display: block;
+      width: 100%;
+      background: var(--board);
+      color: #fff;
+      border: none;
+      border-bottom: 5px solid var(--board-dark);
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .big-btn:hover { filter: brightness(1.1); }
+    .big-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
+
+    .link-btn {
+      background: none; border: none; color: #a897cf; font-size: 0.8rem;
+      cursor: pointer; text-decoration: underline; margin-top: 10px;
+    }
+
+    /* ---------- HUD ---------- */
+
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat {
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #c8bde6; }
+    .stat-value { font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .stat-value.timer { color: var(--gold); }
+
+    @media (max-width: 520px) {
+      .stat-value { font-size: 1.1rem; }
+      .stat-label { font-size: 0.6rem; }
+    }
+
+    /* ---------- Mystery (clue) card ---------- */
+
+    .clue-area {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .clue-area { grid-template-columns: 1fr; }
+    }
+
+    .clue-card {
+      background: var(--tile);
+      color: var(--ink);
+      border-radius: 16px;
+      border: 6px solid var(--board-blue);
+      padding: 16px 20px;
+      position: relative;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+    }
+
+    .clue-type {
+      position: absolute;
+      top: -14px; left: 16px;
+      background: var(--board-blue);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .clue-text {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+      line-height: 1.45;
+    }
+
+    .clue-text.quote::before { content: '\201C'; }
+    .clue-text.quote::after { content: '\201D'; }
+
+    .feedback {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 2px dashed rgba(0,0,0,0.15);
+      font-size: 0.95rem;
+      line-height: 1.45;
+      display: none;
+    }
+
+    .feedback.show { display: block; }
+    .feedback strong { color: #0f6b42; }
+    .feedback .where { color: #5a4a1f; font-style: italic; }
+
+    .next-btn {
+      margin-top: 10px;
+      background: var(--good);
+      color: #fff;
+      border: none;
+      border-bottom: 4px solid #1a7a4c;
+      border-radius: 10px;
+      padding: 9px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .next-btn:hover { filter: brightness(1.08); }
+
+    /* ---------- Yes/No questions ---------- */
+
+    .questions {
+      background: rgba(0,0,0,0.28);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .questions h3 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .questions p.sub { font-size: 0.75rem; color: #c8bde6; margin-bottom: 8px; }
+
+    .q-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+      font-size: 0.84rem;
+      cursor: pointer;
+    }
+
+    .q-btn:hover:not(:disabled) { border-color: var(--gold); }
+    .q-btn:disabled { cursor: default; opacity: 0.85; }
+    .q-btn .ans { font-weight: 800; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; }
+    .q-btn .ans.yes { background: var(--good); }
+    .q-btn .ans.no { background: var(--bad); }
+
+    @media (max-width: 760px) {
+      #questionList { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      .q-btn { margin-bottom: 0; font-size: 0.74rem; padding: 6px 8px; }
+      .questions p.sub { margin-bottom: 6px; }
+    }
+
+    /* ---------- Guess Who board ---------- */
+
+    .board {
+      background: linear-gradient(180deg, var(--board), var(--board-dark));
+      border-radius: 22px;
+      padding: 18px 14px 22px;
+      box-shadow: inset 0 3px 0 rgba(255,255,255,0.25), 0 12px 30px rgba(0,0,0,0.45);
+      position: relative;
+    }
+
+    .board::after {
+      content: "GUESS WHO? \2022  A MIDSUMMER NIGHT\2019S DREAM";
+      display: block;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: 0.25em;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.55);
+      margin-top: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(var(--cols, 4), minmax(0, var(--card-w)));
+      gap: 12px;
+      justify-content: center;
+    }
+
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: repeat(var(--cols-sm, 4), minmax(0, 1fr)); gap: 8px; }
+      .board { padding: 12px 8px 16px; }
+    }
+
+    .slot {
+      background: rgba(0,0,0,0.3);
+      border-radius: 10px;
+      padding: 4px;
+      perspective: 700px;
+    }
+
+    .tile {
+      display: block;
+      width: 100%;
+      border: none;
+      padding: 0;
+      background: none;
+      cursor: pointer;
+      position: relative;
+      transform-origin: 50% 50%;
+      transition: transform 0.5s cubic-bezier(.5,-0.3,.6,1.4), filter 0.3s;
+      transform-style: preserve-3d;
+      font: inherit;
+      color: inherit;
+    }
+
+    .tile .face {
+      background: var(--tile);
+      border-radius: 8px;
+      border: 3px solid #fff;
+      overflow: hidden;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.35);
+      backface-visibility: hidden;
+    }
+
+    .tile .face svg { display: block; width: 100%; height: auto; }
+
+    .tile .name {
+      background: #fff;
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: 0.03em;
+      text-align: center;
+      padding: 4px 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 560px) {
+      .tile .name { font-size: 0.62rem; padding: 3px 1px; }
+    }
+
+    .tile .back {
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.12) 0 6px, transparent 6px 12px),
+        var(--board-blue);
+      border: 3px solid #fff;
+      transform: rotateX(180deg);
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .tile:hover:not(.down):not(:disabled) { transform: translateY(-3px); }
+    .tile:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 10px; }
+
+    .tile.down {
+      transform: rotateX(-180deg);
+      cursor: default;
+    }
+
+    .tile.wrong .back { background: repeating-linear-gradient(45deg, rgba(255,255,255,0.12) 0 6px, transparent 6px 12px), var(--bad); }
+
+    .tile.correct .face {
+      border-color: var(--good);
+      box-shadow: 0 0 0 4px var(--good), 0 0 26px 6px rgba(43,182,115,0.75);
+    }
+
+    .tile.correct { animation: pop 0.5s ease; }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    .board.shake { animation: shake 0.35s; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .penalty-pop {
+      position: fixed;
+      pointer-events: none;
+      font-weight: 900;
+      font-size: 1.6rem;
+      color: var(--bad);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      animation: floatUp 0.9s ease-out forwards;
+      z-index: 50;
+    }
+
+    @keyframes floatUp {
+      from { opacity: 1; transform: translate(-50%, 0); }
+      to { opacity: 0; transform: translate(-50%, -60px); }
+    }
+
+    /* ---------- Countdown ---------- */
+
+    .countdown {
+      position: fixed;
+      inset: 0;
+      background: rgba(14,6,32,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    .countdown.show { display: flex; }
+
+    .countdown span {
+      font-family: Georgia, serif;
+      font-size: 9rem;
+      font-weight: 900;
+      color: var(--gold);
+      animation: pulse 0.9s ease-out;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1.6); opacity: 0; }
+      30% { opacity: 1; }
+      to { transform: scale(1); }
+    }
+
+    /* ---------- End screen ---------- */
+
+    .result-hero { text-align: center; padding: 10px 0 4px; }
+    .result-hero .score { font-size: 3.4rem; font-weight: 900; color: var(--gold); line-height: 1; }
+    .result-hero .label { color: #c8bde6; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8rem; }
+    .result-hero .rank { margin-top: 10px; font-size: 1.05rem; }
+
+    .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+
+    .review { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .review th, .review td { padding: 7px 6px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left; vertical-align: top; }
+    .review th { color: #c8bde6; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .review td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .review .clue-snip { color: #e4ddf5; font-family: Georgia, serif; }
+    .review .miss { color: #ff9a9d; font-size: 0.8rem; }
+
+    .end-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ghost-btn {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.25);
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .ghost-btn:hover { border-color: var(--gold); }
+
+    .quit-row { display: flex; justify-content: flex-end; gap: 16px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="title">
+      <h1>Guess Who? <span>A Midsummer Night&rsquo;s Dream</span></h1>
+      <p>Read the clue. Find the character. Fastest time wins.</p>
+    </header>
+
+    <!-- START -->
+    <section id="start" class="screen active">
+      <div class="setup-grid">
+        <div class="panel">
+          <h2>Set Up Your Race</h2>
+          <label class="field">Clue type</label>
+          <div class="choice-row" data-group="mode">
+            <button class="choice active" data-value="mixed">Mixed</button>
+            <button class="choice" data-value="quote">Quotes only</button>
+            <button class="choice" data-value="behaviour">Behaviour only</button>
+          </div>
+
+          <label class="field">Board size</label>
+          <div class="choice-row" data-group="size">
+            <button class="choice" data-value="6">6 suspects</button>
+            <button class="choice active" data-value="8">8 suspects</button>
+            <button class="choice" data-value="12">All 12</button>
+          </div>
+
+          <label class="field">Rounds</label>
+          <div class="choice-row" data-group="rounds">
+            <button class="choice" data-value="5">5</button>
+            <button class="choice active" data-value="10">10</button>
+            <button class="choice" data-value="15">15</button>
+          </div>
+
+          <button class="big-btn" id="startBtn">START THE RACE</button>
+        </div>
+
+        <div class="panel">
+          <h2>How to Play</h2>
+          <ul class="how">
+            <li>Each round you get a <b>mystery card</b>: a <b>quote</b> from the play or a description of how a character <b>behaves</b>.</li>
+            <li>Click the matching character on the board. The clock is running.</li>
+            <li>A wrong guess knocks that card down and adds <b>+3 seconds</b>.</li>
+            <li>Stuck? Ask a <b>yes/no question</b>, like in Guess Who. Every card that doesn't fit falls down. Each question costs <b>+2 seconds</b>.</li>
+            <li>The faces and the suspects on the board change every round, so you have to read the names.</li>
+            <li>Faster answers earn more points. Hit <b>Restart</b> at any time to start a fresh race, and try to beat your own score.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME -->
+    <section id="game" class="screen">
+      <div class="hud">
+        <div class="stat"><div class="stat-label">Round</div><div class="stat-value" id="hudRound">1/10</div></div>
+        <div class="stat"><div class="stat-label">This round</div><div class="stat-value timer" id="hudTimer">0.0s</div></div>
+        <div class="stat"><div class="stat-label">Total time</div><div class="stat-value" id="hudTotal">0.0s</div></div>
+        <div class="stat"><div class="stat-label">Score</div><div class="stat-value" id="hudScore">0</div></div>
+      </div>
+
+      <div class="clue-area">
+        <div class="clue-card">
+          <div class="clue-type" id="clueType">WHO SAID IT?</div>
+          <div class="clue-text" id="clueText"></div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+        <div class="questions">
+          <h3>Ask a yes/no question</h3>
+          <p class="sub">Cards that don't fit fall down. +2s each.</p>
+          <div id="questionList"></div>
+        </div>
+      </div>
+
+      <div class="board" id="board">
+        <div class="grid" id="grid"></div>
+      </div>
+
+      <div class="quit-row"><button class="link-btn" id="restartBtn">&#8635; Restart race</button><button class="link-btn" id="quitBtn">Change settings</button></div>
+    </section>
+
+    <!-- END -->
+    <section id="end" class="screen">
+      <div class="panel">
+        <div class="result-hero">
+          <div class="label">Final score</div>
+          <div class="score" id="endScore">0</div>
+          <div class="rank" id="endRank"></div>
+        </div>
+        <div class="result-stats">
+          <div class="stat"><div class="stat-label">Total time</div><div class="stat-value" id="endTime">0s</div></div>
+          <div class="stat"><div class="stat-label">First-try correct</div><div class="stat-value" id="endFirst">0/0</div></div>
+          <div class="stat"><div class="stat-label">Fastest round</div><div class="stat-value" id="endBest">0s</div></div>
+        </div>
+        <div class="end-actions">
+          <button class="big-btn" id="againBtn">RACE AGAIN</button>
+          <button class="ghost-btn" id="menuBtn">Change settings</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Round Review</h2>
+        <table class="review">
+          <thead><tr><th>#</th><th>Clue</th><th>Answer</th><th class="num">Time</th></tr></thead>
+          <tbody id="reviewBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="countdown" id="countdown"><span id="countNum">3</span></div>
+
+  <script>
+    // ---------------------------------------------------------------
+    // Characters: portrait recipe + yes/no question attributes
+    // ---------------------------------------------------------------
+    const CHARACTERS = {
+      theseus:   { name: 'Theseus',   skin: '#e2b48c', hair: 'short',  hairColor: '#4a2f17', beard: 'short',    beardColor: '#4a2f17', brows: 'stern', acc: 'crown',    clothes: ['#6d2b8f', '#8b1a1a', '#1f4f8a'], moods: ['smile', 'neutral', 'smirk'],
+                   attrs: { fairy: false, ruler: true,  lover: false, woman: false, spell: false, mech: false } },
+      hippolyta: { name: 'Hippolyta', skin: '#c99872', hair: 'long',   hairColor: '#1d1d1d', beard: null,                              brows: 'stern', acc: 'amazon',   clothes: ['#7a4a12', '#2f5d50', '#8b1a1a'], moods: ['smirk', 'neutral', 'smile'],
+                   attrs: { fairy: false, ruler: true,  lover: false, woman: true,  spell: false, mech: false } },
+      egeus:     { name: 'Egeus',     skin: '#e5bf9c', hair: 'bald',   hairColor: '#cfcfcf', beard: 'long',     beardColor: '#d9d9d9', brows: 'heavy', acc: 'chain',    clothes: ['#3a3a3a', '#26264a', '#4a1f24'], moods: ['neutral', 'neutral', 'surprised'],
+                   attrs: { fairy: false, ruler: false, lover: false, woman: false, spell: false, mech: false } },
+      hermia:    { name: 'Hermia',    skin: '#e9c19a', hair: 'long',   hairColor: '#2b1b0e', beard: null,                              brows: 'kind',  acc: 'flower',   clothes: ['#b03a48', '#e58fa8', '#6d2b8f'], moods: ['smile', 'surprised', 'neutral'],
+                   attrs: { fairy: false, ruler: false, lover: true,  woman: true,  spell: false, mech: false } },
+      helena:    { name: 'Helena',    skin: '#f1cfae', hair: 'long',   hairColor: '#e0b44a', beard: null,                              brows: 'sad',   acc: 'heart',    clothes: ['#6cc4b8', '#8ecdf0', '#f0c75e'], moods: ['neutral', 'surprised', 'smile'],
+                   attrs: { fairy: false, ruler: false, lover: true,  woman: true,  spell: false, mech: false } },
+      lysander:  { name: 'Lysander',  skin: '#efc9a5', hair: 'curly',  hairColor: '#5a3412', beard: null,                              brows: 'kind',  acc: 'plume',    clothes: ['#2e6fd1', '#1f8a70', '#7a5a0e'], moods: ['smile', 'smirk', 'surprised'],
+                   attrs: { fairy: false, ruler: false, lover: true,  woman: false, spell: true,  mech: false } },
+      demetrius: { name: 'Demetrius', skin: '#d6a77f', hair: 'slick',  hairColor: '#1d1d1d', beard: 'mustache', beardColor: '#1d1d1d', brows: 'sly',   acc: 'cape',     clothes: ['#123d33', '#4a1f24', '#26264a'], moods: ['smirk', 'neutral', 'surprised'],
+                   attrs: { fairy: false, ruler: false, lover: true,  woman: false, spell: true,  mech: false } },
+      oberon:    { name: 'Oberon',    skin: '#a9cdb6', hair: 'long',   hairColor: '#1b2a3a', beard: 'short',    beardColor: '#1b2a3a', brows: 'sly',   acc: 'antlers',  clothes: ['#1b4d2f', '#26264a', '#3d2a5c'], moods: ['smirk', 'neutral', 'smirk'],
+                   attrs: { fairy: true,  ruler: true,  lover: false, woman: false, spell: false, mech: false } },
+      titania:   { name: 'Titania',   skin: '#eadcf5', hair: 'wispy',  hairColor: '#d8c7f0', beard: null,                              brows: 'kind',  acc: 'sparkles', clothes: ['#c7b8f5', '#9fe8d6', '#f5b8d8'], moods: ['smile', 'smirk', 'surprised'], bigEyes: true,
+                   attrs: { fairy: true,  ruler: true,  lover: false, woman: true,  spell: true,  mech: false } },
+      puck:      { name: 'Puck',      skin: '#c9e3a0', hair: 'wild',   hairColor: '#c0461b', beard: null,                              brows: 'sly',   acc: 'horns',    clothes: ['#556b2f', '#6b4f32', '#2f7d4f'], moods: ['smirk', 'smile', 'smirk'], bigEyes: true,
+                   attrs: { fairy: true,  ruler: false, lover: false, woman: false, spell: false, mech: false } },
+      bottom:    { name: 'Bottom',    skin: '#e8b48f', hair: 'messy',  hairColor: '#6b4423', beard: 'stubble',  beardColor: '#4a2f17', brows: 'normal',acc: 'donkey',   clothes: ['#8a6d3b', '#7d2e2e', '#4e5d6c'], moods: ['smile', 'surprised', 'smile'],
+                   attrs: { fairy: false, ruler: false, lover: false, woman: false, spell: true,  mech: true  } },
+      quince:    { name: 'Quince',    skin: '#dcb08a', hair: 'bald',   hairColor: '#8a8a8a', beard: 'short',    beardColor: '#8a8a8a', brows: 'normal',acc: 'scroll',   clothes: ['#5b4636', '#3d5a80', '#4f6d3a'], moods: ['neutral', 'surprised', 'smile'], glasses: true,
+                   attrs: { fairy: false, ruler: false, lover: false, woman: false, spell: false, mech: true  } },
+    };
+
+    const QUESTIONS = [
+      { key: 'fairy', text: 'Is a fairy?' },
+      { key: 'ruler', text: 'Is a king, queen or duke?' },
+      { key: 'lover', text: 'One of the four young lovers?' },
+      { key: 'woman', text: 'Is a woman?' },
+      { key: 'spell', text: 'Is put under a fairy spell?' },
+      { key: 'mech',  text: 'Acts in "Pyramus and Thisbe"?' },
+    ];
+
+    // ---------------------------------------------------------------
+    // Clues: quotes (with act.scene) and behaviours
+    // ---------------------------------------------------------------
+    const CLUES = [
+      // Theseus
+      { who: 'theseus', type: 'quote', text: 'Now, fair Hippolyta, our nuptial hour / Draws on apace.', where: 'Act 1, Scene 1', note: 'the opening lines of the play.' },
+      { who: 'theseus', type: 'quote', text: 'Hippolyta, I wooed thee with my sword, / And won thy love doing thee injuries.', where: 'Act 1, Scene 1', note: 'remembering how he defeated the Amazons.' },
+      { who: 'theseus', type: 'quote', text: 'Either to die the death or to abjure / For ever the society of men.', where: 'Act 1, Scene 1', note: 'telling Hermia what happens if she disobeys her father.' },
+      { who: 'theseus', type: 'quote', text: 'The lunatic, the lover and the poet / Are of imagination all compact.', where: 'Act 5, Scene 1', note: 'dismissing the lovers’ strange story of the night.' },
+      { who: 'theseus', type: 'quote', text: 'The best in this kind are but shadows; and the worst are no worse, if imagination amend them.', where: 'Act 5, Scene 1', note: 'defending the Mechanicals’ terrible play.' },
+      { who: 'theseus', type: 'behaviour', text: 'The Duke of Athens, counting down the days until his wedding to the Queen of the Amazons.', note: 'the wedding frames the whole play.' },
+      { who: 'theseus', type: 'behaviour', text: 'Finds the four lovers asleep in the woods while out hunting, and overrules a father’s demand for the law.', note: 'Act 4, Scene 1.' },
+      { who: 'theseus', type: 'behaviour', text: 'Picks a “tedious brief” tragedy by local workmen as his wedding entertainment, even after being warned it is awful.', note: 'Act 5, Scene 1.' },
+
+      // Hippolyta
+      { who: 'hippolyta', type: 'quote', text: 'Four days will quickly steep themselves in night; / Four nights will quickly dream away the time.', where: 'Act 1, Scene 1', note: 'reassuring Theseus that their wedding is close.' },
+      { who: 'hippolyta', type: 'quote', text: 'This is the silliest stuff that ever I heard.', where: 'Act 5, Scene 1', note: 'watching the Mechanicals’ play.' },
+      { who: 'hippolyta', type: 'quote', text: 'I never heard / So musical a discord, such sweet thunder.', where: 'Act 4, Scene 1', note: 'remembering hunting hounds she once heard with Hercules.' },
+      { who: 'hippolyta', type: 'quote', text: 'But all the story of the night told over, / And all their minds transfigured so together, / More witnesseth than fancy’s images.', where: 'Act 5, Scene 1', note: 'suggesting the lovers’ story might be true after all.' },
+      { who: 'hippolyta', type: 'behaviour', text: 'The Queen of the Amazons, who was defeated in battle by the man she is about to marry.', note: 'Theseus “wooed” her with his sword.' },
+      { who: 'hippolyta', type: 'behaviour', text: 'Makes sarcastic comments about Moonshine and the Wall during the wedding-night play.', note: 'Act 5, Scene 1.' },
+      { who: 'hippolyta', type: 'behaviour', text: 'Pities the workmen and worries that they are being laughed at when they try their best.', note: 'Act 5, Scene 1.' },
+
+      // Egeus
+      { who: 'egeus', type: 'quote', text: 'Full of vexation come I, with complaint / Against my child, my daughter Hermia.', where: 'Act 1, Scene 1', note: 'his first lines, complaining to the Duke.' },
+      { who: 'egeus', type: 'quote', text: 'As she is mine, I may dispose of her.', where: 'Act 1, Scene 1', note: 'claiming the right to choose his daughter’s husband.' },
+      { who: 'egeus', type: 'quote', text: 'Thou hast by moonlight at her window sung / With feigning voice verses of feigning love.', where: 'Act 1, Scene 1', note: 'accusing Lysander of bewitching his daughter.' },
+      { who: 'egeus', type: 'quote', text: 'I beg the law, the law, upon his head.', where: 'Act 4, Scene 1', note: 'when the runaway lovers are found in the woods.' },
+      { who: 'egeus', type: 'behaviour', text: 'Asks the Duke to enforce the ancient law of Athens: obey your father or be put to death.', note: 'Act 1, Scene 1.' },
+      { who: 'egeus', type: 'behaviour', text: 'Insists his daughter marry Demetrius, even though she loves someone else.', note: 'the conflict that sends the lovers into the woods.' },
+      { who: 'egeus', type: 'behaviour', text: 'Is overruled by the Duke and never gets his way, so the lovers marry who they choose.', note: 'Act 4, Scene 1.' },
+
+      // Hermia
+      { who: 'hermia', type: 'quote', text: 'I would my father looked but with my eyes.', where: 'Act 1, Scene 1', note: 'wishing her father could see Lysander as she does.' },
+      { who: 'hermia', type: 'quote', text: 'I frown upon him, yet he loves me still.', where: 'Act 1, Scene 1', note: 'talking to Helena about Demetrius.' },
+      { who: 'hermia', type: 'quote', text: 'Lie further off; in human modesty.', where: 'Act 2, Scene 2', note: 'telling Lysander to sleep a proper distance away.' },
+      { who: 'hermia', type: 'quote', text: 'Methought a serpent eat my heart away, / And you sat smiling at his cruel prey.', where: 'Act 2, Scene 2', note: 'waking from a nightmare to find Lysander gone.' },
+      { who: 'hermia', type: 'quote', text: 'Puppet? Why so? Ay, that way goes the game.', where: 'Act 3, Scene 2', note: 'furious that Helena seems to mock her height.' },
+      { who: 'hermia', type: 'behaviour', text: 'Refuses to marry the man her father has chosen, even when she is threatened with death or life in a convent.', note: 'Act 1, Scene 1.' },
+      { who: 'hermia', type: 'behaviour', text: 'Plans to run away through the woods at night to marry in secret at a widowed aunt’s house.', note: 'the escape plan with Lysander.' },
+      { who: 'hermia', type: 'behaviour', text: 'Is short, and threatens to scratch out her taller best friend’s eyes when both men turn against her.', note: 'Act 3, Scene 2.' },
+
+      // Helena
+      { who: 'helena', type: 'quote', text: 'Love looks not with the eyes, but with the mind, / And therefore is winged Cupid painted blind.', where: 'Act 1, Scene 1', note: 'thinking about why love is so unfair.' },
+      { who: 'helena', type: 'quote', text: 'Through Athens I am thought as fair as she.', where: 'Act 1, Scene 1', note: 'comparing herself to Hermia.' },
+      { who: 'helena', type: 'quote', text: 'I am your spaniel; and, Demetrius, / The more you beat me, I will fawn on you.', where: 'Act 2, Scene 1', note: 'begging Demetrius to let her follow him.' },
+      { who: 'helena', type: 'quote', text: 'Though she be but little, she is fierce.', where: 'Act 3, Scene 2', note: 'warning the men about Hermia.' },
+      { who: 'helena', type: 'quote', text: 'O spite! O hell! I see you all are bent / To set against me for your merriment.', where: 'Act 3, Scene 2', note: 'believing everyone is playing a cruel joke on her.' },
+      { who: 'helena', type: 'behaviour', text: 'Tells the man she loves about her best friend’s secret elopement, hoping he will thank her.', note: 'Act 1, Scene 1.' },
+      { who: 'helena', type: 'behaviour', text: 'Chases the man she loves into the woods even though he threatens to leave her to the wild beasts.', note: 'Act 2, Scene 1.' },
+      { who: 'helena', type: 'behaviour', text: 'Is suddenly adored by two men at once, and is sure they are mocking her.', note: 'the result of Puck’s mix-up.' },
+
+      // Lysander
+      { who: 'lysander', type: 'quote', text: 'The course of true love never did run smooth.', where: 'Act 1, Scene 1', note: 'comforting Hermia.' },
+      { who: 'lysander', type: 'quote', text: 'You have her father’s love, Demetrius; / Let me have Hermia’s: do you marry him.', where: 'Act 1, Scene 1', note: 'mocking his rival in front of the Duke.' },
+      { who: 'lysander', type: 'quote', text: 'Not Hermia but Helena I love: / Who will not change a raven for a dove?', where: 'Act 2, Scene 2', note: 'waking up under the love spell.' },
+      { who: 'lysander', type: 'quote', text: 'Get you gone, you dwarf; / You minimus, of hindering knot-grass made.', where: 'Act 3, Scene 2', note: 'insulting Hermia while enchanted.' },
+      { who: 'lysander', type: 'behaviour', text: 'Plans to elope to his aunt’s house, seven leagues from Athens, where the cruel law can’t reach.', note: 'Act 1, Scene 1.' },
+      { who: 'lysander', type: 'behaviour', text: 'Is mistaken for the “Athenian” Oberon meant, and gets the love juice put on his eyes by accident.', note: 'Puck’s mistake in Act 2, Scene 2.' },
+      { who: 'lysander', type: 'behaviour', text: 'Abandons his sleeping fiancée in the woods to chase after another woman.', note: 'Act 2, Scene 2.' },
+
+      // Demetrius
+      { who: 'demetrius', type: 'quote', text: 'I love thee not, therefore pursue me not.', where: 'Act 2, Scene 1', note: 'trying to get rid of Helena.' },
+      { who: 'demetrius', type: 'quote', text: 'Tempt not too much the hatred of my spirit, / For I am sick when I do look on thee.', where: 'Act 2, Scene 1', note: 'being cruel to Helena.' },
+      { who: 'demetrius', type: 'quote', text: 'O Helena, goddess, nymph, perfect, divine!', where: 'Act 3, Scene 2', note: 'waking up under the love spell.' },
+      { who: 'demetrius', type: 'quote', text: 'Are you sure / That we are awake? It seems to me / That yet we sleep, we dream.', where: 'Act 4, Scene 1', note: 'after the lovers are woken by the hunt.' },
+      { who: 'demetrius', type: 'behaviour', text: 'The young man a father has chosen as his daughter’s husband, though she can’t stand him.', note: 'Egeus’s choice.' },
+      { who: 'demetrius', type: 'behaviour', text: 'Once courted Helena and won her heart, then dropped her for her best friend.', note: 'Lysander points this out in Act 1.' },
+      { who: 'demetrius', type: 'behaviour', text: 'Is the only lover who is never released from the spell, so he stays in love with Helena for good.', note: 'the magic is never undone for him.' },
+
+      // Oberon
+      { who: 'oberon', type: 'quote', text: 'Ill met by moonlight, proud Titania.', where: 'Act 2, Scene 1', note: 'greeting his angry wife.' },
+      { who: 'oberon', type: 'quote', text: 'I know a bank where the wild thyme blows.', where: 'Act 2, Scene 1', note: 'describing where Titania sleeps.' },
+      { who: 'oberon', type: 'quote', text: 'Fetch me that flower; the herb I showed thee once.', where: 'Act 2, Scene 1', note: 'sending Puck for the love-in-idleness flower.' },
+      { who: 'oberon', type: 'quote', text: 'What thou seest when thou dost wake, / Do it for thy true-love take.', where: 'Act 2, Scene 2', note: 'putting the love juice on his sleeping wife’s eyes.' },
+      { who: 'oberon', type: 'behaviour', text: 'Wants a little changeling boy as his page and won’t stop until his wife hands him over.', note: 'the fairy quarrel at the heart of the play.' },
+      { who: 'oberon', type: 'behaviour', text: 'Watches a young woman being rejected in the woods, feels sorry for her, and orders a spell to help.', note: 'Act 2, Scene 1.' },
+      { who: 'oberon', type: 'behaviour', text: 'Takes pity on his wife and releases her from the spell once he has what he wanted.', note: 'Act 4, Scene 1.' },
+
+      // Titania
+      { who: 'titania', type: 'quote', text: 'These are the forgeries of jealousy.', where: 'Act 2, Scene 1', note: 'answering Oberon’s accusations.' },
+      { who: 'titania', type: 'quote', text: 'The fairy land buys not the child of me.', where: 'Act 2, Scene 1', note: 'refusing to give up the changeling boy.' },
+      { who: 'titania', type: 'quote', text: 'What angel wakes me from my flowery bed?', where: 'Act 3, Scene 1', note: 'waking to Bottom’s singing.' },
+      { who: 'titania', type: 'quote', text: 'Thou art as wise as thou art beautiful.', where: 'Act 3, Scene 1', note: 'falling for Bottom while enchanted.' },
+      { who: 'titania', type: 'quote', text: 'Methought I was enamoured of an ass.', where: 'Act 4, Scene 1', note: 'waking from the spell.' },
+      { who: 'titania', type: 'behaviour', text: 'Raises a changeling boy for the sake of his mother, her friend who died giving birth to him.', note: 'why she won’t give him up.' },
+      { who: 'titania', type: 'behaviour', text: 'Her quarrel with her husband has caused floods, ruined crops and mixed-up seasons in the human world.', note: 'Act 2, Scene 1.' },
+      { who: 'titania', type: 'behaviour', text: 'Falls madly in love with a weaver who has a donkey’s head and orders her fairies to wait on him.', note: 'Act 3, Scene 1.' },
+      { who: 'titania', type: 'behaviour', text: 'Has her fairies sing her to sleep with a lullaby about spotted snakes.', note: 'Act 2, Scene 2.' },
+
+      // Puck
+      { who: 'puck', type: 'quote', text: 'Lord, what fools these mortals be!', where: 'Act 3, Scene 2', note: 'enjoying the lovers’ confusion.' },
+      { who: 'puck', type: 'quote', text: 'I’ll put a girdle round about the earth / In forty minutes.', where: 'Act 2, Scene 1', note: 'rushing off to fetch the magic flower.' },
+      { who: 'puck', type: 'quote', text: 'I am that merry wanderer of the night.', where: 'Act 2, Scene 1', note: 'introducing himself to a fairy.' },
+      { who: 'puck', type: 'quote', text: 'Jack shall have Jill; / Nought shall go ill.', where: 'Act 3, Scene 2', note: 'fixing Lysander’s eyes at last.' },
+      { who: 'puck', type: 'quote', text: 'If we shadows have offended, / Think but this, and all is mended.', where: 'Epilogue', note: 'asking the audience to forgive the play.' },
+      { who: 'puck', type: 'behaviour', text: 'Loves pranks: spoiling milk, misleading night travellers, and pulling stools out from under old women.', note: 'also called Robin Goodfellow.' },
+      { who: 'puck', type: 'behaviour', text: 'Gives a man a donkey’s head during a rehearsal in the woods.', note: 'Act 3, Scene 1.' },
+      { who: 'puck', type: 'behaviour', text: 'Puts the love juice on the wrong Athenian’s eyes.', note: 'the mistake that turns the lovers upside down.' },
+      { who: 'puck', type: 'behaviour', text: 'Imitates the two young men’s voices in a dark fog to lead them apart so they can’t fight.', note: 'Act 3, Scene 2.' },
+
+      // Bottom
+      { who: 'bottom', type: 'quote', text: 'Let me play the lion too.', where: 'Act 1, Scene 2', note: 'wanting every part in the play.' },
+      { who: 'bottom', type: 'quote', text: 'I see their knavery: this is to make an ass of me.', where: 'Act 3, Scene 1', note: 'not realising he really has an ass’s head.' },
+      { who: 'bottom', type: 'quote', text: 'Methinks I have a great desire to a bottle of hay.', where: 'Act 4, Scene 1', note: 'enjoying life with the fairy queen.' },
+      { who: 'bottom', type: 'quote', text: 'I have had a most rare vision.', where: 'Act 4, Scene 1', note: 'waking up alone in the woods.' },
+      { who: 'bottom', type: 'quote', text: 'It shall be called Bottom’s Dream, because it hath no bottom.', where: 'Act 4, Scene 1', note: 'planning a ballad about his night.' },
+      { who: 'bottom', type: 'behaviour', text: 'A weaver who wants to play the hero, the heroine and the lion all at once.', note: 'Act 1, Scene 2.' },
+      { who: 'bottom', type: 'behaviour', text: 'Asks fairies named Peaseblossom and Cobweb to scratch his hairy head and fetch him honey.', note: 'Act 4, Scene 1.' },
+      { who: 'bottom', type: 'behaviour', text: 'Plays Pyramus and takes an extremely long time to die on stage.', note: '“Now die, die, die, die, die.”' },
+
+      // Quince
+      { who: 'quince', type: 'quote', text: 'Is all our company here?', where: 'Act 1, Scene 2', note: 'opening the first rehearsal meeting.' },
+      { who: 'quince', type: 'quote', text: 'You can play no part but Pyramus.', where: 'Act 1, Scene 2', note: 'flattering Bottom to stop him taking every role.' },
+      { who: 'quince', type: 'quote', text: 'Bless thee, Bottom! bless thee! thou art translated.', where: 'Act 3, Scene 1', note: 'seeing Bottom’s donkey head.' },
+      { who: 'quince', type: 'quote', text: 'If we offend, it is with our good will.', where: 'Act 5, Scene 1', note: 'the start of his badly punctuated Prologue.' },
+      { who: 'quince', type: 'behaviour', text: 'A carpenter who directs the workmen’s play and hands out the parts.', note: 'Act 1, Scene 2.' },
+      { who: 'quince', type: 'behaviour', text: 'Worries that a lion that roars too terribly will frighten the ladies and get the whole cast hanged.', note: 'Act 1, Scene 2.' },
+      { who: 'quince', type: 'behaviour', text: 'Reads a Prologue with all the pauses in the wrong places, so it means the opposite of what he wants.', note: 'Act 5, Scene 1.' },
+    ];
+
+    // ---------------------------------------------------------------
+    // Portraits (SVG). Each call randomises background, outfit colour,
+    // expression and tilt so the cards look different every round.
+    // ---------------------------------------------------------------
+    const BACKGROUNDS = ['#9ad1d4', '#f6bd60', '#f28482', '#84a59d', '#cdb4db', '#a2d2ff', '#ffd6a5', '#b5e48c', '#e9c46a', '#90e0ef'];
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function shade(hex, amt) {
+      const n = parseInt(hex.slice(1), 16);
+      const c = (v) => Math.max(0, Math.min(255, v + amt));
+      const r = c(n >> 16), g = c((n >> 8) & 255), b = c(n & 255);
+      return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    function portrait(key) {
+      const c = CHARACTERS[key];
+      const bg = pick(BACKGROUNDS);
+      const cloth = pick(c.clothes);
+      const mood = pick(c.moods);
+      const tilt = (Math.random() * 10 - 5).toFixed(1);
+      const flip = Math.random() < 0.5 ? -1 : 1;
+      const skinShadow = shade(c.skin, -30);
+      const hair = c.hairColor;
+      let back = '', front = '', beard = '', extraBack = '', extraFront = '';
+
+      // Background decorations
+      let bgArt = `<rect width="200" height="220" fill="${bg}"/>`;
+      bgArt += `<circle cx="${flip > 0 ? 165 : 35}" cy="40" r="60" fill="#fff" opacity="0.18"/>`;
+      bgArt += `<path d="M0 200 Q50 185 100 200 T200 200 V220 H0Z" fill="#fff" opacity="0.15"/>`;
+
+      // Hair drawn behind the head
+      if (c.hair === 'long') {
+        back = `<path d="M54 100 Q48 40 100 44 Q152 40 146 100 L152 192 Q128 204 118 172 L82 172 Q72 204 48 192 Z" fill="${hair}"/>`;
+      } else if (c.hair === 'wispy') {
+        back = `<path d="M56 104 Q40 40 100 40 Q160 40 144 104 Q168 140 156 176 Q146 150 138 132 L62 132 Q54 150 44 176 Q32 140 56 104Z" fill="${hair}" opacity="0.85"/>`;
+      }
+
+      // Hair / headwear in front
+      switch (c.hair) {
+        case 'short':
+          front = `<path d="M60 98 Q58 50 100 50 Q142 50 140 98 Q134 72 100 69 Q68 72 60 98 Z" fill="${hair}"/>`; break;
+        case 'bald':
+          front = `<ellipse cx="62" cy="100" rx="8" ry="15" fill="${hair}"/><ellipse cx="138" cy="100" rx="8" ry="15" fill="${hair}"/>`; break;
+        case 'long':
+          front = `<path d="M60 102 Q56 50 100 49 Q144 50 140 102 Q132 70 104 66 Q96 80 70 84 Q64 90 60 102Z" fill="${hair}"/>`; break;
+        case 'wild':
+          front = `<path d="M58 98 L48 62 L68 74 L68 44 L86 64 L98 36 L110 62 L128 42 L130 70 L152 58 L142 98 Q124 70 100 70 Q78 70 58 98Z" fill="${hair}"/>`; break;
+        case 'slick':
+          front = `<path d="M60 94 Q60 52 100 52 Q140 52 140 94 Q132 68 108 66 L100 78 L92 66 Q68 68 60 94Z" fill="${hair}"/>`; break;
+        case 'curly': {
+          let curls = '';
+          for (let i = 0; i <= 8; i++) {
+            const a = Math.PI + (i / 8) * Math.PI;
+            curls += `<circle cx="${(100 + Math.cos(a) * 42).toFixed(1)}" cy="${(92 + Math.sin(a) * 40).toFixed(1)}" r="12" fill="${hair}"/>`;
+          }
+          front = curls; break;
+        }
+        case 'messy':
+          front = `<path d="M60 96 Q56 52 100 50 Q144 52 140 96 L134 78 L126 86 L118 70 L108 80 L98 68 L88 80 L80 70 L72 84 L66 76Z" fill="${hair}"/>`; break;
+        case 'wispy':
+          front = `<path d="M62 96 Q60 48 100 46 Q140 48 138 96 Q128 64 112 62 Q118 76 104 84 Q100 66 86 64 Q72 70 62 96Z" fill="${hair}" opacity="0.95"/>`; break;
+      }
+
+      // Beards
+      const bc = c.beardColor || hair;
+      const stache = `<path d="M80 128 Q100 116 120 128 Q110 124 100 127 Q90 124 80 128Z" fill="${shade(bc, -20)}"/>`;
+      switch (c.beard) {
+        case 'long':     beard = `<path d="M62 112 Q64 178 100 210 Q136 178 138 112 Q126 142 100 144 Q74 142 62 112Z" fill="${bc}"/>` + stache; break;
+        case 'short':    beard = `<path d="M62 112 Q66 160 100 164 Q134 160 138 112 Q126 140 100 142 Q74 140 62 112Z" fill="${bc}"/>` + stache; break;
+        case 'full':     beard = `<path d="M60 104 Q62 168 100 172 Q138 168 140 104 Q128 142 100 144 Q72 142 60 104Z" fill="${bc}"/>` + stache; break;
+        case 'goatee':   beard = `<path d="M90 140 Q100 166 110 140 Q100 145 90 140Z" fill="${bc}"/><path d="M84 127 Q100 120 116 127 Q100 124 84 127Z" fill="${bc}"/>`; break;
+        case 'mustache': beard = `<path d="M80 128 Q90 118 100 124 Q110 118 120 128 Q110 126 100 128 Q90 126 80 128Z" fill="${bc}"/>`; break;
+        case 'stubble':  beard = `<ellipse cx="100" cy="134" rx="30" ry="18" fill="${bc}" opacity="0.25"/>`; break;
+      }
+
+      // Eyebrows
+      const bw = c.brows === 'heavy' ? 6 : 3.5;
+      const bcol = shade(c.beardColor && c.hair === 'bald' ? c.beardColor : (c.hair === 'none' ? '#5a3a1a' : hair), -40);
+      let brows;
+      switch (c.brows) {
+        case 'sly':   brows = `<path d="M74 87 L93 94"/><path d="M107 94 L126 87"/>`; break;
+        case 'sad':   brows = `<path d="M74 93 L93 87"/><path d="M107 87 L126 93"/>`; break;
+        case 'stern': brows = `<path d="M74 90 L93 92"/><path d="M107 92 L126 90"/>`; break;
+        case 'kind':  brows = `<path d="M75 91 Q84 84 93 90"/><path d="M107 90 Q116 84 125 91"/>`; break;
+        default:      brows = `<path d="M75 90 Q84 87 93 90"/><path d="M107 90 Q116 87 125 90"/>`;
+      }
+      if (c.brows === 'heavy') brows = `<path d="M72 90 L94 93"/><path d="M106 93 L128 90"/>`;
+
+      // Eyes
+      const er = c.bigEyes ? 8 : 6, pr = c.bigEyes ? 4.5 : 3;
+      const look = (Math.random() * 3 - 1.5).toFixed(1);
+      let eyes = `<circle cx="84" cy="103" r="${er}" fill="#fff"/><circle cx="116" cy="103" r="${er}" fill="#fff"/>
+        <circle cx="${84 + +look}" cy="104" r="${pr}" fill="#1c1c28"/><circle cx="${116 + +look}" cy="104" r="${pr}" fill="#1c1c28"/>`;
+      if (mood === 'surprised') eyes = eyes.replace(/r="6"/g, 'r="7"');
+      if (c.glasses) eyes += `<g fill="none" stroke="#3a2a10" stroke-width="2.5"><circle cx="84" cy="103" r="11"/><circle cx="116" cy="103" r="11"/><path d="M95 102 L105 102"/></g>`;
+
+      // Mouth
+      let mouth;
+      switch (mood) {
+        case 'smile':     mouth = `<path d="M87 131 Q100 143 113 131" fill="none" stroke="#7a2d2d" stroke-width="3.5" stroke-linecap="round"/>`; break;
+        case 'surprised': mouth = `<ellipse cx="100" cy="134" rx="6" ry="7" fill="#7a2d2d"/>`; break;
+        case 'smirk':     mouth = `<path d="M88 134 Q102 138 113 127" fill="none" stroke="#7a2d2d" stroke-width="3.5" stroke-linecap="round"/>`; break;
+        default:          mouth = `<path d="M90 133 L110 133" fill="none" stroke="#7a2d2d" stroke-width="3.5" stroke-linecap="round"/>`;
+      }
+
+      const nose = c.redNose
+        ? `<circle cx="100" cy="116" r="7" fill="#e06666"/>`
+        : `<path d="M100 104 Q95 116 99 119 Q103 120 105 117" fill="none" stroke="${skinShadow}" stroke-width="3" stroke-linecap="round"/>`;
+      const cheeks = `<circle cx="74" cy="120" r="7" fill="#ff7b7b" opacity="${c.redNose ? 0.55 : 0.28}"/><circle cx="126" cy="120" r="7" fill="#ff7b7b" opacity="${c.redNose ? 0.55 : 0.28}"/>`;
+
+      // Body
+      let body = `<path d="M26 220 Q28 166 100 160 Q172 166 174 220 Z" fill="${cloth}"/>
+        <path d="M84 162 L100 184 L116 162" fill="none" stroke="${shade(cloth, 50)}" stroke-width="4"/>`;
+      if (c.acc === 'sailor') {
+        body += `<g stroke="#fff" stroke-width="5" opacity="0.8"><path d="M34 196 H166"/><path d="M30 210 H170"/></g>`;
+      }
+
+      // Accessories
+      switch (c.acc) {
+        case 'wizard':
+          extraBack = `<line x1="${flip > 0 ? 176 : 24}" y1="220" x2="${flip > 0 ? 176 : 24}" y2="70" stroke="#6b4423" stroke-width="7" stroke-linecap="round"/>
+                       <circle cx="${flip > 0 ? 176 : 24}" cy="62" r="11" fill="#9be7ff" stroke="#fff" stroke-width="2"/>`;
+          extraFront = `<path d="M56 74 L102 2 L144 74 Z" fill="${shade(cloth, -20)}"/><ellipse cx="100" cy="74" rx="56" ry="9" fill="${shade(cloth, -35)}"/>
+                        <text x="92" y="50" font-size="16" fill="#f2c14e">&#9733;</text><text x="108" y="34" font-size="11" fill="#f2c14e">&#9733;</text><text x="80" y="66" font-size="10" fill="#f2c14e">&#9790;</text>`;
+          break;
+        case 'crown':
+          extraFront = `<path d="M62 64 L62 34 L78 50 L90 26 L100 46 L110 26 L122 50 L138 34 L138 64 Z" fill="#f2c14e" stroke="#b8860b" stroke-width="2"/>
+                        <circle cx="100" cy="56" r="5" fill="#e63946"/><circle cx="78" cy="58" r="3.5" fill="#457b9d"/><circle cx="122" cy="58" r="3.5" fill="#457b9d"/>`;
+          break;
+        case 'coronet':
+          extraFront = `<path d="M66 64 L66 52 L78 58 L90 46 L100 55 L110 46 L122 58 L134 52 L134 64 Z" fill="#f2c14e" stroke="#b8860b" stroke-width="2"/>`;
+          break;
+        case 'flower':
+          extraFront = `<g transform="translate(${flip > 0 ? 134 : 66} 68)">
+            ${[0, 72, 144, 216, 288].map(a => `<ellipse rx="6" ry="10" cy="-8" fill="#ff8fab" transform="rotate(${a})"/>`).join('')}
+            <circle r="5" fill="#ffd166"/></g>`;
+          break;
+        case 'sparkles':
+          extraBack = `<ellipse cx="44" cy="170" rx="34" ry="54" fill="#fff" opacity="0.35" transform="rotate(-25 44 170)"/>
+                       <ellipse cx="156" cy="170" rx="34" ry="54" fill="#fff" opacity="0.35" transform="rotate(25 156 170)"/>`;
+          extraFront = [[30, 40, 1], [168, 60, 0.8], [40, 130, 0.6], [162, 140, 0.9], [150, 24, 0.5]].map(([x, y, s]) =>
+            `<path transform="translate(${x} ${y}) scale(${s})" d="M0 -12 L3 -3 L12 0 L3 3 L0 12 L-3 3 L-12 0 L-3 -3Z" fill="#fff8b0"/>`).join('');
+          break;
+        case 'fins':
+          extraBack = `<path d="M62 98 L36 80 L42 100 L34 116 L62 114Z" fill="${shade(c.skin, -35)}"/>
+                       <path d="M138 98 L164 80 L158 100 L166 116 L138 114Z" fill="${shade(c.skin, -35)}"/>`;
+          extraFront = `<g fill="none" stroke="${shade(c.skin, -40)}" stroke-width="1.6" opacity="0.7">
+            <path d="M66 120 q4 -4 8 0"/><path d="M70 128 q4 -4 8 0"/><path d="M122 120 q4 -4 8 0"/><path d="M126 128 q4 -4 8 0"/></g>`;
+          break;
+        case 'cape':
+          extraFront = `<path d="M26 220 L44 156 L80 166 L60 220Z" fill="${shade(cloth, -30)}"/><path d="M174 220 L156 156 L120 166 L140 220Z" fill="${shade(cloth, -30)}"/>`;
+          break;
+        case 'plume':
+          extraFront = `<ellipse cx="96" cy="60" rx="50" ry="15" fill="${shade(cloth, -25)}"/>
+                        <path d="M128 56 Q170 20 150 4 Q156 30 122 52Z" fill="#fefae0"/>`;
+          break;
+        case 'chain':
+          extraFront = `<path d="M62 170 Q100 214 138 170" fill="none" stroke="#f2c14e" stroke-width="5" stroke-dasharray="6 3"/><circle cx="100" cy="194" r="8" fill="#f2c14e" stroke="#b8860b" stroke-width="2"/>`;
+          break;
+        case 'bottle': {
+          const bx = flip > 0 ? 148 : 28;
+          extraFront = `<rect x="${bx + 8}" y="128" width="9" height="18" fill="#3d6b35"/>
+                        <rect x="${bx}" y="144" width="25" height="60" rx="8" fill="#4f8a43"/>
+                        <rect x="${bx + 3}" y="162" width="19" height="16" fill="#f4e4c1"/>`;
+          break;
+        }
+        case 'jester':
+          extraFront = `<path d="M60 80 Q52 42 22 38 Q58 30 80 56 Q86 20 100 10 Q114 20 120 56 Q142 30 178 38 Q148 42 140 80 Z" fill="${cloth}"/>
+                        <path d="M80 56 Q86 20 100 10 Q114 20 120 56 Q110 64 100 64 Q90 64 80 56Z" fill="${shade(pick(c.clothes.filter(x => x !== cloth)), 0)}"/>
+                        <rect x="58" y="70" width="84" height="12" rx="5" fill="#ffd166"/>
+                        <circle cx="22" cy="38" r="6" fill="#ffd166"/><circle cx="100" cy="10" r="6" fill="#ffd166"/><circle cx="178" cy="38" r="6" fill="#ffd166"/>`;
+          break;
+        case 'sailor':
+          extraFront = `<path d="M58 82 Q58 40 100 38 Q142 40 142 82 Z" fill="#c1121f"/><rect x="56" y="72" width="88" height="12" rx="4" fill="#8d0e18"/>`;
+          break;
+        case 'amazon': {
+          const qx = flip > 0 ? 150 : 30;
+          extraBack = `<g transform="rotate(${flip > 0 ? 18 : -18} ${qx} 170)">
+            <path d="M${qx - 4} 118 L${qx - 10} 96 M${qx + 2} 116 L${qx + 2} 92 M${qx + 8} 118 L${qx + 14} 96" stroke="#6b4423" stroke-width="3"/>
+            <path d="M${qx - 14} 96 L${qx - 10} 88 L${qx - 6} 96Z M${qx - 2} 92 L${qx + 2} 84 L${qx + 6} 92Z M${qx + 10} 96 L${qx + 14} 88 L${qx + 18} 96Z" fill="#e9e9e9"/>
+            <rect x="${qx - 12}" y="114" width="26" height="80" rx="6" fill="#7a4a12" stroke="#4a2c08" stroke-width="2"/></g>`;
+          extraFront = `<path d="M66 64 L66 52 L78 58 L90 46 L100 55 L110 46 L122 58 L134 52 L134 64 Z" fill="#f2c14e" stroke="#b8860b" stroke-width="2"/>
+                        <path d="M40 220 L56 168 L74 166 L62 220Z" fill="#c0c0c0" opacity="0.7"/>`;
+          break;
+        }
+        case 'heart':
+          extraFront = `<path transform="translate(${flip > 0 ? 128 : 72} 194) scale(1.1)" d="M0 6 C-14 -4 -8 -14 0 -7 C8 -14 14 -4 0 6Z" fill="#e63946" stroke="#fff" stroke-width="1.5"/>`;
+          break;
+        case 'antlers':
+          extraBack = `<g fill="none" stroke="#7a5230" stroke-width="6" stroke-linecap="round">
+            <path d="M78 62 Q64 30 46 14"/><path d="M68 42 Q50 40 38 30"/><path d="M58 26 Q58 10 66 2"/>
+            <path d="M122 62 Q136 30 154 14"/><path d="M132 42 Q150 40 162 30"/><path d="M142 26 Q142 10 134 2"/></g>`;
+          extraFront = `<g fill="#9be7a8">${[[70, 62], [86, 54], [100, 52], [114, 54], [130, 62]].map(([x, y], i) =>
+            `<ellipse cx="${x}" cy="${y}" rx="7" ry="4" transform="rotate(${-40 + i * 20} ${x} ${y})"/>`).join('')}</g>`;
+          break;
+        case 'horns':
+          extraFront = `<path d="M76 62 Q66 40 76 30 Q76 46 86 58Z" fill="#efe3c2" stroke="#b8a77a" stroke-width="1.5"/>
+                        <path d="M124 62 Q134 40 124 30 Q124 46 114 58Z" fill="#efe3c2" stroke="#b8a77a" stroke-width="1.5"/>
+                        <path d="M58 104 L44 92 L60 96Z M142 104 L156 92 L140 96Z" fill="${c.skin}"/>
+                        <g fill="#5fa04e">${[[64, 170], [100, 176], [136, 170]].map(([x, y]) =>
+                          `<path d="M${x} ${y - 10} Q${x + 10} ${y} ${x} ${y + 10} Q${x - 10} ${y} ${x} ${y - 10}Z"/>`).join('')}</g>`;
+          break;
+        case 'donkey':
+          extraBack = `<g transform="rotate(-14 76 60)"><ellipse cx="76" cy="36" rx="13" ry="38" fill="#8d8d8d"/><ellipse cx="76" cy="40" rx="6" ry="28" fill="#f2b8c6"/></g>
+                       <g transform="rotate(14 124 60)"><ellipse cx="124" cy="36" rx="13" ry="38" fill="#8d8d8d"/><ellipse cx="124" cy="40" rx="6" ry="28" fill="#f2b8c6"/></g>`;
+          break;
+        case 'scroll': {
+          const sx = flip > 0 ? 140 : 26;
+          extraFront = `<rect x="${sx}" y="150" width="34" height="56" fill="#fdf3d7" stroke="#b8a77a" stroke-width="1.5"/>
+                        <rect x="${sx - 3}" y="144" width="40" height="9" rx="4.5" fill="#e6d3a3"/><rect x="${sx - 3}" y="202" width="40" height="9" rx="4.5" fill="#e6d3a3"/>
+                        <g stroke="#8a7a5a" stroke-width="1.5">${[162, 170, 178, 186, 194].map(y => `<path d="M${sx + 5} ${y} H${sx + 29}"/>`).join('')}</g>`;
+          break;
+        }
+      }
+
+      return `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        ${bgArt}
+        <g transform="rotate(${tilt} 100 140)">
+          ${extraBack}
+          ${back}
+          ${body}
+          <rect x="88" y="138" width="24" height="26" fill="${skinShadow}"/>
+          <ellipse cx="100" cy="104" rx="42" ry="50" fill="${c.skin}"/>
+          <ellipse cx="58" cy="106" rx="6" ry="10" fill="${c.skin}"/><ellipse cx="142" cy="106" rx="6" ry="10" fill="${c.skin}"/>
+          ${cheeks}
+          ${beard}
+          ${front}
+          <g fill="none" stroke="${bcol}" stroke-width="${bw}" stroke-linecap="round">${brows}</g>
+          ${eyes}
+          ${nose}
+          ${mouth}
+          ${extraFront}
+        </g>
+      </svg>`;
+    }
+
+    // ---------------------------------------------------------------
+    // Game state
+    // ---------------------------------------------------------------
+    const WRONG_PENALTY = 3;
+    const QUESTION_PENALTY = 2;
+
+    const settings = { mode: 'mixed', size: 8, rounds: 10 };
+    let game = null;
+    let rafId = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+      window.scrollTo({ top: 0 });
+    }
+
+    function buildClueDeck(mode, rounds) {
+      const pool = shuffle(CLUES.filter(c => mode === 'mixed' || c.type === mode));
+      const deck = [];
+      // Avoid the same character twice in a row where possible.
+      while (deck.length < rounds && pool.length) {
+        const prev = deck.length ? deck[deck.length - 1].who : null;
+        let idx = pool.findIndex(c => c.who !== prev);
+        if (idx === -1) idx = 0;
+        deck.push(pool.splice(idx, 1)[0]);
+      }
+      return deck;
+    }
+
+    function startGame() {
+      stopTimer();
+      game = {
+        deck: buildClueDeck(settings.mode, settings.rounds),
+        index: -1,
+        totalTime: 0,
+        score: 0,
+        results: [],
+      };
+      showScreen('game');
+      runCountdown(nextRound);
+    }
+
+    function runCountdown(done) {
+      const overlay = $('countdown');
+      const num = $('countNum');
+      const steps = ['3', '2', '1', 'GO!'];
+      let i = 0;
+      overlay.classList.add('show');
+      const tick = () => {
+        if (i >= steps.length) { overlay.classList.remove('show'); done(); return; }
+        num.textContent = steps[i++];
+        num.style.animation = 'none'; void num.offsetWidth; num.style.animation = '';
+        setTimeout(tick, i === steps.length ? 500 : 750);
+      };
+      tick();
+    }
+
+    function nextRound() {
+      game.index++;
+      if (game.index >= game.deck.length) { endGame(); return; }
+
+      const clue = game.deck[game.index];
+      const others = shuffle(Object.keys(CHARACTERS).filter(k => k !== clue.who)).slice(0, settings.size - 1);
+      const suspects = shuffle([clue.who, ...others]);
+
+      game.round = {
+        clue,
+        suspects,
+        start: performance.now(),
+        penalty: 0,
+        wrong: [],
+        asked: 0,
+        done: false,
+      };
+
+      $('hudRound').textContent = `${game.index + 1}/${game.deck.length}`;
+      $('clueType').textContent = clue.type === 'quote' ? 'WHO SAID IT?' : 'WHO DOES THIS?';
+      const ct = $('clueText');
+      ct.textContent = clue.text.replace(/ \/ /g, ' / ');
+      ct.className = 'clue-text' + (clue.type === 'quote' ? ' quote' : '');
+      $('feedback').className = 'feedback';
+      $('feedback').innerHTML = '';
+
+      renderQuestions();
+      renderBoard(suspects);
+      startTimer();
+    }
+
+    function renderBoard(suspects) {
+      const grid = $('grid');
+      const n = suspects.length;
+      grid.style.setProperty('--cols', n === 12 ? 6 : (n === 6 ? 3 : 4));
+      grid.style.setProperty('--cols-sm', n === 6 ? 3 : 4);
+      grid.innerHTML = '';
+      suspects.forEach((key) => {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        const tile = document.createElement('button');
+        tile.className = 'tile';
+        tile.dataset.key = key;
+        tile.setAttribute('aria-label', CHARACTERS[key].name);
+        tile.innerHTML = `<div class="face">${portrait(key)}<div class="name">${CHARACTERS[key].name}</div></div><div class="back">?</div>`;
+        tile.addEventListener('click', () => guess(tile));
+        slot.appendChild(tile);
+        grid.appendChild(slot);
+      });
+    }
+
+    function renderQuestions() {
+      const list = $('questionList');
+      list.innerHTML = '';
+      QUESTIONS.forEach(q => {
+        const btn = document.createElement('button');
+        btn.className = 'q-btn';
+        btn.innerHTML = `<span>${q.text}</span><span class="ans"></span>`;
+        btn.addEventListener('click', () => ask(q, btn));
+        list.appendChild(btn);
+      });
+    }
+
+    function ask(q, btn) {
+      const r = game.round;
+      if (r.done || btn.disabled) return;
+      const answer = CHARACTERS[r.clue.who].attrs[q.key];
+      btn.disabled = true;
+      const ans = btn.querySelector('.ans');
+      ans.textContent = answer ? 'YES' : 'NO';
+      ans.classList.add(answer ? 'yes' : 'no');
+      r.penalty += QUESTION_PENALTY;
+      r.asked++;
+      popPenalty(btn, `+${QUESTION_PENALTY}s`);
+
+      document.querySelectorAll('#grid .tile').forEach(t => {
+        if (CHARACTERS[t.dataset.key].attrs[q.key] !== answer) knockDown(t, false);
+      });
+    }
+
+    function knockDown(tile, wrong) {
+      if (tile.classList.contains('down')) return;
+      tile.classList.add('down');
+      if (wrong) tile.classList.add('wrong');
+      tile.disabled = true;
+    }
+
+    function guess(tile) {
+      const r = game.round;
+      if (r.done || tile.classList.contains('down')) return;
+      const key = tile.dataset.key;
+
+      if (key !== r.clue.who) {
+        r.penalty += WRONG_PENALTY;
+        r.wrong.push(CHARACTERS[key].name);
+        knockDown(tile, true);
+        popPenalty(tile, `+${WRONG_PENALTY}s`);
+        const board = $('board');
+        board.classList.remove('shake'); void board.offsetWidth; board.classList.add('shake');
+        return;
+      }
+
+      // Correct
+      r.done = true;
+      stopTimer();
+      const raw = (performance.now() - r.start) / 1000;
+      const time = raw + r.penalty;
+      const points = Math.max(50, Math.round(1000 - time * 50));
+      game.totalTime += time;
+      game.score += points;
+      game.results.push({ clue: r.clue, time, raw, penalty: r.penalty, wrong: r.wrong.slice(), asked: r.asked, points });
+
+      tile.classList.add('correct');
+      document.querySelectorAll('#grid .tile').forEach(t => { if (t !== tile) t.disabled = true; });
+      document.querySelectorAll('#questionList .q-btn').forEach(b => b.disabled = true);
+
+      $('hudTimer').textContent = time.toFixed(1) + 's';
+      $('hudTotal').textContent = game.totalTime.toFixed(1) + 's';
+      $('hudScore').textContent = game.score;
+
+      const c = r.clue;
+      const name = CHARACTERS[c.who].name;
+      const where = c.where ? `<span class="where">${c.where}</span>, ` : '';
+      const pen = r.penalty ? ` (${raw.toFixed(1)}s + ${r.penalty}s penalty)` : '';
+      const last = game.index === game.deck.length - 1;
+      $('feedback').innerHTML = `<strong>&#10004; ${name}!</strong> ${time.toFixed(1)}s${pen} &middot; +${points} pts<br>${where}${c.note}
+        <br><button class="next-btn" id="nextBtn">${last ? 'See results' : 'Next clue'} &#9654;</button>`;
+      $('feedback').classList.add('show');
+      $('nextBtn').addEventListener('click', nextRound);
+      $('nextBtn').focus({ preventScroll: true });
+    }
+
+    function popPenalty(el, text) {
+      const rect = el.getBoundingClientRect();
+      const pop = document.createElement('div');
+      pop.className = 'penalty-pop';
+      pop.textContent = text;
+      pop.style.left = (rect.left + rect.width / 2) + 'px';
+      pop.style.top = (rect.top + rect.height / 3) + 'px';
+      document.body.appendChild(pop);
+      setTimeout(() => pop.remove(), 900);
+    }
+
+    function startTimer() {
+      stopTimer();
+      const loop = () => {
+        const r = game.round;
+        const t = (performance.now() - r.start) / 1000 + r.penalty;
+        $('hudTimer').textContent = t.toFixed(1) + 's';
+        $('hudTotal').textContent = (game.totalTime + t).toFixed(1) + 's';
+        rafId = requestAnimationFrame(loop);
+      };
+      loop();
+    }
+
+    function stopTimer() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+
+    // ---------------------------------------------------------------
+    // End of game
+    // ---------------------------------------------------------------
+    function rating(res, firstTry) {
+      const avg = res.reduce((t, r) => t + r.time, 0) / res.length;
+      if (firstTry === res.length && avg < 6) return '\u26A1 Lightning fast and perfect. You know this play!';
+      if (firstTry >= res.length * 0.8) return '\u2B50 Excellent! Can you go even faster?';
+      if (firstTry >= res.length * 0.5) return 'Good work. Restart to beat your score.';
+      return 'Check the review below, then race again.';
+    }
+
+    function endGame() {
+      stopTimer();
+      const res = game.results;
+      const firstTry = res.filter(r => r.wrong.length === 0 && r.asked === 0).length;
+      const best = Math.min(...res.map(r => r.time));
+
+      $('endScore').textContent = game.score;
+      $('endRank').textContent = rating(res, firstTry);
+      $('endTime').textContent = game.totalTime.toFixed(1) + 's';
+      $('endFirst').textContent = `${firstTry}/${res.length}`;
+      $('endBest').textContent = best.toFixed(1) + 's';
+
+      $('reviewBody').innerHTML = res.map((r, i) => {
+        const snip = r.clue.text.length > 90 ? r.clue.text.slice(0, 87) + '…' : r.clue.text;
+        const extras = [];
+        if (r.wrong.length) extras.push(`Wrong: ${r.wrong.join(', ')}`);
+        if (r.asked) extras.push(`${r.asked} question${r.asked > 1 ? 's' : ''} asked`);
+        return `<tr><td>${i + 1}</td>
+          <td><span class="clue-snip">${r.clue.type === 'quote' ? '“' + snip + '”' : snip}</span>
+            ${extras.length ? `<div class="miss">${extras.join(' · ')}</div>` : ''}</td>
+          <td>${CHARACTERS[r.clue.who].name}${r.clue.where ? `<div class="miss" style="color:#c8bde6">${r.clue.where}</div>` : ''}</td>
+          <td class="num">${r.time.toFixed(1)}s</td></tr>`;
+      }).join('');
+
+      showScreen('end');
+    }
+
+    // ---------------------------------------------------------------
+    // Wiring
+    // ---------------------------------------------------------------
+    document.querySelectorAll('.choice-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        const btn = e.target.closest('.choice');
+        if (!btn) return;
+        row.querySelectorAll('.choice').forEach(b => b.classList.toggle('active', b === btn));
+        const group = row.dataset.group;
+        settings[group] = group === 'mode' ? btn.dataset.value : parseInt(btn.dataset.value, 10);
+      });
+    });
+
+    $('startBtn').addEventListener('click', startGame);
+    $('againBtn').addEventListener('click', startGame);
+    $('restartBtn').addEventListener('click', startGame);
+    $('menuBtn').addEventListener('click', () => showScreen('start'));
+    $('quitBtn').addEventListener('click', () => { stopTimer(); showScreen('start'); });
+  </script>
+</body>
+</html>

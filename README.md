@@ -4,6 +4,13 @@ just practicing
 ## Apps
 
 - `index.html` — student matching card game
+- `midsummer-guess-who/` — **Guess Who? A Midsummer Night's Dream**, a timed
+  character-matching race for Grade 10 ELA. Each round shows a quote or a behaviour
+  clue, and students click the matching character (lovers, fairies, Athenians and
+  Mechanicals) on a Guess Who-style board. The faces and suspects change every round.
+  Wrong guesses (+3s) and yes/no questions (+2s) knock cards down. Each student plays
+  solo on their own device and can restart any time to beat their own score. Open
+  `midsummer-guess-who/index.html` in any browser. No install needed.
 - `essay-feedback/` — **Essay Feedback Builder** for Alberta ELA and Social Studies
   (10/20/30, -1 and -2 streams). Pick subject → course → assignment, score each
   rubric criterion with descriptor dropdowns, choose matched feedback comments,
