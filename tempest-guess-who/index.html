@@ -131,13 +131,6 @@
     .big-btn:hover { filter: brightness(1.1); }
     .big-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
 
-    .leaderboard table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
-    .leaderboard th, .leaderboard td { padding: 6px 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .leaderboard th { color: #b9c7e4; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
-    .leaderboard td.num, .leaderboard th.num { text-align: right; font-variant-numeric: tabular-nums; }
-    .leaderboard tr.me td { color: var(--gold); font-weight: 700; }
-    .leaderboard .empty { color: #b9c7e4; font-style: italic; padding: 8px 0; }
-
     .link-btn {
       background: none; border: none; color: #8fa6cf; font-size: 0.8rem;
       cursor: pointer; text-decoration: underline; margin-top: 10px;
@@ -496,7 +489,7 @@
     }
     .ghost-btn:hover { border-color: var(--gold); }
 
-    .quit-row { text-align: right; margin-top: 10px; }
+    .quit-row { display: flex; justify-content: flex-end; gap: 16px; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -511,9 +504,6 @@
       <div class="setup-grid">
         <div class="panel">
           <h2>Set Up Your Race</h2>
-          <label class="field" for="player">Your name</label>
-          <input type="text" id="player" maxlength="20" placeholder="e.g. Jordan K." autocomplete="off" />
-
           <label class="field">Clue type</label>
           <div class="choice-row" data-group="mode">
             <button class="choice active" data-value="mixed">Mixed</button>
@@ -546,15 +536,9 @@
             <li>A wrong guess knocks that card down and adds <b>+3 seconds</b>.</li>
             <li>Stuck? Ask a <b>yes/no question</b>, like in Guess Who. Every card that doesn't fit falls down. Each question costs <b>+2 seconds</b>.</li>
             <li>The faces and the suspects on the board change every round, so you have to read the names.</li>
-            <li>The lowest total time wins. Your score goes on this computer's leaderboard.</li>
+            <li>Faster answers earn more points. Hit <b>Restart</b> at any time to start a fresh race, and try to beat your own score.</li>
           </ul>
         </div>
-      </div>
-
-      <div class="panel leaderboard">
-        <h2>Leaderboard: Top Racers</h2>
-        <div id="lbStart"></div>
-        <button class="link-btn" id="clearLb">Clear leaderboard</button>
       </div>
     </section>
 
@@ -584,7 +568,7 @@
         <div class="grid" id="grid"></div>
       </div>
 
-      <div class="quit-row"><button class="link-btn" id="quitBtn">Quit to menu</button></div>
+      <div class="quit-row"><button class="link-btn" id="restartBtn">&#8635; Restart race</button><button class="link-btn" id="quitBtn">Change settings</button></div>
     </section>
 
     <!-- END -->
@@ -602,7 +586,7 @@
         </div>
         <div class="end-actions">
           <button class="big-btn" id="againBtn">RACE AGAIN</button>
-          <button class="ghost-btn" id="menuBtn">Menu / New Player</button>
+          <button class="ghost-btn" id="menuBtn">Change settings</button>
         </div>
       </div>
 
@@ -612,11 +596,6 @@
           <thead><tr><th>#</th><th>Clue</th><th>Answer</th><th class="num">Time</th></tr></thead>
           <tbody id="reviewBody"></tbody>
         </table>
-      </div>
-
-      <div class="panel leaderboard">
-        <h2>Leaderboard: Top Racers</h2>
-        <div id="lbEnd"></div>
       </div>
     </section>
   </div>
@@ -986,7 +965,6 @@
     // ---------------------------------------------------------------
     const WRONG_PENALTY = 3;
     const QUESTION_PENALTY = 2;
-    const LB_KEY = 'tempest-guess-who-leaderboard';
 
     const settings = { mode: 'mixed', size: 8, rounds: 10 };
     let game = null;
@@ -1013,9 +991,8 @@
     }
 
     function startGame() {
-      const name = $('player').value.trim() || 'Anonymous';
+      stopTimer();
       game = {
-        name,
         deck: buildClueDeck(settings.mode, settings.rounds),
         index: -1,
         totalTime: 0,
@@ -1202,37 +1179,14 @@
     }
 
     // ---------------------------------------------------------------
-    // End of game + leaderboard
+    // End of game
     // ---------------------------------------------------------------
-    function loadLb() {
-      try { return JSON.parse(localStorage.getItem(LB_KEY)) || []; } catch (e) { return []; }
-    }
-
-    function saveLb(list) {
-      try { localStorage.setItem(LB_KEY, JSON.stringify(list)); } catch (e) { /* storage unavailable */ }
-    }
-
-    function modeLabel(e) {
-      const m = { mixed: 'Mixed', quote: 'Quotes', behaviour: 'Behaviour' }[e.mode] || e.mode;
-      return `${m}, ${e.size} cards, ${e.rounds} rds`;
-    }
-
-    function renderLb(target, highlightId) {
-      const list = loadLb();
-      const el = $(target);
-      if (!list.length) {
-        el.innerHTML = '<div class="empty">No races yet. Be the first on the board!</div>';
-        return;
-      }
-      el.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Settings</th><th class="num">Score</th><th class="num">Time</th></tr></thead><tbody>
-        ${list.slice(0, 10).map((e, i) => `<tr class="${e.id === highlightId ? 'me' : ''}">
-          <td>${i + 1}</td><td>${escapeHtml(e.name)}</td><td>${modeLabel(e)}</td>
-          <td class="num">${e.score}</td><td class="num">${e.time.toFixed(1)}s</td></tr>`).join('')}
-      </tbody></table>`;
-    }
-
-    function escapeHtml(s) {
-      return s.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    function rating(res, firstTry) {
+      const avg = res.reduce((t, r) => t + r.time, 0) / res.length;
+      if (firstTry === res.length && avg < 6) return '\u26A1 Lightning fast and perfect. You know this play!';
+      if (firstTry >= res.length * 0.8) return '\u2B50 Excellent! Can you go even faster?';
+      if (firstTry >= res.length * 0.5) return 'Good work. Restart to beat your score.';
+      return 'Check the review below, then race again.';
     }
 
     function endGame() {
@@ -1241,23 +1195,8 @@
       const firstTry = res.filter(r => r.wrong.length === 0 && r.asked === 0).length;
       const best = Math.min(...res.map(r => r.time));
 
-      const entry = {
-        id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
-        name: game.name,
-        score: game.score,
-        time: game.totalTime,
-        mode: settings.mode,
-        size: settings.size,
-        rounds: res.length,
-      };
-      const list = loadLb();
-      list.push(entry);
-      list.sort((a, b) => b.score - a.score || a.time - b.time);
-      saveLb(list.slice(0, 50));
-      const rank = list.findIndex(e => e.id === entry.id) + 1;
-
       $('endScore').textContent = game.score;
-      $('endRank').textContent = rank === 1 ? `\u{1F3C6} ${game.name}, you're #1 on the leaderboard!` : `${game.name}, you placed #${rank} on the leaderboard.`;
+      $('endRank').textContent = rating(res, firstTry);
       $('endTime').textContent = game.totalTime.toFixed(1) + 's';
       $('endFirst').textContent = `${firstTry}/${res.length}`;
       $('endBest').textContent = best.toFixed(1) + 's';
@@ -1274,7 +1213,6 @@
           <td class="num">${r.time.toFixed(1)}s</td></tr>`;
       }).join('');
 
-      renderLb('lbEnd', entry.id);
       showScreen('end');
     }
 
@@ -1292,15 +1230,10 @@
     });
 
     $('startBtn').addEventListener('click', startGame);
-    $('player').addEventListener('keydown', (e) => { if (e.key === 'Enter') startGame(); });
     $('againBtn').addEventListener('click', startGame);
-    $('menuBtn').addEventListener('click', () => { renderLb('lbStart'); showScreen('start'); $('player').focus(); });
-    $('quitBtn').addEventListener('click', () => { stopTimer(); renderLb('lbStart'); showScreen('start'); });
-    $('clearLb').addEventListener('click', () => {
-      if (confirm('Clear every score on this computer’s leaderboard?')) { saveLb([]); renderLb('lbStart'); }
-    });
-
-    renderLb('lbStart');
+    $('restartBtn').addEventListener('click', startGame);
+    $('menuBtn').addEventListener('click', () => showScreen('start'));
+    $('quitBtn').addEventListener('click', () => { stopTimer(); showScreen('start'); });
   </script>
 </body>
 </html>
